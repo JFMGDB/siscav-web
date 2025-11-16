@@ -1,7 +1,7 @@
 # siscav-web: Frontend do Sistema de Controle de Acesso de Veículos
 
 [![CI Pipeline](https://github.com/seu-usuario/siscav-web/actions/workflows/ci.yml/badge.svg)](https://github.com/seu-usuario/siscav-web/actions/workflows/ci.yml)
-[![Next.js](https://img.shields.io/badge/Next.js-14.x-black?logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.0.3-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Code style: Prettier](https://img.shields.io/badge/code%20style-Prettier-ff69b4.svg)](https://prettier.io/)
 [![License: Academic](https://img.shields.io/badge/license-Academic-green.svg)](https://unicap.br)
