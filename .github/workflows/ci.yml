@@ -1,51 +1,59 @@
 # Nome do Workflow de Integração Contínua
 name: CI Pipeline
 
-# Gatilho (Trigger)
-# Este workflow será acionado em pull requests para a branch 'develop'
+# Gatilhos (Triggers)
+# Aciona o workflow em pushes para 'main' e 'develop', e em pull requests para 'develop'
 on:
+  push:
+    branches: [ main, develop ]
   pull_request:
     branches: [ develop ]
 
+# Controle de Concorrência
+# Cancela execuções de CI em progresso na mesma branch quando um novo commit é enviado
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # Trabalhos (Jobs)
-# Define uma sequência de tarefas a serem executadas
 jobs:
   build-and-test:
-    # O tipo de máquina virtual para executar o job
+    name: Build, Lint, and Test
     runs-on: ubuntu-latest
 
-    # Passos (Steps)
-    # Sequência de tarefas que serão executadas como parte do job
+    # Permissões de Segurança
+    # Restringe as permissões do token do GitHub para apenas leitura
+    permissions:
+      contents: read
+
     steps:
       # 1. Checkout do código
-      # Baixa uma cópia do seu repositório para a máquina virtual
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       # 2. Configurar o ambiente Node.js
-      # Instala a versão especificada do Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm' # Configura o cache para o npm para acelerar as instalações futuras
+          cache: 'npm'
 
-      # 3. Instalar as dependências do projeto
-      # 'npm ci' é usado em vez de 'npm install' para instalações mais rápidas e consistentes em ambientes de CI
-      - name: Install dependencies
+      # 3. Instalar as dependências
+      - name: Install Dependencies
         run: npm ci
 
-      # 4. Executar o Linter
-      # Verifica se o código segue as boas práticas e padrões de estilo
+      # 4. Verificar Formatação (Prettier)
+      - name: Check Formatting
+        run: npm run format:check
+
+      # 5. Executar Linting (ESLint)
       - name: Run ESLint
         run: npm run lint
 
-      # 5. Executar o Build de Produção
-      # O comando 'next build' compila a aplicação e automaticamente verifica erros de TypeScript
-      - name: Run build
-        run: npm run build
-
-      # 6. Executar os Testes Unitários
-      # Verifica a lógica dos componentes e funções isoladamente
-      - name: Run tests
+      # 6. Executar Testes (Jest)
+      - name: Run Tests
         run: npm test
+
+      # 7. Executar Build de Produção (Next.js)
+      - name: Run Build
+        run: npm run build
