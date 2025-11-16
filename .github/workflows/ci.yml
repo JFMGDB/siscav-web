@@ -48,7 +48,7 @@ jobs:
 
       # 5. Executar Linting (ESLint)
       - name: Run ESLint
-        run: npx next lint
+        run: npm run lint
 
       # 6. Executar Testes (Jest)
       - name: Run Tests
