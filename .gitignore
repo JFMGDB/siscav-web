@@ -44,4 +44,6 @@ next-env.d.ts
 Arquitetura - Critérios de Aceite e Devops.md
 Arquitetura e Backlog do projeto.md
 Especificação de Projeto.md
-Modelo de Dados para Aplicação.md
+Modelo_de_dados.md
+# siscav-web specific
+docs/Modelo_de_dados.md
