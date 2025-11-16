@@ -5,9 +5,9 @@ name: CI Pipeline
 # Aciona o workflow em pushes para 'main' e 'develop', e em pull requests para 'develop'
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ develop ]
+    branches: [develop]
 
 # Controle de Concorrência
 # Cancela execuções de CI em progresso na mesma branch quando um novo commit é enviado
@@ -35,8 +35,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       # 3. Instalar as dependências
       - name: Install Dependencies

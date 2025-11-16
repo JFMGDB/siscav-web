@@ -10,15 +10,18 @@ Se você acabou de clonar o projeto ou se o `package.json` foi atualizado, insta
 npm install
 ```
 
-## 2. Executar Linting (ESLint)
+## 2. Executar Linting e Formatação
 
-O linter verifica a qualidade e o estilo do código.
+O linter verifica a qualidade do código, e o formatador garante um estilo consistente.
 
 ```bash
+# Formatar todo o código automaticamente
+npm run format
+
 # Verificar se há problemas de linting
 npm run lint
 
-# Tentar corrigir automaticamente os problemas
+# Tentar corrigir automaticamente os problemas de linting
 npm run lint:fix
 ```
 
@@ -50,7 +53,7 @@ npm run build
 Para simular o pipeline de CI completo, execute todos os comandos em sequência. Se nenhum deles falhar, seu código está pronto!
 
 ```bash
-npm run lint && npm test && npm run build
+npm run format:check && npm run lint && npm test && npm run build
 ```
 
 Se todos os comandos passarem sem erro, seu código está pronto para o Pull Request! ✅
@@ -59,22 +62,22 @@ Se todos os comandos passarem sem erro, seu código está pronto para o Pull Req
 
 1. Certifique-se de estar em uma branch de feature:
 
-    ```bash
-    git checkout -b feature/minha-feature
-    ```
+   ```bash
+   git checkout -b feature/minha-feature
+   ```
 
 2. Commit suas alterações:
 
-    ```bash
-    git add .
-    git commit -m "feat: descrição da funcionalidade"
-    ```
+   ```bash
+   git add .
+   git commit -m "feat: descrição da funcionalidade"
+   ```
 
 3. Envie para o repositório remoto:
 
-    ```bash
-    git push origin feature/minha-feature
-    ```
+   ```bash
+   git push origin feature/minha-feature
+   ```
 
 4. Abra um Pull Request no GitHub, direcionado para a branch `develop`. O pipeline de CI será executado automaticamente.
 

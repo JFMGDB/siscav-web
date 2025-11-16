@@ -1,10 +1,9 @@
 ---
 name: Template de Pull Request
 about: Template padrão para a abertura de Pull Requests neste projeto.
-title: 'feat: Descreva a nova funcionalidade'
-labels: 'enhancement'
-assignees: ''
-
+title: "feat: Descreva a nova funcionalidade"
+labels: "enhancement"
+assignees: ""
 ---
 
 ## 📝 Descrição

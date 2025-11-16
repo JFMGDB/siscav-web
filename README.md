@@ -16,37 +16,37 @@ A arquitetura geral do projeto é dividida em dois repositórios distintos: `sis
 
 Este repositório (`siscav-web`) contém toda a lógica do lado do cliente e a interface do usuário, construída como um painel de administração com **Next.js**. Ele é responsável por:
 
-* Fornecer uma interface de login para administradores.
-* Permitir o gerenciamento (CRUD) da lista de veículos autorizados.
-* Exibir o histórico de logs de acesso.
-* Oferecer a funcionalidade de acionamento remoto do portão.
+- Fornecer uma interface de login para administradores.
+- Permitir o gerenciamento (CRUD) da lista de veículos autorizados.
+- Exibir o histórico de logs de acesso.
+- Oferecer a funcionalidade de acionamento remoto do portão.
 
 ## Principais Funcionalidades (Planejadas)
 
-* **Página de Login e Controle de Acesso:** Interface segura para autenticação de administradores, que consome o endpoint JWT do backend.
-* **Painel de Gerenciamento da Whitelist:** Uma interface CRUD completa para adicionar, visualizar, editar e remover placas de veículos autorizados.
-* **Painel de Visualização de Logs:** Tabela de dados com o histórico de todas as tentativas de acesso, com funcionalidades de busca, paginação e filtros.
-* **Visualização de Imagens:** Modal para exibir a imagem capturada associada a um log de acesso específico.
-* **Acionamento Remoto:** Botão na interface para que um administrador possa abrir o portão remotamente.
+- **Página de Login e Controle de Acesso:** Interface segura para autenticação de administradores, que consome o endpoint JWT do backend.
+- **Painel de Gerenciamento da Whitelist:** Uma interface CRUD completa para adicionar, visualizar, editar e remover placas de veículos autorizados.
+- **Painel de Visualização de Logs:** Tabela de dados com o histórico de todas as tentativas de acesso, com funcionalidades de busca, paginação e filtros.
+- **Visualização de Imagens:** Modal para exibir a imagem capturada associada a um log de acesso específico.
+- **Acionamento Remoto:** Botão na interface para que um administrador possa abrir o portão remotamente.
 
 ### Funcionalidades Implementadas
 
-* ✅ Estrutura do projeto Next.js com App Router.
-* ✅ Configuração de TypeScript, ESLint e Prettier para qualidade de código.
-* ✅ Ambiente de testes configurado com Jest e React Testing Library.
-* ✅ Pipeline de CI/CD com GitHub Actions (lint, build, testes).
-* ⏳ UI da Página de Login (em desenvolvimento).
-* ⏳ UI do Painel da Whitelist (em desenvolvimento).
-* ⏳ UI do Painel de Logs de Acesso (em desenvolvimento).
+- ✅ Estrutura do projeto Next.js com App Router.
+- ✅ Configuração de TypeScript, ESLint e Prettier para qualidade de código.
+- ✅ Ambiente de testes configurado com Jest e React Testing Library.
+- ✅ Pipeline de CI/CD com GitHub Actions (lint, build, testes).
+- ⏳ UI da Página de Login (em desenvolvimento).
+- ⏳ UI do Painel da Whitelist (em desenvolvimento).
+- ⏳ UI do Painel de Logs de Acesso (em desenvolvimento).
 
 ## Stack Tecnológica
 
-* **Framework:** Next.js (React)
-* **Linguagem:** TypeScript
-* **Estilização:** CSS Modules (com planos para Material-UI)
-* **Testes:** Jest, React Testing Library
-* **Qualidade de Código:** ESLint, Prettier
-* **DevOps:** GitHub Actions
+- **Framework:** Next.js (React)
+- **Linguagem:** TypeScript
+- **Estilização:** CSS Modules (com planos para Material-UI)
+- **Testes:** Jest, React Testing Library
+- **Qualidade de Código:** ESLint, Prettier
+- **DevOps:** GitHub Actions
 
 ## Estrutura do Projeto
 
@@ -81,8 +81,8 @@ siscav-web/
 
 ### Pré-requisitos
 
-* [Node.js](https://nodejs.org/) (versão 20.x ou superior)
-* [npm](https://www.npmjs.com/) (geralmente instalado com o Node.js)
+- [Node.js](https://nodejs.org/) (versão 20.x ou superior)
+- [npm](https://www.npmjs.com/) (geralmente instalado com o Node.js)
 
 ### Instalação
 
@@ -94,7 +94,7 @@ cd siscav-web
 npm install
 ```
 
-*Substitua `seu-usuario` pelo nome de usuário ou organização correta do GitHub.*
+_Substitua `seu-usuario` pelo nome de usuário ou organização correta do GitHub._
 
 ## Scripts Disponíveis
 
@@ -112,6 +112,10 @@ Executa a suíte de testes unitários e de componentes utilizando o Jest. É ide
 ### `npm run lint`
 
 Executa o ESLint para analisar estaticamente o código em busca de problemas de qualidade e estilo.
+
+### `npm run format`
+
+Formata automaticamente todo o código do projeto utilizando o Prettier para garantir um estilo consistente.
 
 ### `npm run build`
 

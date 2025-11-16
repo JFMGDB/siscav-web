@@ -26,29 +26,29 @@ O pipeline é **automaticamente acionado** quando:
 O workflow `.github/workflows/ci.yml` executa as seguintes etapas em um ambiente Node.js 20.x:
 
 1. **Checkout do Código**
-    - Clona o repositório para o ambiente de execução.
+   - Clona o repositório para o ambiente de execução.
 
 2. **Setup Node.js**
-    - Configura o ambiente Node.js com cache de dependências `npm` para acelerar o processo.
+   - Configura o ambiente Node.js com cache de dependências `npm` para acelerar o processo.
 
 3. **Instalação de Dependências**
-    - Instala as dependências do projeto de forma consistente.
-    - Comando: `npm ci`
+   - Instala as dependências do projeto de forma consistente.
+   - Comando: `npm ci`
 
 4. **Linting com ESLint**
-    - Verifica se o código segue as convenções e padrões de qualidade definidos.
-    - Comando: `npm run lint`
-    - **Falha se houver erros de linting.**
+   - Verifica se o código segue as convenções e padrões de qualidade definidos.
+   - Comando: `npm run lint`
+   - **Falha se houver erros de linting.**
 
 5. **Testes com Jest** 🧪
-    - Executa a suíte de testes unitários e de componentes.
-    - Comando: `npm test`
-    - **Falha se qualquer teste falhar.**
+   - Executa a suíte de testes unitários e de componentes.
+   - Comando: `npm test`
+   - **Falha se qualquer teste falhar.**
 
 6. **Build de Produção**
-    - Compila a aplicação Next.js, verificando erros de compilação e de tipos do TypeScript.
-    - Comando: `npm run build`
-    - **Falha se o build não for bem-sucedido.**
+   - Compila a aplicação Next.js, verificando erros de compilação e de tipos do TypeScript.
+   - Comando: `npm run build`
+   - **Falha se o build não for bem-sucedido.**
 
 ## Bloqueio de Merge
 
@@ -91,5 +91,6 @@ Você pode visualizar o status do pipeline:
 6. Solicite a revisão do seu código.
 
 ---
+
 **Projeto:** SISCAV - Sistema de Controle de Acesso Veicular  
 **Instituição:** UNICAP
