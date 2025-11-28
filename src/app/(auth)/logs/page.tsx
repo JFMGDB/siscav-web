@@ -1,5 +1,11 @@
-// Página para visualização dos logs de acesso de veículos.
-// Acessível apenas para usuários autenticados.
+import LogsTable from '@/components/features/logs/Logs-Table';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Access Logs - SISCAV',
+  description: 'View vehicle access history',
+};
+
 export default function LogsPage() {
-  return <h1>Access Logs</h1>;
+  return <LogsTable />;
 }

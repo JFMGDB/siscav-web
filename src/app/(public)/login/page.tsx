@@ -1,4 +1,11 @@
-// Página pública de login para acesso ao painel de administração.
+import LoginForm from '@/components/features/auth/Login-Form';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Login - SISCAV',
+  description: 'Login to Vehicle Access Control System',
+};
+
 export default function LoginPage() {
-  return <h1>Login</h1>;
+  return <LoginForm />;
 }

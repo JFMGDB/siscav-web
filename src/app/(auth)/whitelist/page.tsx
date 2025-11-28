@@ -1,5 +1,11 @@
-// Página para gerenciamento da whitelist de placas de veículos.
-// Acessível apenas para usuários autenticados.
+import WhitelistTable from '@/components/features/whitelist/Whitelist-Table';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Whitelist - SISCAV',
+  description: 'Manage authorized vehicles',
+};
+
 export default function WhitelistPage() {
-  return <h1>Whitelist</h1>;
+  return <WhitelistTable />;
 }
