@@ -6,8 +6,8 @@ import { Providers } from "@/components/providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SISCAV - Vehicle Access Control",
-  description: "Automated Vehicle Access Control System",
+  title: "SISCAV - Controle de Acesso de Veículos",
+  description: "Sistema Automatizado de Controle de Acesso de Veículos",
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body className={inter.className}>
         <Providers>{children}</Providers>
       </body>

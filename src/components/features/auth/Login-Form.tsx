@@ -19,7 +19,7 @@ export default function LoginForm() {
     try {
       await login(email, password);
     } catch (err) {
-      setError('Invalid email or password');
+      setError('E-mail ou senha inválidos');
     } finally {
       setLoading(false);
     }
@@ -37,14 +37,14 @@ export default function LoginForm() {
     >
       <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
         <Typography variant="h5" component="h1" gutterBottom textAlign="center">
-          SISCAV Login
+          Login SISCAV
         </Typography>
 
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <form onSubmit={handleSubmit}>
           <TextField
-            label="Email"
+            label="E-mail"
             type="email"
             fullWidth
             margin="normal"
@@ -54,7 +54,7 @@ export default function LoginForm() {
             autoFocus
           />
           <TextField
-            label="Password"
+            label="Senha"
             type="password"
             fullWidth
             margin="normal"
@@ -71,7 +71,7 @@ export default function LoginForm() {
             sx={{ mt: 3 }}
             disabled={loading}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
       </Paper>

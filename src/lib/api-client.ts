@@ -49,27 +49,27 @@ class ApiClient {
     await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate latency
 
     if (endpoint === '/auth/login') {
-        if (JSON.parse(options.body as string).email === 'admin@siscav.com') {
-            return {
-                token: 'mock-jwt-token',
-                user: { id: '1', email: 'admin@siscav.com', name: 'Admin' }
-            } as T;
-        }
-        throw new Error('Invalid credentials');
+      if (JSON.parse(options.body as string).email === 'admin@siscav.com') {
+        return {
+          token: 'mock-jwt-token',
+          user: { id: '1', email: 'admin@siscav.com', name: 'Admin' }
+        } as T;
+      }
+      throw new Error('Invalid credentials');
     }
 
     if (endpoint === '/whitelist') {
-        return [
-            { id: '1', plate: 'ABC1234', description: 'Director Car', createdAt: new Date().toISOString() },
-            { id: '2', plate: 'XYZ9876', description: 'Staff Van', createdAt: new Date().toISOString() },
-        ] as T;
+      return [
+        { id: '1', plate: 'ABC1234', description: 'Director Car', createdAt: new Date().toISOString() },
+        { id: '2', plate: 'XYZ9876', description: 'Staff Van', createdAt: new Date().toISOString() },
+      ] as T;
     }
 
     if (endpoint === '/logs') {
-        return [
-            { id: '1', plate: 'ABC1234', status: 'AUTHORIZED', timestamp: new Date().toISOString(), imageUrl: '/placeholder-car.jpg' },
-            { id: '2', plate: 'UNKNOWN', status: 'DENIED', timestamp: new Date(Date.now() - 3600000).toISOString(), imageUrl: '/placeholder-car.jpg' },
-        ] as T;
+      return [
+        { id: '1', plate: 'ABC1234', status: 'AUTHORIZED', timestamp: new Date().toISOString(), imageUrl: '/placeholder-car.jpg' },
+        { id: '2', plate: 'UNKNOWN', status: 'DENIED', timestamp: new Date(Date.now() - 3600000).toISOString(), imageUrl: '/placeholder-car.jpg' },
+      ] as T;
     }
 
     // END MOCK
@@ -98,22 +98,44 @@ class ApiClient {
   }
 
   async addPlate(plate: string, description?: string): Promise<AuthorizedPlate> {
-      // Mock
-      return { id: Math.random().toString(), plate, description, createdAt: new Date().toISOString() };
+    // Mock
+    return { id: Math.random().toString(), plate, description, createdAt: new Date().toISOString() };
   }
-  
+
   async removePlate(id: string): Promise<void> {
-      // Mock
+    // Mock
+    console.log(`Removing plate ${id}`);
   }
 
   async getLogs(): Promise<AccessLog[]> {
     return this.request<AccessLog[]>('/logs');
   }
-  
+
   async openGate(): Promise<void> {
-      // Mock
-      console.log('Gate opened remotely');
+    // Mock
+    console.log('Gate opened remotely');
   }
+
+  async uploadTrainingData(file: File, label: string): Promise<void> {
+    // Mock upload
+    console.log(`Uploading training data: ${file.name} with label ${label}`);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+
+  async getTrainingData(): Promise<TrainingData[]> {
+    // Mock fetch
+    return [
+      { id: '1', imageUrl: '/mock-plate-1.jpg', label: 'ABC1234', createdAt: new Date().toISOString() },
+      { id: '2', imageUrl: '/mock-plate-2.jpg', label: 'XYZ9876', createdAt: new Date().toISOString() },
+    ];
+  }
+}
+
+export interface TrainingData {
+  id: string;
+  imageUrl: string;
+  label: string;
+  createdAt: string;
 }
 
 export const apiClient = new ApiClient(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1');

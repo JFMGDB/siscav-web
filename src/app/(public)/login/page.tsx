@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Login - SISCAV',
-  description: 'Login to Vehicle Access Control System',
+  description: 'Entrar no Sistema de Controle de Acesso de Veículos',
 };
 
 export default function LoginPage() {

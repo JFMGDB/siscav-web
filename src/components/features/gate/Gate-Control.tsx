@@ -13,9 +13,9 @@ export default function GateControl() {
         setLoading(true);
         try {
             await apiClient.openGate();
-            setMessage({ text: 'Gate open command sent successfully', type: 'success' });
+            setMessage({ text: 'Comando de abertura enviado com sucesso', type: 'success' });
         } catch (error) {
-            setMessage({ text: 'Failed to open gate', type: 'error' });
+            setMessage({ text: 'Falha ao abrir o portão', type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -24,7 +24,7 @@ export default function GateControl() {
     return (
         <Paper sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h6" color="primary" gutterBottom>
-                Remote Control
+                Controle Remoto
             </Typography>
             <Box sx={{ position: 'relative' }}>
                 <Button
@@ -36,7 +36,7 @@ export default function GateControl() {
                     disabled={loading}
                     sx={{ mt: 2 }}
                 >
-                    Open Gate
+                    Abrir Portão
                 </Button>
                 {loading && (
                     <CircularProgress

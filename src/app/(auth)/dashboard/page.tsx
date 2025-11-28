@@ -7,13 +7,13 @@ export default function DashboardPage() {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Dashboard
+        Painel de Controle
       </Typography>
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h6" color="primary">
-              System Status
+              Status do Sistema
             </Typography>
             <Typography variant="h3">
               Online
@@ -23,7 +23,7 @@ export default function DashboardPage() {
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h6" color="primary">
-              Authorized Vehicles
+              Veículos Autorizados
             </Typography>
             <Typography variant="h3">
               124
@@ -33,7 +33,7 @@ export default function DashboardPage() {
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h6" color="primary">
-              Today's Accesses
+              Acessos de Hoje
             </Typography>
             <Typography variant="h3">
               45

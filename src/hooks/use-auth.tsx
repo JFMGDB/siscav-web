@@ -28,6 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(JSON.parse(storedUser));
         }
         setIsLoading(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const login = async (email: string, password: string) => {
@@ -53,11 +54,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value= {{ user, login, logout, isLoading }
-}>
-    { children }
-    </AuthContext.Provider>
-  );
+        <AuthContext.Provider value={{ user, login, logout, isLoading }
+        }>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export function useAuth() {

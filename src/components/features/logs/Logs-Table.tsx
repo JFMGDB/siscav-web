@@ -40,9 +40,9 @@ export default function LogsTable() {
     return (
         <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h5">Access Logs</Typography>
+                <Typography variant="h5">Histórico de Acesso</Typography>
                 <Button startIcon={<RefreshIcon />} onClick={fetchLogs}>
-                    Refresh
+                    Atualizar
                 </Button>
             </Box>
 
@@ -50,36 +50,36 @@ export default function LogsTable() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Timestamp</TableCell>
-                            <TableCell>Plate</TableCell>
+                            <TableCell>Data/Hora</TableCell>
+                            <TableCell>Placa</TableCell>
                             <TableCell>Status</TableCell>
-                            <TableCell>Image</TableCell>
+                            <TableCell>Imagem</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {loading ? (
                             <TableRow>
-                                <TableCell colSpan={4} align="center">Loading...</TableCell>
+                                <TableCell colSpan={4} align="center">Carregando...</TableCell>
                             </TableRow>
                         ) : logs.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={4} align="center">No logs found.</TableCell>
+                                <TableCell colSpan={4} align="center">Nenhum registro encontrado.</TableCell>
                             </TableRow>
                         ) : (
                             logs.map((log) => (
                                 <TableRow key={log.id}>
-                                    <TableCell>{new Date(log.timestamp).toLocaleString()}</TableCell>
+                                    <TableCell>{new Date(log.timestamp).toLocaleString('pt-BR')}</TableCell>
                                     <TableCell>{log.plate}</TableCell>
                                     <TableCell>
                                         <Chip
-                                            label={log.status}
+                                            label={log.status === 'AUTHORIZED' ? 'AUTORIZADO' : 'NEGADO'}
                                             color={log.status === 'AUTHORIZED' ? 'success' : 'error'}
                                             size="small"
                                         />
                                     </TableCell>
                                     <TableCell>
                                         {log.imageUrl && (
-                                            <Button size="small" variant="outlined">View Image</Button>
+                                            <Button size="small" variant="outlined">Ver Imagem</Button>
                                         )}
                                     </TableCell>
                                 </TableRow>

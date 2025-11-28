@@ -82,9 +82,9 @@ export default function WhitelistTable() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h5">Authorized Vehicles</Typography>
+        <Typography variant="h5">Veículos Autorizados</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpen()}>
-          Add Vehicle
+          Adicionar Veículo
         </Button>
       </Box>
 
@@ -92,27 +92,27 @@ export default function WhitelistTable() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Plate</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Created At</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>Placa</TableCell>
+              <TableCell>Descrição</TableCell>
+              <TableCell>Criado em</TableCell>
+              <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={4} align="center">Loading...</TableCell>
+                <TableCell colSpan={4} align="center">Carregando...</TableCell>
               </TableRow>
             ) : plates.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} align="center">No plates found.</TableCell>
+                <TableCell colSpan={4} align="center">Nenhuma placa encontrada.</TableCell>
               </TableRow>
             ) : (
               plates.map((plate) => (
                 <TableRow key={plate.id}>
                   <TableCell>{plate.plate}</TableCell>
                   <TableCell>{plate.description || '-'}</TableCell>
-                  <TableCell>{new Date(plate.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(plate.createdAt).toLocaleDateString('pt-BR')}</TableCell>
                   <TableCell align="right">
                     <IconButton onClick={() => handleOpen(plate)} color="primary">
                       <EditIcon />
@@ -129,27 +129,27 @@ export default function WhitelistTable() {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{currentPlate.id ? 'Edit Vehicle' : 'Add Vehicle'}</DialogTitle>
+        <DialogTitle>{currentPlate.id ? 'Editar Veículo' : 'Adicionar Veículo'}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="License Plate"
+            label="Placa"
             fullWidth
             value={currentPlate.plate || ''}
             onChange={(e) => setCurrentPlate({ ...currentPlate, plate: e.target.value })}
           />
           <TextField
             margin="dense"
-            label="Description"
+            label="Descrição"
             fullWidth
             value={currentPlate.description || ''}
             onChange={(e) => setCurrentPlate({ ...currentPlate, description: e.target.value })}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained">Save</Button>
+          <Button onClick={handleClose}>Cancelar</Button>
+          <Button onClick={handleSave} variant="contained">Salvar</Button>
         </DialogActions>
       </Dialog>
     </Box>

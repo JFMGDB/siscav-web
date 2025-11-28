@@ -21,6 +21,7 @@ import {
     History as HistoryIcon,
     ExitToApp as LogoutIcon,
     Menu as MenuIcon,
+    ModelTraining as ModelTrainingIcon,
 } from '@mui/icons-material';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
@@ -38,9 +39,10 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     };
 
     const menuItems = [
-        { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-        { text: 'Whitelist', icon: <CarIcon />, path: '/whitelist' },
-        { text: 'Access Logs', icon: <HistoryIcon />, path: '/logs' },
+        { text: 'Painel', icon: <DashboardIcon />, path: '/dashboard' },
+        { text: 'Veículos Autorizados', icon: <CarIcon />, path: '/whitelist' },
+        { text: 'Histórico de Acesso', icon: <HistoryIcon />, path: '/logs' },
+        { text: 'Treinamento IA', icon: <ModelTrainingIcon />, path: '/training' },
     ];
 
     const drawer = (
@@ -71,7 +73,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                         <ListItemIcon>
                             <LogoutIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Logout" />
+                        <ListItemText primary="Sair" />
                     </ListItemButton>
                 </ListItem>
             </List>
@@ -98,10 +100,10 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                        {menuItems.find((item) => item.path === pathname)?.text || 'Dashboard'}
+                        {menuItems.find((item) => item.path === pathname)?.text || 'Painel'}
                     </Typography>
                     <Typography variant="body1">
-                        Welcome, {user?.name || 'Admin'}
+                        Bem-vindo, {user?.name || 'Admin'}
                     </Typography>
                 </Toolbar>
             </AppBar>
