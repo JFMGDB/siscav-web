@@ -1,141 +1,107 @@
+/**
+ * Backward-compatible API client. Delegates to lib/api (cookie-based client + domain modules).
+ * Use getClientApiClient() and domain modules directly in new code.
+ */
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
+import { getClientApiClient } from '@/lib/api/client';
+import * as authApi from '@/lib/api/auth';
+import * as whitelistApi from '@/lib/api/whitelist';
+import * as logsApi from '@/lib/api/logs';
+import * as gateApi from '@/lib/api/gate';
+import * as monitorApi from '@/lib/api/monitor';
+import * as devicesApi from '@/lib/api/devices';
+import type {
+  AuthResponse,
+  AuthorizedPlate,
+  AuthorizedPlateCreate,
+  PaginatedResponse,
+  AccessLog,
+  AccessLogFilters,
+  Capture,
+  ConnectionStatus,
+} from '@/types';
+
+function client() {
+  return getClientApiClient();
 }
 
-export interface AuthResponse {
-  token: string;
-  user: User;
-}
-
-export interface AuthorizedPlate {
-  id: string;
-  plate: string;
-  description?: string;
-  createdAt: string;
-}
-
-export interface AccessLog {
-  id: string;
-  plate: string;
-  status: 'AUTHORIZED' | 'DENIED';
-  timestamp: string;
-  imageUrl?: string;
-}
-
-class ApiClient {
-  private baseUrl: string;
-  private token: string | null = null;
-
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
-  }
-
-  setToken(token: string | null) {
-    this.token = token;
-  }
-
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...(this.token ? { Authorization: `Bearer ${this.token}` } : {}),
-      ...options.headers,
-    };
-
-    // MOCKING API CALLS FOR DEVELOPMENT
-    console.log(`[MockAPI] ${options.method || 'GET'} ${endpoint}`);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate latency
-
-    if (endpoint === '/auth/login') {
-      if (JSON.parse(options.body as string).email === 'admin@siscav.com') {
-        return {
-          token: 'mock-jwt-token',
-          user: { id: '1', email: 'admin@siscav.com', name: 'Admin' }
-        } as T;
-      }
-      throw new Error('Invalid credentials');
-    }
-
-    if (endpoint === '/whitelist') {
-      return [
-        { id: '1', plate: 'ABC1234', description: 'Director Car', createdAt: new Date().toISOString() },
-        { id: '2', plate: 'XYZ9876', description: 'Staff Van', createdAt: new Date().toISOString() },
-      ] as T;
-    }
-
-    if (endpoint === '/logs') {
-      return [
-        { id: '1', plate: 'ABC1234', status: 'AUTHORIZED', timestamp: new Date().toISOString(), imageUrl: '/placeholder-car.jpg' },
-        { id: '2', plate: 'UNKNOWN', status: 'DENIED', timestamp: new Date(Date.now() - 3600000).toISOString(), imageUrl: '/placeholder-car.jpg' },
-      ] as T;
-    }
-
-    // END MOCK
-
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      ...options,
-      headers,
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.statusText}`);
-    }
-
-    return response.json();
-  }
-
+export const apiClient = {
+  setAccessToken(_token: string | null) {
+    // Tokens are in cookies; use login to set. No-op for compatibility.
+  },
+  setRefreshToken(_token: string | null) {
+    // No-op; cookies handle refresh.
+  },
+  getAccessToken(): string | null {
+    return typeof document !== 'undefined'
+      ? document.cookie
+          .split(';')
+          .find((c) => c.trim().startsWith('access_token='))
+          ?.split('=')[1]
+          ?.trim() ?? null
+      : null;
+  },
+  getRefreshToken(): string | null {
+    return typeof document !== 'undefined'
+      ? document.cookie
+          .split(';')
+          .find((c) => c.trim().startsWith('refresh_token='))
+          ?.split('=')[1]
+          ?.trim() ?? null
+      : null;
+  },
+  async refreshTokens(): Promise<void> {
+    return client().refreshTokens();
+  },
+  async register(email: string, password: string) {
+    return authApi.register(client(), email, password);
+  },
   async login(email: string, password: string): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
-  }
-
-  async getWhitelist(): Promise<AuthorizedPlate[]> {
-    return this.request<AuthorizedPlate[]>('/whitelist');
-  }
-
+    return authApi.login(client(), email, password);
+  },
+  async getWhitelist(skip = 0, limit = 100): Promise<PaginatedResponse<AuthorizedPlate>> {
+    return whitelistApi.getWhitelist(client(), skip, limit);
+  },
   async addPlate(plate: string, description?: string): Promise<AuthorizedPlate> {
-    // Mock
-    return { id: Math.random().toString(), plate, description, createdAt: new Date().toISOString() };
-  }
-
-  async removePlate(id: string): Promise<void> {
-    // Mock
-    console.log(`Removing plate ${id}`);
-  }
-
-  async getLogs(): Promise<AccessLog[]> {
-    return this.request<AccessLog[]>('/logs');
-  }
-
-  async openGate(): Promise<void> {
-    // Mock
-    console.log('Gate opened remotely');
-  }
-
-  async uploadTrainingData(file: File, label: string): Promise<void> {
-    // Mock upload
-    console.log(`Uploading training data: ${file.name} with label ${label}`);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-
-  async getTrainingData(): Promise<TrainingData[]> {
-    // Mock fetch
-    return [
-      { id: '1', imageUrl: '/mock-plate-1.jpg', label: 'ABC1234', createdAt: new Date().toISOString() },
-      { id: '2', imageUrl: '/mock-plate-2.jpg', label: 'XYZ9876', createdAt: new Date().toISOString() },
-    ];
-  }
-}
-
-export interface TrainingData {
-  id: string;
-  imageUrl: string;
-  label: string;
-  createdAt: string;
-}
-
-export const apiClient = new ApiClient(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1');
+    return whitelistApi.addPlate(client(), plate, description);
+  },
+  async getPlate(id: string): Promise<AuthorizedPlate> {
+    return whitelistApi.getPlate(client(), id);
+  },
+  async updatePlate(id: string, plate: string, description?: string): Promise<AuthorizedPlate> {
+    return whitelistApi.updatePlate(client(), id, plate, description);
+  },
+  async removePlate(id: string): Promise<AuthorizedPlate> {
+    return whitelistApi.removePlate(client(), id);
+  },
+  async getLogs(filters: AccessLogFilters = {}): Promise<PaginatedResponse<AccessLog>> {
+    return logsApi.getLogs(client(), filters);
+  },
+  async openGate(): Promise<{ status: string; message?: string }> {
+    return gateApi.openGate(client());
+  },
+  async getLastCapture(): Promise<Capture | null> {
+    return monitorApi.getLastCapture(client());
+  },
+  async registerUnknownPlate(plate: string, description: string): Promise<void> {
+    return monitorApi.registerUnknownPlate(client(), plate, description);
+  },
+  async scanDevices(): Promise<unknown[]> {
+    return devicesApi.scanDevices(client());
+  },
+  async connectDevice(deviceId: string): Promise<unknown> {
+    return devicesApi.connectDevice(client(), deviceId);
+  },
+  async getConnectionStatus(): Promise<ConnectionStatus> {
+    return devicesApi.getConnectionStatus(client());
+  },
+  async disconnectDevice(): Promise<unknown> {
+    return devicesApi.disconnectDevice(client());
+  },
+  async sendVideoFrame(blob: Blob, deviceId: string): Promise<void> {
+    return devicesApi.sendVideoFrame(client(), blob, deviceId);
+  },
+  clearTokens(): void {
+    client().clearTokens();
+  },
+};
