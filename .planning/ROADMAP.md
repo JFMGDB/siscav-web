@@ -28,7 +28,12 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
   1. `.planning/PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md` e `STATE.md` existem e descrevem o painel brownfield, exclusão de treino de IA e foco formalização + higiene.
   2. Um revisor consegue confirmar em menos de dois minutos que o escopo v1 nas REQUIREMENTS corresponde ao que o ROADMAP cobre (11 requisitos, sem órfãos).
   3. `NEXT_PUBLIC_API_URL` está documentada para novos contribuidores (`.env.example` e/ou README), com texto suficiente para configurar ambiente local.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+
+- [ ] `01-PLAN-01.md` — Verificação PLAN-01, traceability v1 (11/0) e marcação do requisito
+- [ ] `01-PLAN-02.md` — `NEXT_PUBLIC_API_URL`, `.env.example`, README (Configuração + Planeamento), excepção `!.env.example` no `.gitignore`
 
 ### Phase 2: API client & HTTP consistency
 **Goal**: Chamadas e persistência de sessão comportam-se de forma previsível e unificada em todo o cliente HTTP.
@@ -91,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Planning & contributor documentation | 0/TBD | Not started | - |
+| 1. Planning & contributor documentation | 0/2 | Not started | - |
 | 2. API client & HTTP consistency | 0/TBD | Not started | - |
 | 3. Type safety & UI data | 0/TBD | Not started | - |
 | 4. Monitor UX & capture truthfulness | 0/TBD | Not started | - |
