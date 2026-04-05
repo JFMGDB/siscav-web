@@ -37,11 +37,11 @@ created: 2026-04-05
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 03-01-01 | 01 | 1 | TYP-01 | build | `npm run build` | ✅ | ⬜ pending |
-| 03-01-02 | 01 | 1 | TYP-01 | build | `npm run build` | ✅ | ⬜ pending |
-| 03-02-01 | 02 | 2 | TYP-02 | build | `npm run build` | ✅ | ⬜ pending |
-| 03-03-01 | 03 | 1 | TYP-03 | build | `npm run build` | ✅ | ⬜ pending |
-| 03-03-02 | 03 | 1 | TYP-03 | unit | `npm test` | ✅ | ⬜ pending |
+| 03-01-01 | 01 | 1 | TYP-01 | build | `npm run build` | ✅ | ✅ green |
+| 03-01-02 | 01 | 1 | TYP-01 | build | `npm run build` | ✅ | ✅ green |
+| 03-02-01 | 02 | 2 | TYP-02 | build | `npm run build` | ✅ | ✅ green |
+| 03-03-01 | 03 | 1 | TYP-03 | build | `npm run build` | ✅ | ✅ green |
+| 03-03-02 | 03 | 1 | TYP-03 | unit | `npm test` | ✅ | ✅ green |
 
 ---
 

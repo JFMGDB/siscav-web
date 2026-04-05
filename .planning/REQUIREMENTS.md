@@ -19,9 +19,9 @@ Escopo do marco atual: **formalização do planejamento** + **higiene e correç�
 
 ### Type safety & UI data
 
-- [ ] **TYP-01**: `src/components/ui/DataTable.tsx` deixa de depender de `any` para colunas/linhas onde tipos podem ser expressos com generics ou tipos de domínio
-- [ ] **TYP-02**: `src/components/features/logs/LogsTable.tsx` trata o `onChange` do filtro sem `as any`
-- [ ] **TYP-03**: `src/lib/api/devices.ts` expõe tipos concretos (DTOs) alinhados a `src/types/` em vez de `unknown` genérico
+- [x] **TYP-01**: `src/components/ui/DataTable.tsx` deixa de depender de `any` para colunas/linhas onde tipos podem ser expressos com generics ou tipos de domínio
+- [x] **TYP-02**: `src/components/features/logs/LogsTable.tsx` trata o `onChange` do filtro sem `as any`
+- [x] **TYP-03**: `src/lib/api/devices.ts` expõe tipos concretos (DTOs) alinhados a `src/types/` em vez de `unknown` genérico
 
 ### Monitor & observability (UX)
 
@@ -71,9 +71,9 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 | PLAN-02 | Phase 1 | Done |
 | API-01 | Phase 2 | Done |
 | API-02 | Phase 2 | Done |
-| TYP-01 | Phase 3 | Pending |
-| TYP-02 | Phase 3 | Pending |
-| TYP-03 | Phase 3 | Pending |
+| TYP-01 | Phase 3 | Done |
+| TYP-02 | Phase 3 | Done |
+| TYP-03 | Phase 3 | Done |
 | MON-01 | Phase 4 | Pending |
 | MON-02 | Phase 4 | Pending |
 | AUTH-01 | Phase 5 | Pending |
@@ -87,4 +87,4 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 
 ---
 *Requirements defined: 2026-04-04*  
-*Last updated: 2026-04-05 after phase 1 plans 01–02 execution*
+*Last updated: 2026-04-05 after phase 3 execution*

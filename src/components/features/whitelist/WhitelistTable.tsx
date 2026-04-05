@@ -95,6 +95,7 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
 
   const columns: Column<AuthorizedPlate>[] = [
     {
+      columnType: 'field',
       id: 'plate',
       label: 'Placa',
       format: (value) => (
@@ -107,6 +108,7 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
       ),
     },
     {
+      columnType: 'field',
       id: 'description',
       label: 'Descrição',
       format: (value) => value || (
@@ -116,9 +118,10 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
       ),
     },
     {
+      columnType: 'field',
       id: 'created_at',
       label: 'Criado em',
-      format: (value) => new Date(value).toLocaleDateString('pt-BR', {
+      format: (value) => new Date(value as string).toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -127,10 +130,11 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
       }),
     },
     {
+      columnType: 'actions',
       id: 'actions',
       label: 'Ações',
       align: 'right',
-      format: (_, row) => (
+      format: (row) => (
         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
           <IconButton
             size="small"

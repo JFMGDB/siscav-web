@@ -23,6 +23,8 @@ import type {
   AccessLogFilters,
   Capture,
   ConnectionStatus,
+  DeviceOperationAck,
+  DeviceScanItem,
 } from '@/types';
 
 function client() {
@@ -78,16 +80,16 @@ export const apiClient = {
   async registerUnknownPlate(plate: string, description: string): Promise<void> {
     return monitorApi.registerUnknownPlate(client(), plate, description);
   },
-  async scanDevices(): Promise<unknown[]> {
+  async scanDevices(): Promise<DeviceScanItem[]> {
     return devicesApi.scanDevices(client());
   },
-  async connectDevice(deviceId: string): Promise<unknown> {
+  async connectDevice(deviceId: string): Promise<DeviceOperationAck> {
     return devicesApi.connectDevice(client(), deviceId);
   },
   async getConnectionStatus(): Promise<ConnectionStatus> {
     return devicesApi.getConnectionStatus(client());
   },
-  async disconnectDevice(): Promise<unknown> {
+  async disconnectDevice(): Promise<DeviceOperationAck> {
     return devicesApi.disconnectDevice(client());
   },
   async sendVideoFrame(blob: Blob, deviceId: string): Promise<void> {

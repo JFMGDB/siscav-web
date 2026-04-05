@@ -20,6 +20,7 @@ import {
     FormControl,
     InputLabel,
 } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material/Select';
 import {
     Refresh as RefreshIcon,
     Search as SearchIcon,
@@ -37,9 +38,16 @@ interface LogsTableProps {
   initialData?: PaginatedResponse<AccessLog>;
 }
 
+type LogStatusFilter = 'ALL' | 'Authorized' | 'Denied';
+
+function parseLogStatusFilter(value: string): LogStatusFilter {
+  if (value === 'ALL' || value === 'Authorized' || value === 'Denied') return value;
+  return 'ALL';
+}
+
 export default function LogsTable({ initialData }: LogsTableProps = {}) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState<'ALL' | 'Authorized' | 'Denied'>('ALL');
+    const [statusFilter, setStatusFilter] = useState<LogStatusFilter>('ALL');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const filters: AccessLogFilters = useMemo(() => {
@@ -53,11 +61,12 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
 
     const columns: Column<AccessLog>[] = [
         {
+            columnType: 'field',
             id: 'timestamp',
             label: 'Data/Hora',
             format: (value) => (
                 <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                    {new Date(value).toLocaleString('pt-BR', {
+                    {new Date(value as string).toLocaleString('pt-BR', {
                         day: '2-digit',
                         month: '2-digit',
                         year: 'numeric',
@@ -69,6 +78,7 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
             ),
         },
         {
+            columnType: 'field',
             id: 'plate_string_detected',
             label: 'Placa',
             format: (value) => (
@@ -78,12 +88,14 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
             ),
         },
         {
+            columnType: 'field',
             id: 'status',
             label: 'Status',
             align: 'center',
-            format: (value) => <StatusChip status={value} />,
+            format: (value) => <StatusChip status={value as AccessLog['status']} />,
         },
         {
+            columnType: 'field',
             id: 'image_storage_key',
             label: 'Imagem',
             align: 'center',
@@ -93,7 +105,7 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
                         size="small"
                         variant="outlined"
                         startIcon={<ImageIcon />}
-                        onClick={() => setSelectedImage(getAccessLogImageUrl(value))}
+                        onClick={() => setSelectedImage(getAccessLogImageUrl(value as string))}
                         sx={{
                             textTransform: 'none',
                             '&:hover': {
@@ -159,10 +171,12 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
                         />
                         <FormControl size="small" sx={{ minWidth: 180 }}>
                             <InputLabel>Status</InputLabel>
-                            <Select
+                            <Select<LogStatusFilter>
                                 value={statusFilter}
                                 label="Status"
-                                onChange={(e) => setStatusFilter(e.target.value as any)}
+                                onChange={(e: SelectChangeEvent<LogStatusFilter>) =>
+                                    setStatusFilter(parseLogStatusFilter(e.target.value))
+                                }
                             >
                                 <MenuItem value="ALL">Todos</MenuItem>
                                 <MenuItem value="Authorized">Autorizados</MenuItem>

@@ -1,13 +1,15 @@
 /**
  * Componente DataTable Moderno
- * 
+ *
  * Tabela de dados moderna e reutilizável.
  * Segue DRY: centraliza lógica comum de tabelas.
- * 
+ *
  * Decisões:
  * - Design limpo e moderno
  * - Suporta loading e empty states
  * - Responsivo
+ * - Colunas de dados: `columnType: 'field'` + `id: keyof T`
+ * - Coluna de ações sem campo no modelo: `columnType: 'actions'` + `format(row)` apenas
  */
 
 import React from 'react';
@@ -24,15 +26,29 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-export interface Column<T> {
-  id: string;
+/** Data bound to a key of row type T. */
+export type FieldColumn<T extends { id: string | number }> = {
+  columnType: 'field';
+  id: keyof T;
   label: string;
   minWidth?: number;
   align?: 'right' | 'left' | 'center';
-  format?: (value: any, row: T) => React.ReactNode;
-}
+  format?: (value: T[keyof T], row: T) => React.ReactNode;
+};
 
-export interface DataTableProps<T> {
+/** Synthetic column (e.g. action buttons) — not a property of T. */
+export type ActionsColumn<T extends { id: string | number }> = {
+  columnType: 'actions';
+  id: 'actions';
+  label: string;
+  minWidth?: number;
+  align?: 'right' | 'left' | 'center';
+  format: (row: T) => React.ReactNode;
+};
+
+export type Column<T extends { id: string | number }> = FieldColumn<T> | ActionsColumn<T>;
+
+export interface DataTableProps<T extends { id: string | number }> {
   columns: Column<T>[];
   rows: T[];
   loading?: boolean;
@@ -54,7 +70,7 @@ export function DataTable<T extends { id: string | number }>({
           <TableRow>
             {columns.map((column) => (
               <TableCell
-                key={column.id}
+                key={String(column.id)}
                 align={column.align}
                 style={{ minWidth: column.minWidth }}
               >
@@ -96,10 +112,17 @@ export function DataTable<T extends { id: string | number }>({
                 }}
               >
                 {columns.map((column) => {
-                  const value = (row as any)[column.id];
+                  if (column.columnType === 'actions') {
+                    return (
+                      <TableCell key="actions" align={column.align}>
+                        {column.format(row)}
+                      </TableCell>
+                    );
+                  }
+                  const value = row[column.id];
                   return (
-                    <TableCell key={column.id} align={column.align}>
-                      {column.format ? column.format(value, row) : value}
+                    <TableCell key={String(column.id)} align={column.align}>
+                      {column.format ? column.format(value, row) : (value as React.ReactNode)}
                     </TableCell>
                   );
                 })}
@@ -111,9 +134,3 @@ export function DataTable<T extends { id: string | number }>({
     </TableContainer>
   );
 }
-
-
-
-
-
-

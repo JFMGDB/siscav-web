@@ -1,16 +1,16 @@
 import type { ApiClient } from './client';
-import type { ConnectionStatus } from '@/types';
+import type { ConnectionStatus, DeviceOperationAck, DeviceScanItem } from '@/types';
 import { API_CONFIG } from '@/constants';
 
-export async function scanDevices(client: ApiClient): Promise<unknown[]> {
-  return client.request<unknown[]>(API_CONFIG.ENDPOINTS.DEVICES.SCAN, {
+export async function scanDevices(client: ApiClient): Promise<DeviceScanItem[]> {
+  return client.request<DeviceScanItem[]>(API_CONFIG.ENDPOINTS.DEVICES.SCAN, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   });
 }
 
-export async function connectDevice(client: ApiClient, deviceId: string): Promise<unknown> {
-  return client.request<unknown>(API_CONFIG.ENDPOINTS.DEVICES.CONNECT, {
+export async function connectDevice(client: ApiClient, deviceId: string): Promise<DeviceOperationAck> {
+  return client.request<DeviceOperationAck>(API_CONFIG.ENDPOINTS.DEVICES.CONNECT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ device_id: deviceId }),
@@ -24,8 +24,8 @@ export async function getConnectionStatus(client: ApiClient): Promise<Connection
   });
 }
 
-export async function disconnectDevice(client: ApiClient): Promise<unknown> {
-  return client.request<unknown>(API_CONFIG.ENDPOINTS.DEVICES.DISCONNECT, {
+export async function disconnectDevice(client: ApiClient): Promise<DeviceOperationAck> {
+  return client.request<DeviceOperationAck>(API_CONFIG.ENDPOINTS.DEVICES.DISCONNECT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
   });

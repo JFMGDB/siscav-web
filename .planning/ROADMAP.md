@@ -13,7 +13,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 
 - [x] **Phase 1: Planning & contributor documentation** — PROJECT/REQUIREMENTS/ROADMAP/STATE alinhados; variável de API documentada para novos contribuidores
 - [x] **Phase 2: API client & HTTP consistency** — Tokens/cookies coerentes entre clientes; registo com mesmo contrato de erros que o resto da API
-- [ ] **Phase 3: Type safety & UI data** — DataTable, LogsTable e devices com tipos explícitos em vez de `any`/`unknown` soltos
+- [x] **Phase 3: Type safety & UI data** — DataTable, LogsTable e devices com tipos explícitos em vez de `any`/`unknown` soltos
 - [ ] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI
 - [ ] **Phase 5: Auth hook reliability** — Bootstrap de auth sem suprimir `exhaustive-deps` sem estratégia estável documentada
 - [ ] **Phase 6: Monitor polling & visibility** — Polling não mantém carga desnecessária com o separador em segundo plano
@@ -63,9 +63,9 @@ Plans:
 
 Plans:
 
-- [ ] `03-01-PLAN.md` — TYP-01: `DataTable` column/cell typing; `WhitelistTable` + `LogsTable` column defs (Select cast deferred to 03-02)
-- [ ] `03-02-PLAN.md` — TYP-02: `LogsTable` MUI `Select` typed `onChange`; depends on 03-01
-- [ ] `03-03-PLAN.md` — TYP-03: device DTOs in `src/types/`, `devices.ts` + `api-client` signatures
+- [x] `03-01-PLAN.md` — TYP-01: `DataTable` column/cell typing; `WhitelistTable` + `LogsTable` column defs (Select cast deferred to 03-02)
+- [x] `03-02-PLAN.md` — TYP-02: `LogsTable` MUI `Select` typed `onChange`; depends on 03-01
+- [x] `03-03-PLAN.md` — TYP-03: device DTOs in `src/types/`, `devices.ts` + `api-client` signatures
 
 ### Phase 4: Monitor UX & capture truthfulness
 **Goal**: Operadores percebem claramente falhas de rede/API vs. ausência de dados, e não veem confiança inventada nas capturas.
