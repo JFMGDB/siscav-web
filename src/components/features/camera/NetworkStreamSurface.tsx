@@ -2,20 +2,30 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import { imageElementToJpegBlob, videoToJpegBlob } from '@/lib/camera/capture-frame';
+import type { MonitorFrameCaptureFn } from '@/contexts/monitor-frame-capture-context';
 
-function HlsPreview({ src, onFatal }: { src: string; onFatal: (msg: string) => void }) {
-    const videoRef = useRef<HTMLVideoElement>(null);
+function HlsPreview({
+    src,
+    onFatal,
+    videoRef,
+}: {
+    src: string;
+    onFatal: (msg: string) => void;
+    videoRef: React.RefObject<HTMLVideoElement | null>;
+}) {
     const onFatalRef = useRef(onFatal);
     onFatalRef.current = onFatal;
 
     useEffect(() => {
-        const video = videoRef.current;
-        if (!video) return;
-
         let cancelled = false;
         let hls: import('hls.js').default | null = null;
 
-        (async () => {
+        const setup = async () => {
+            await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+            const video = videoRef.current;
+            if (!video || cancelled) return;
+
             try {
                 const { default: Hls } = await import('hls.js');
                 if (cancelled || !videoRef.current) return;
@@ -38,16 +48,21 @@ function HlsPreview({ src, onFatal }: { src: string; onFatal: (msg: string) => v
             } catch {
                 onFatalRef.current('Não foi possível carregar o leitor HLS.');
             }
-        })();
+        };
+
+        void setup();
 
         return () => {
             cancelled = true;
             hls?.destroy();
-            video.pause();
-            video.removeAttribute('src');
-            video.load();
+            const video = videoRef.current;
+            if (video) {
+                video.pause();
+                video.removeAttribute('src');
+                video.load();
+            }
         };
-    }, [src]);
+    }, [src]); // videoRef object is stable; src drives reload
 
     return (
         <video
@@ -67,6 +82,8 @@ export type NetworkStreamSurfaceProps = {
     maxVideoHeight?: number;
     borderRadius?: number;
     emptyLabel?: string;
+    /** Registo de captura de frame para OCR no monitor (MJPEG → img, HLS → video). */
+    registerFrameCapture?: (fn: MonitorFrameCaptureFn | null) => void;
 };
 
 /**
@@ -79,9 +96,12 @@ export default function NetworkStreamSurface({
     maxVideoHeight = 520,
     borderRadius = 2,
     emptyLabel = 'Sem stream',
+    registerFrameCapture,
 }: NetworkStreamSurfaceProps) {
     const [mediaError, setMediaError] = useState<string | null>(null);
     const [imgLoading, setImgLoading] = useState(!isHls);
+    const hlsVideoRef = useRef<HTMLVideoElement>(null);
+    const imgRef = useRef<HTMLImageElement>(null);
 
     const handleHlsFatal = useCallback((msg: string) => {
         setMediaError(msg);
@@ -91,6 +111,25 @@ export default function NetworkStreamSurface({
         setMediaError(null);
         setImgLoading(!isHls);
     }, [href, isHls]);
+
+    useEffect(() => {
+        if (!registerFrameCapture) return;
+
+        const fn: MonitorFrameCaptureFn = async () => {
+            if (!href) return null;
+            if (isHls) {
+                const v = hlsVideoRef.current;
+                if (v?.videoWidth) return videoToJpegBlob(v);
+                return null;
+            }
+            const img = imgRef.current;
+            if (img?.naturalWidth) return imageElementToJpegBlob(img);
+            return null;
+        };
+
+        registerFrameCapture(fn);
+        return () => registerFrameCapture(null);
+    }, [registerFrameCapture, href, isHls, mediaError]);
 
     return (
         <Box
@@ -114,7 +153,7 @@ export default function NetworkStreamSurface({
             )}
 
             {href && isHls && !mediaError && (
-                <HlsPreview src={href} onFatal={handleHlsFatal} />
+                <HlsPreview src={href} onFatal={handleHlsFatal} videoRef={hlsVideoRef} />
             )}
 
             {href && !isHls && (
@@ -133,6 +172,7 @@ export default function NetworkStreamSurface({
                     )}
                     {/* eslint-disable-next-line @next/next/no-img-element -- MJPEG streams require native img */}
                     <img
+                        ref={imgRef}
                         src={href}
                         alt="Stream da câmara na rede"
                         style={{

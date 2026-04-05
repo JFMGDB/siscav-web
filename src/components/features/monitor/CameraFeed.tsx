@@ -6,9 +6,11 @@ import { Videocam as VideocamIcon, FiberManualRecord as RecordIcon } from '@mui/
 import { Card } from '@/components/ui/Card';
 import ConfiguredCameraLive from '@/components/features/camera/ConfiguredCameraLive';
 import { useCameraConfig } from '@/hooks/use-camera-config';
+import { useMonitorFrameCapture } from '@/contexts/monitor-frame-capture-context';
 
 export default function CameraFeed() {
     const { config } = useCameraConfig();
+    const { registerFrameCapture } = useMonitorFrameCapture();
 
     const sourceLabel =
         config.source === 'usb'
@@ -78,7 +80,11 @@ export default function CameraFeed() {
                     background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
                 }}
             >
-                <ConfiguredCameraLive minHeight={500} maxVideoHeight={480} />
+                <ConfiguredCameraLive
+                    minHeight={500}
+                    maxVideoHeight={480}
+                    registerFrameCapture={registerFrameCapture}
+                />
 
                 <Box
                     sx={{

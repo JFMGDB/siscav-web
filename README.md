@@ -100,6 +100,7 @@ No Windows (PowerShell): `Copy-Item .env.example .env.local`
 - **CORS / rede:** pré-visualização por `<img>` costuma ser mais tolerante que `fetch`; streams inacessíveis mostram erro na UI.
 - **Safari / iOS:** comportamento de `getUserMedia` e formatos varia; HLS pode funcionar nativamente onde `hls.js` não é necessário.
 - **Monitoramento:** em **Pré-visualização**, use **Guardar configuração** (USB ou URL). O mesmo feed ao vivo aparece em **Monitoramento**; a configuração fica em `localStorage` neste browser (ver também **Configurações**).
+- **OCR no servidor:** em **Monitoramento → Cadastro rápido**, **Ler placa (OCR no servidor)** envia um frame JPEG para `POST /api/v1/ml/recognize-plate` com JWT (cookies). Requer `requirements-ml.txt` na API; caso contrário responde **503**.
 
 ## Scripts
 

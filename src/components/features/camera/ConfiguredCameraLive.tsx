@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import Link from 'next/link';
 import { useCameraConfig } from '@/hooks/use-camera-config';
@@ -8,11 +8,14 @@ import { resolveNetworkStreamFromConfig } from '@/lib/camera/camera-config';
 import NetworkStreamSurface from '@/components/features/camera/NetworkStreamSurface';
 import UsbMonitorLive from '@/components/features/camera/UsbMonitorLive';
 import { ROUTES } from '@/constants';
+import type { MonitorFrameCaptureFn } from '@/contexts/monitor-frame-capture-context';
 
 export type ConfiguredCameraLiveProps = {
     /** Altura mínima da área de vídeo (px). */
     minHeight?: number;
     maxVideoHeight?: number;
+    /** Registo de frame para OCR (monitor). */
+    registerFrameCapture?: (fn: MonitorFrameCaptureFn | null) => void;
 };
 
 /**
@@ -21,6 +24,7 @@ export type ConfiguredCameraLiveProps = {
 export default function ConfiguredCameraLive({
     minHeight = 420,
     maxVideoHeight = 480,
+    registerFrameCapture,
 }: ConfiguredCameraLiveProps) {
     const { config } = useCameraConfig();
     const pageIsHttps =
@@ -34,6 +38,15 @@ export default function ConfiguredCameraLive({
     const needsSetup =
         (config.source === 'usb' && !config.usbDeviceId.trim()) ||
         (config.source === 'network' && !config.networkUrl.trim());
+
+    const canCaptureFrame =
+        (config.source === 'usb' && !needsSetup) ||
+        (config.source === 'network' && networkResolved?.ok === true);
+
+    useEffect(() => {
+        if (!registerFrameCapture) return;
+        if (!canCaptureFrame) registerFrameCapture(null);
+    }, [canCaptureFrame, registerFrameCapture]);
 
     if (needsSetup) {
         return (
@@ -76,6 +89,7 @@ export default function ConfiguredCameraLive({
                 minHeight={minHeight}
                 maxVideoHeight={maxVideoHeight}
                 borderRadius={0}
+                registerFrameCapture={registerFrameCapture}
             />
         );
     }
@@ -111,6 +125,7 @@ export default function ConfiguredCameraLive({
                 minHeight={minHeight}
                 maxVideoHeight={maxVideoHeight}
                 borderRadius={0}
+                registerFrameCapture={registerFrameCapture}
             />
         );
     }

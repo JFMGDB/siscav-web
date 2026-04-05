@@ -14,6 +14,7 @@ import * as logsApi from '@/lib/api/logs';
 import * as gateApi from '@/lib/api/gate';
 import * as monitorApi from '@/lib/api/monitor';
 import * as devicesApi from '@/lib/api/devices';
+import * as mlApi from '@/lib/api/ml';
 import type {
   AuthResponse,
   AuthorizedPlate,
@@ -25,6 +26,7 @@ import type {
   ConnectionStatus,
   DeviceOperationAck,
   DeviceScanItem,
+  RecognizePlateResponse,
 } from '@/types';
 
 function client() {
@@ -79,6 +81,9 @@ export const apiClient = {
   },
   async registerUnknownPlate(plate: string, description: string): Promise<void> {
     return monitorApi.registerUnknownPlate(client(), plate, description);
+  },
+  async recognizePlate(imageBlob: Blob, fileName?: string): Promise<RecognizePlateResponse> {
+    return mlApi.recognizePlate(client(), imageBlob, fileName);
   },
   async scanDevices(): Promise<DeviceScanItem[]> {
     return devicesApi.scanDevices(client());

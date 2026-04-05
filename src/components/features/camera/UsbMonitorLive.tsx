@@ -2,6 +2,8 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Typography } from '@mui/material';
+import { videoToJpegBlob } from '@/lib/camera/capture-frame';
+import type { MonitorFrameCaptureFn } from '@/contexts/monitor-frame-capture-context';
 
 type Status = 'starting' | 'live' | 'error';
 
@@ -10,6 +12,7 @@ export type UsbMonitorLiveProps = {
     minHeight?: number;
     maxVideoHeight?: number;
     borderRadius?: number;
+    registerFrameCapture?: (fn: MonitorFrameCaptureFn | null) => void;
 };
 
 /**
@@ -20,6 +23,7 @@ export default function UsbMonitorLive({
     minHeight = 360,
     maxVideoHeight = 520,
     borderRadius = 2,
+    registerFrameCapture,
 }: UsbMonitorLiveProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const streamRef = useRef<MediaStream | null>(null);
@@ -105,6 +109,17 @@ export default function UsbMonitorLive({
             stopStream();
         };
     }, [preferredDeviceId, stopStream]);
+
+    useEffect(() => {
+        if (!registerFrameCapture) return;
+        const fn: MonitorFrameCaptureFn = async () => {
+            const v = videoRef.current;
+            if (!v?.videoWidth) return null;
+            return videoToJpegBlob(v);
+        };
+        registerFrameCapture(fn);
+        return () => registerFrameCapture(null);
+    }, [registerFrameCapture, status]);
 
     return (
         <Box

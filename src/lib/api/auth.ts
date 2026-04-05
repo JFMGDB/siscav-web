@@ -31,7 +31,7 @@ export async function register(
 
 export async function login(client: ApiClient, email: string, password: string): Promise<AuthResponse> {
   const form = new URLSearchParams({ username: email, password });
-  const res = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`, {
+  const res = await fetch(`${client.getBaseUrl()}${API_CONFIG.ENDPOINTS.AUTH.LOGIN}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: form,

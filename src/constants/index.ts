@@ -5,14 +5,21 @@
 
 /**
  * Configurações da API
+ * Base URL: `NEXT_PUBLIC_SISCAV_API_URL` (doc de integração) ou `NEXT_PUBLIC_API_URL` ou localhost.
  */
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+  BASE_URL:
+    process.env.NEXT_PUBLIC_SISCAV_API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    'http://localhost:8000',
   ENDPOINTS: {
     AUTH: {
       REGISTER: '/api/v1/register',
       LOGIN: '/api/v1/login/access-token',
       REFRESH: '/api/v1/login/refresh-token',
+    },
+    ML: {
+      RECOGNIZE_PLATE: '/api/v1/ml/recognize-plate',
     },
     WHITELIST: '/api/v1/whitelist',
     LOGS: '/api/v1/access_logs',
