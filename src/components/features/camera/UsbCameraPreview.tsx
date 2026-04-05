@@ -12,10 +12,13 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
+import { useCameraConfig } from '@/hooks/use-camera-config';
 
 type UsbStatus = 'idle' | 'starting' | 'live' | 'error';
 
 export default function UsbCameraPreview() {
+    const { config, setConfig } = useCameraConfig();
+    const [saveHint, setSaveHint] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const [status, setStatus] = useState<UsbStatus>('idle');
@@ -82,6 +85,23 @@ export default function UsbCameraPreview() {
         setDevices([]);
         setDeviceId('');
         setErrorMessage(null);
+        setSaveHint(null);
+    };
+
+    const handleSaveConfig = () => {
+        setSaveHint(null);
+        if (status !== 'live' || !deviceId) {
+            setErrorMessage('Ligue primeiro a câmara para guardar o dispositivo.');
+            return;
+        }
+        setErrorMessage(null);
+        setConfig({
+            version: 1,
+            source: 'usb',
+            networkUrl: config.networkUrl,
+            usbDeviceId: deviceId,
+        });
+        setSaveHint('Configuração guardada. O monitor usará esta câmara USB.');
     };
 
     const handleDeviceChange = async (newId: string) => {
@@ -105,13 +125,21 @@ export default function UsbCameraPreview() {
 
     return (
         <Stack spacing={2}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }} flexWrap="wrap" useFlexGap>
                 <Button
                     variant="contained"
                     onClick={isLive ? handleStop : handleStart}
                     disabled={status === 'starting'}
                 >
                     {isLive ? 'Parar' : 'Ligar câmara'}
+                </Button>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleSaveConfig}
+                    disabled={status !== 'live' || !deviceId}
+                >
+                    Guardar configuração
                 </Button>
                 <FormControl sx={{ minWidth: 220 }} size="small" disabled={!devices.length}>
                     <InputLabel id="usb-camera-select-label">Câmara</InputLabel>
@@ -133,7 +161,8 @@ export default function UsbCameraPreview() {
             {status === 'idle' && (
                 <Typography variant="body2" color="text.secondary">
                     Prima &quot;Ligar câmara&quot; para pedir permissão e ver o vídeo do dispositivo USB
-                    (requer HTTPS ou localhost).
+                    (requer HTTPS ou localhost). Depois use <strong>Guardar configuração</strong> para o
+                    monitor mostrar o mesmo feed.
                 </Typography>
             )}
 
@@ -142,6 +171,8 @@ export default function UsbCameraPreview() {
                     A iniciar…
                 </Typography>
             )}
+
+            {saveHint && <Alert severity="success">{saveHint}</Alert>}
 
             {errorMessage && (
                 <Alert severity="error" onClose={() => setErrorMessage(null)}>

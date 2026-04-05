@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import { Box, Tab, Tabs } from '@mui/material';
 import UsbCameraPreview from '@/components/features/camera/UsbCameraPreview';
 import NetworkCameraPreview from '@/components/features/camera/NetworkCameraPreview';
+import { loadCameraConfig } from '@/lib/camera/camera-config';
 
 export default function CameraPreviewPanel() {
-    const [tab, setTab] = useState(0);
+    const [tab, setTab] = useState(() => (loadCameraConfig().source === 'network' ? 1 : 0));
 
     return (
         <Box>

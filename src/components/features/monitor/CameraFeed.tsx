@@ -1,24 +1,22 @@
 'use client';
 
-/**
- * Camera Feed Moderno
- * 
- * Refatoração com design moderno:
- * - Visual mais profissional
- * - Melhor feedback visual
- * - Design instrucional
- * 
- * Decisões:
- * - Mantém funcionalidade existente
- * - Melhora UX com visual mais limpo
- */
-
 import React from 'react';
-import { Box, Typography, Chip } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import { Videocam as VideocamIcon, FiberManualRecord as RecordIcon } from '@mui/icons-material';
 import { Card } from '@/components/ui/Card';
+import ConfiguredCameraLive from '@/components/features/camera/ConfiguredCameraLive';
+import { useCameraConfig } from '@/hooks/use-camera-config';
 
 export default function CameraFeed() {
+    const { config } = useCameraConfig();
+
+    const sourceLabel =
+        config.source === 'usb'
+            ? 'USB'
+            : config.networkUrl.trim()
+              ? 'Rede'
+              : 'Não configurada';
+
     return (
         <Card
             sx={{
@@ -33,7 +31,6 @@ export default function CameraFeed() {
                 },
             }}
         >
-            {/* Live Badge */}
             <Box
                 sx={{
                     position: 'absolute',
@@ -62,7 +59,7 @@ export default function CameraFeed() {
                 />
                 <Chip
                     icon={<VideocamIcon sx={{ color: 'white !important' }} />}
-                    label="Câmera 01"
+                    label={sourceLabel}
                     sx={{
                         bgcolor: 'rgba(0, 0, 0, 0.6)',
                         color: 'white',
@@ -72,42 +69,17 @@ export default function CameraFeed() {
                 />
             </Box>
 
-            {/* Video Placeholder */}
             <Box
                 sx={{
                     width: '100%',
                     height: '100%',
                     minHeight: 500,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
                     position: 'relative',
+                    background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
                 }}
             >
-                <Box
-                    sx={{
-                        width: 120,
-                        height: 120,
-                        borderRadius: '50%',
-                        border: '4px solid rgba(255, 255, 255, 0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mb: 3,
-                    }}
-                >
-                    <VideocamIcon sx={{ fontSize: 60, color: 'rgba(255, 255, 255, 0.3)' }} />
-                </Box>
-                <Typography variant="h5" sx={{ color: 'rgba(255, 255, 255, 0.9)', mb: 1, fontWeight: 600 }}>
-                    Feed da Câmera
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                    Transmissão ao vivo do ponto de acesso
-                </Typography>
+                <ConfiguredCameraLive minHeight={500} maxVideoHeight={480} />
 
-                {/* Grid overlay */}
                 <Box
                     sx={{
                         position: 'absolute',

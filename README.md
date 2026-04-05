@@ -99,6 +99,7 @@ No Windows (PowerShell): `Copy-Item .env.example .env.local`
 - **Conteúdo misto:** se o painel estiver em **HTTPS**, o browser bloqueia streams **HTTP** (ex. câmaras IP só com `http://`). Use URL **https://** ou aceda ao frontend em HTTP na rede local durante testes.
 - **CORS / rede:** pré-visualização por `<img>` costuma ser mais tolerante que `fetch`; streams inacessíveis mostram erro na UI.
 - **Safari / iOS:** comportamento de `getUserMedia` e formatos varia; HLS pode funcionar nativamente onde `hls.js` não é necessário.
+- **Monitoramento:** em **Pré-visualização**, use **Guardar configuração** (USB ou URL). O mesmo feed ao vivo aparece em **Monitoramento**; a configuração fica em `localStorage` neste browser (ver também **Configurações**).
 
 ## Scripts
 
