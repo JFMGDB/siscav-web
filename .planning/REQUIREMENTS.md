@@ -34,7 +34,7 @@ Escopo do marco atual: **formalização do planejamento** + **higiene e correç�
 
 ### Performance
 
-- [ ] **PERF-01**: Polling do monitor (`src/hooks/use-monitor-capture.ts` / `UI_CONFIG.POLLING`) não mantém carga desnecessária com o separador em segundo plano (ex. pausar com `document.visibilityState`)
+- [x] **PERF-01**: Polling do monitor (`src/hooks/use-monitor-capture.ts` / `UI_CONFIG.POLLING`) não mantém carga desnecessária com o separador em segundo plano (ex. pausar com `document.visibilityState`)
 
 ## v2 Requirements
 
@@ -77,7 +77,7 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 | MON-01 | Phase 4 | Done |
 | MON-02 | Phase 4 | Done |
 | AUTH-01 | Phase 5 | Done |
-| PERF-01 | Phase 6 | Pending |
+| PERF-01 | Phase 6 | Done |
 
 **Coverage:**
 
@@ -87,4 +87,4 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 
 ---
 *Requirements defined: 2026-04-04*  
-*Last updated: 2026-04-05 after phase 5 execution*
+*Last updated: 2026-04-05 after phase 6 execution*

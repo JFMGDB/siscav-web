@@ -16,7 +16,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 - [x] **Phase 3: Type safety & UI data** — DataTable, LogsTable e devices com tipos explícitos em vez de `any`/`unknown` soltos
 - [x] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI — **Complete 2026-04-04**
 - [x] **Phase 5: Auth hook reliability** — Bootstrap de auth sem suprimir `exhaustive-deps` sem estratégia estável documentada — **Complete 2026-04-05**
-- [ ] **Phase 6: Monitor polling & visibility** — Polling não mantém carga desnecessária com o separador em segundo plano
+- [x] **Phase 6: Monitor polling & visibility** — Polling não mantém carga desnecessária com o separador em segundo plano — **Complete 2026-04-05**
 
 ## Phase Details
 
@@ -111,8 +111,8 @@ Plans:
 
 Plans:
 
-- [ ] `06-01-PLAN.md` — PERF-01: visibility-aware `refetchInterval` + resume refetch + `refetchOnWindowFocus` in `use-monitor-capture.ts`
-- [ ] `06-02-PLAN.md` — PERF-01: `06-VALIDATION.md`, `06-VERIFICATION.md`, build + test; depende de 06-01
+- [x] `06-01-PLAN.md` — PERF-01: visibility-aware `refetchInterval` + resume refetch + `refetchOnWindowFocus` in `use-monitor-capture.ts`
+- [x] `06-02-PLAN.md` — PERF-01: `06-VALIDATION.md`, `06-VERIFICATION.md`, build + test; depende de 06-01
 
 ## Progress
 
@@ -127,4 +127,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Type safety & UI data | 3/3 | Complete | 2026-04-05 |
 | 4. Monitor UX & capture truthfulness | 2/2 | Complete | 2026-04-04 |
 | 5. Auth hook reliability | 2/2 | Complete | 2026-04-05 |
-| 6. Monitor polling & visibility | 0/TBD | Not started | - |
+| 6. Monitor polling & visibility | 2/2 | Complete | 2026-04-05 |
