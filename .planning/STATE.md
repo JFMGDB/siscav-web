@@ -32,7 +32,7 @@ Plan: Phase 3 complete (3/3 plans); phases 1–3 done
 
 Status: Run `/gsd-execute-phase 4` — plans 04-01 and 04-02 ready
 
-Last activity: 2026-04-05 — Phase 4 discuss-phase complete
+Last activity: 2026-04-05 — Phase 4 plan-phase complete (2 plans)
 
 Progress: [█████░░░░░] 50%
 
@@ -72,6 +72,6 @@ None yet.
 
 Last session: 2026-04-05
 
-Stopped at: Phase 4 UI-SPEC approved
+Stopped at: Phase 4 plans ready
 
 Resume file: `.planning/phases/04-monitor-ux-capture-truthfulness/04-CONTEXT.md` + `04-UI-SPEC.md`
