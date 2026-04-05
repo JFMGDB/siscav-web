@@ -13,30 +13,60 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
+    /*
+     * Mount-only session bootstrap: read cookies via apiClient, optionally await refresh, then hydrate user from localStorage.
+     * Intentionally empty deps: run once per provider mount; apiClient is a stable module singleton; adding router would be wrong (navigation stays in login/logout only).
+     * If this effect body changes, re-check react-hooks/exhaustive-deps and refresh-vs-layout timing (AUTH-01).
+     */
     useEffect(() => {
-        // Tokens are in cookies (apiClient reads them)
-        const accessToken = apiClient.getAccessToken();
-        const refreshToken = apiClient.getRefreshToken();
-        const storedUser = localStorage.getItem(AUTH_CONFIG.USER_KEY);
+        let cancelled = false;
 
-        if (accessToken && storedUser) {
+        void (async () => {
             try {
-                const parsedUser = JSON.parse(storedUser);
-                setUser(parsedUser);
-            } catch (error) {
-                console.error('Failed to parse stored user', error);
-                localStorage.removeItem(AUTH_CONFIG.USER_KEY);
-                apiClient.clearTokens();
-            }
-        } else if (refreshToken && !accessToken) {
-            apiClient.refreshTokens().catch(() => {
-                apiClient.clearTokens();
-                localStorage.removeItem(AUTH_CONFIG.USER_KEY);
-            });
-        }
+                const accessToken = apiClient.getAccessToken();
+                const refreshToken = apiClient.getRefreshToken();
+                const storedUser = localStorage.getItem(AUTH_CONFIG.USER_KEY);
 
-        setIsLoading(false);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+                if (accessToken && storedUser) {
+                    try {
+                        const parsedUser = JSON.parse(storedUser);
+                        if (!cancelled) setUser(parsedUser);
+                    } catch (error) {
+                        console.error('Failed to parse stored user', error);
+                        localStorage.removeItem(AUTH_CONFIG.USER_KEY);
+                        apiClient.clearTokens();
+                    }
+                } else if (refreshToken && !accessToken) {
+                    try {
+                        await apiClient.refreshTokens();
+                        if (cancelled) return;
+                        const newAccess = apiClient.getAccessToken();
+                        const userJson = localStorage.getItem(AUTH_CONFIG.USER_KEY);
+                        if (newAccess && userJson) {
+                            try {
+                                const parsedUser = JSON.parse(userJson);
+                                if (!cancelled) setUser(parsedUser);
+                            } catch (error) {
+                                console.error('Failed to parse stored user', error);
+                                localStorage.removeItem(AUTH_CONFIG.USER_KEY);
+                                apiClient.clearTokens();
+                            }
+                        }
+                    } catch {
+                        apiClient.clearTokens();
+                        localStorage.removeItem(AUTH_CONFIG.USER_KEY);
+                    }
+                }
+            } finally {
+                if (!cancelled) {
+                    setIsLoading(false);
+                }
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     const login = async (email: string, password: string) => {
