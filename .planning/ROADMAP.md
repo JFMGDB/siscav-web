@@ -12,7 +12,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Planning & contributor documentation** — PROJECT/REQUIREMENTS/ROADMAP/STATE alinhados; variável de API documentada para novos contribuidores
-- [ ] **Phase 2: API client & HTTP consistency** — Tokens/cookies coerentes entre clientes; registo com mesmo contrato de erros que o resto da API
+- [x] **Phase 2: API client & HTTP consistency** — Tokens/cookies coerentes entre clientes; registo com mesmo contrato de erros que o resto da API
 - [ ] **Phase 3: Type safety & UI data** — DataTable, LogsTable e devices com tipos explícitos em vez de `any`/`unknown` soltos
 - [ ] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI
 - [ ] **Phase 5: Auth hook reliability** — Bootstrap de auth sem suprimir `exhaustive-deps` sem estratégia estável documentada
@@ -47,8 +47,8 @@ Plans:
 
 Plans:
 
-- [ ] `02-01-PLAN.md` — API-01: cookie read helpers exported from `client.ts`; facade `getAccessToken` / `getRefreshToken` delegate (D-01–D-03)
-- [ ] `02-02-PLAN.md` — API-02: `ApiClient.getBaseUrl()`; `register` sem bearer, `parseApiError`, comentário de manutenção (D-04–D-06); depende de 02-01
+- [x] `02-01-PLAN.md` — API-01: cookie read helpers exported from `client.ts`; facade `getAccessToken` / `getRefreshToken` delegate (D-01–D-03)
+- [x] `02-02-PLAN.md` — API-02: `ApiClient.getBaseUrl()`; `register` sem bearer, `parseApiError`, comentário de manutenção (D-04–D-06); depende de 02-01
 
 ### Phase 3: Type safety & UI data
 **Goal**: Tabelas e dados de API usados na UI têm tipos alinhados ao domínio, reduzindo `any` e `as any` desnecessários.

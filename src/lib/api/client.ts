@@ -14,6 +14,16 @@ function getCookie(name: string): string | null {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
+/** Browser-only: read access_token cookie with same encode/decode rules as setCookie/getCookie. */
+export function readBrowserAccessToken(): string | null {
+  return getCookie(AUTH_CONFIG.ACCESS_TOKEN_KEY);
+}
+
+/** Browser-only: read refresh_token cookie with same encode/decode rules as setCookie/getCookie. */
+export function readBrowserRefreshToken(): string | null {
+  return getCookie(AUTH_CONFIG.REFRESH_TOKEN_KEY);
+}
+
 function setCookie(name: string, value: string, maxAge: number): void {
   if (typeof document === 'undefined') return;
   document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; SameSite=Lax`;
@@ -164,6 +174,11 @@ export class ApiClient {
   clearTokens(): void {
     this.clearTokensCallback();
   }
+
+  /** Normalized base URL (no trailing slash), same string used by `request()`. */
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
 }
 
 /** Create client for server (e.g. in Server Components). Pass getToken from cookies(). */
@@ -181,7 +196,7 @@ function getClientSingleton(): ApiClient {
   if (!clientSingleton) {
     clientSingleton = new ApiClient({
       baseUrl: API_CONFIG.BASE_URL,
-      getToken: () => getCookie(AUTH_CONFIG.ACCESS_TOKEN_KEY),
+      getToken: () => readBrowserAccessToken(),
       setTokens: (access, refresh) => {
         if (access) setCookie(AUTH_CONFIG.ACCESS_TOKEN_KEY, access, COOKIE_MAX_AGE_ACCESS);
         else deleteCookie(AUTH_CONFIG.ACCESS_TOKEN_KEY);
@@ -192,7 +207,7 @@ function getClientSingleton(): ApiClient {
         deleteCookie(AUTH_CONFIG.ACCESS_TOKEN_KEY);
         deleteCookie(AUTH_CONFIG.REFRESH_TOKEN_KEY);
       },
-      getRefreshToken: () => getCookie(AUTH_CONFIG.REFRESH_TOKEN_KEY),
+      getRefreshToken: () => readBrowserRefreshToken(),
     });
   }
   return clientSingleton;

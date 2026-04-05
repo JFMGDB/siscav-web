@@ -38,10 +38,10 @@ created: 2026-04-05
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 02-01-01 | 01 | 1 | API-01 | build | `npm run build` | ✅ | ⬜ pending |
-| 02-01-02 | 01 | 1 | API-01 | unit | `npm test` | ✅ | ⬜ pending |
-| 02-02-01 | 02 | 2 | API-02 | build | `npm run build` | ✅ | ⬜ pending |
-| 02-02-02 | 02 | 2 | API-02 | unit | `npm test` | ✅ | ⬜ pending |
+| 02-01-01 | 01 | 1 | API-01 | build | `npm run build` | ✅ | ✅ green |
+| 02-01-02 | 01 | 1 | API-01 | unit | `npm test` | ✅ | ✅ green |
+| 02-02-01 | 02 | 2 | API-02 | build | `npm run build` | ✅ | ✅ green |
+| 02-02-02 | 02 | 2 | API-02 | unit | `npm test` | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 

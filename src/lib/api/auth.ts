@@ -3,12 +3,19 @@ import type { AuthResponse, User } from '@/types';
 import { API_CONFIG } from '@/constants';
 import { parseApiError } from './client';
 
+/**
+ * Registration intentionally bypasses ApiClient.request(): no Authorization header (signup must not
+ * reuse an existing session token), and failed responses are not run through the client refresh loop
+ * on 401. Errors still use parseApiError for message shape consistency. The request URL uses
+ * client.getBaseUrl() so it stays aligned with the ApiClient instance (same as API_CONFIG.BASE_URL
+ * for the default browser singleton).
+ */
 export async function register(
-  _client: ApiClient,
+  client: ApiClient,
   email: string,
   password: string
 ): Promise<{ id: string; email: string; created_at: string; updated_at: string }> {
-  const res = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`, {
+  const res = await fetch(`${client.getBaseUrl()}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),

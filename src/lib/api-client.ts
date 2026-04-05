@@ -3,7 +3,11 @@
  * Use getClientApiClient() and domain modules directly in new code.
  */
 
-import { getClientApiClient } from '@/lib/api/client';
+import {
+  getClientApiClient,
+  readBrowserAccessToken,
+  readBrowserRefreshToken,
+} from '@/lib/api/client';
 import * as authApi from '@/lib/api/auth';
 import * as whitelistApi from '@/lib/api/whitelist';
 import * as logsApi from '@/lib/api/logs';
@@ -27,28 +31,16 @@ function client() {
 
 export const apiClient = {
   setAccessToken(_token: string | null) {
-    // Tokens are in cookies; use login to set. No-op for compatibility.
+    // No-op: cookies set via login / ApiClient.setTokens only.
   },
   setRefreshToken(_token: string | null) {
-    // No-op; cookies handle refresh.
+    // No-op: cookies set via login / ApiClient.setTokens only.
   },
   getAccessToken(): string | null {
-    return typeof document !== 'undefined'
-      ? document.cookie
-          .split(';')
-          .find((c) => c.trim().startsWith('access_token='))
-          ?.split('=')[1]
-          ?.trim() ?? null
-      : null;
+    return readBrowserAccessToken();
   },
   getRefreshToken(): string | null {
-    return typeof document !== 'undefined'
-      ? document.cookie
-          .split(';')
-          .find((c) => c.trim().startsWith('refresh_token='))
-          ?.split('=')[1]
-          ?.trim() ?? null
-      : null;
+    return readBrowserRefreshToken();
   },
   async refreshTokens(): Promise<void> {
     return client().refreshTokens();

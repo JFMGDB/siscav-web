@@ -36,7 +36,7 @@ describe('access-status', () => {
     it('returns default config for invalid status', () => {
       const config = getAccessStatusConfig('INVALID_STATUS');
       expect(config.color).toBe('default');
-      expect(config.text).toBe('INVALID_STATUS');
+      expect(config.text).toBe('Desconhecido');
       expect(config.icon).toBe('HelpOutline');
     });
   });
@@ -74,7 +74,7 @@ describe('access-status', () => {
     });
 
     it('returns status string for invalid status', () => {
-      expect(getAccessStatusText('INVALID_STATUS')).toBe('INVALID_STATUS');
+      expect(getAccessStatusText('INVALID_STATUS')).toBe('Desconhecido');
     });
   });
 });

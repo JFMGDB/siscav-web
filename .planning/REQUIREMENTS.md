@@ -14,8 +14,8 @@ Escopo do marco atual: **formalização do planejamento** + **higiene e correç�
 
 ### API client & HTTP consistency
 
-- [ ] **API-01**: Leitura/gravação de tokens e cookies é **consistente** entre `src/lib/api/client.ts` e `src/lib/api-client.ts` (ou facade reduzido/eliminado de forma segura)
-- [ ] **API-02**: `register` em `src/lib/api/auth.ts` usa o mesmo caminho de erro/HTTP que o restante do cliente (via `ApiClient` ou exceção documentada no código)
+- [x] **API-01**: Leitura/gravação de tokens e cookies é **consistente** entre `src/lib/api/client.ts` e `src/lib/api-client.ts` (ou facade reduzido/eliminado de forma segura)
+- [x] **API-02**: `register` em `src/lib/api/auth.ts` usa o mesmo caminho de erro/HTTP que o restante do cliente (via `ApiClient` ou exceção documentada no código)
 
 ### Type safety & UI data
 
@@ -69,8 +69,8 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 |-------------|-------|--------|
 | PLAN-01 | Phase 1 | Done |
 | PLAN-02 | Phase 1 | Done |
-| API-01 | Phase 2 | Pending |
-| API-02 | Phase 2 | Pending |
+| API-01 | Phase 2 | Done |
+| API-02 | Phase 2 | Done |
 | TYP-01 | Phase 3 | Pending |
 | TYP-02 | Phase 3 | Pending |
 | TYP-03 | Phase 3 | Pending |
