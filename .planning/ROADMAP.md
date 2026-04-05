@@ -91,7 +91,12 @@ Plans:
   1. O bootstrap de auth em `use-auth.tsx` não depende de suprimir `exhaustive-deps` sem comentário ou padrão que explique a estratégia (efeitos/callbacks documentados).
   2. Um revisor consegue entender por que as dependências do efeito são as que são, sem “eslint-disable” genérico sem contexto.
   3. Fluxos normais de login, refresh e navegação entre rotas autenticadas continuam verificáveis manualmente após a alteração.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+
+- [ ] `05-01-PLAN.md` — AUTH-01: async bootstrap, await refresh, exhaustive-deps satisfied or documented in `use-auth.tsx`
+- [ ] `05-02-PLAN.md` — AUTH-01: `AuthLayout` review, `05-VALIDATION.md`, build + test; depende de 05-01
 
 ### Phase 6: Monitor polling & visibility
 **Goal**: O monitor deixa de gastar rede/CPU desnecessariamente quando o separador não está visível.
