@@ -2,7 +2,7 @@
 
 ## Overview
 
-Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica focada em cliente HTTP/tokens, tipagem na UI e em DTOs, clareza do monitor (erros vs. vazio, confiança real), fiabilidade do bootstrap de auth e polling responsivo ao separador. A ordem começa por artefactos de planejamento e documentação para contribuidores, segue pela base HTTP, depois tipos e experiência do monitor, e fecha com fiabilidade de sessão e desempenho do polling.
+Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica focada em cliente HTTP/tokens, tipagem na UI e em DTOs, clareza do monitor (erros vs. vazio, confiança real), fiabilidade do bootstrap de auth e polling responsivo ao separador. A ordem começa por artefactos de planejamento e documentação para contribuidores, segue pela base HTTP, depois tipos e experiência do monitor, fecha com fiabilidade de sessão e desempenho do polling, e acrescenta **pré-visualização de câmara** (USB / URL na rede) no browser, sem stream de vídeo pela API no MVP.
 
 ## Phases
 
@@ -17,6 +17,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 - [x] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI — **Complete 2026-04-04**
 - [x] **Phase 5: Auth hook reliability** — Bootstrap de auth sem suprimir `exhaustive-deps` sem estratégia estável documentada — **Complete 2026-04-05**
 - [x] **Phase 6: Monitor polling & visibility** — Polling não mantém carga desnecessária com o separador em segundo plano — **Complete 2026-04-05**
+- [ ] **Phase 7: Pré-visualização de câmara (USB e Wi‑Fi)** — Preview em tempo real no browser (`getUserMedia`, URL MJPEG/HLS); sem stream via API SISCAV no MVP
 
 ## Phase Details
 
@@ -114,11 +115,28 @@ Plans:
 - [x] `06-01-PLAN.md` — PERF-01: visibility-aware `refetchInterval` + resume refetch + `refetchOnWindowFocus` in `use-monitor-capture.ts`
 - [x] `06-02-PLAN.md` — PERF-01: `06-VALIDATION.md`, `06-VERIFICATION.md`, build + test; depende de 06-01
 
+### Phase 7: Pré-visualização de câmara (USB e Wi‑Fi)
+**Goal**: O operador liga uma câmara **USB** (`getUserMedia` + `<video>`) ou uma fonte **rede** (URL MJPEG / HLS / snapshot) e vê **preview contínuo** no painel Next.js; tráfego de vídeo é **browser ↔ câmara/URL**, não pela API SISCAV no MVP descrito em `07-PRD.md`.
+**Depends on**: Phase 6
+**Requirements**: TBD (mapear para `REQUIREMENTS.md` na planificação)
+**Success Criteria** (draft — refinar em discuss/plan):
+  1. Fluxo USB: escolha de câmara, permissão, stream em `<video>` com cleanup ao desmontar/trocar fonte; HTTPS ou localhost em dev.
+  2. Fluxo rede: campo URL, validação básica (sem `javascript:`), preview via `<img>` (MJPEG) ou `<video>` (+ `hls.js` se necessário); mensagens para mixed content / erro de rede.
+  3. Estados de UI: a aguardar permissão, a carregar, erro, activo; documentar limitações (Safari iOS, CORS) no README ou doc da fase.
+**Plans**: TBD
+**UI hint**: yes
+
+Plans:
+
+- [ ] TBD — executar `/gsd-plan-phase 7` após `07-CONTEXT.md` (e opcionalmente `gsd-ui-phase 7`)
+
+**Canonical implementation guide:** `07-PRD.md` nesta pasta de fase.
+
 ## Progress
 
 **Execution Order:**
 
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -128,3 +146,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Monitor UX & capture truthfulness | 2/2 | Complete | 2026-04-04 |
 | 5. Auth hook reliability | 2/2 | Complete | 2026-04-05 |
 | 6. Monitor polling & visibility | 2/2 | Complete | 2026-04-05 |
+| 7. Pré-visualização de câmara (USB e Wi‑Fi) | 0/TBD | Not started | - |
