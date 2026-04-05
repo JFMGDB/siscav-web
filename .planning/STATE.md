@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 3 execution complete
-last_updated: "2026-04-05T18:00:00.000Z"
-last_activity: 2026-04-05 — Phase 3 execute-phase; TYP-01–TYP-03 implemented
+stopped_at: Phase 4 context gathered
+last_updated: "2026-04-05T20:00:00.000Z"
+last_activity: 2026-04-05 — Phase 4 discuss-phase; 04-CONTEXT + DISCUSSION-LOG
 progress:
   total_phases: 6
   completed_phases: 3
@@ -30,9 +30,9 @@ Phase: 4 of 6 (next) — Monitor UX & capture truthfulness
 
 Plan: Phase 3 complete (3/3 plans); phases 1–3 done
 
-Status: Run `/gsd-discuss-phase 4` or `/gsd-plan-phase 4` when ready
+Status: Context ready — run `/gsd-plan-phase 4` (optional `/gsd-ui-phase 4`; ROADMAP UI hint: yes)
 
-Last activity: 2026-04-05 — Phase 3 execution complete (`03-01` … `03-03` plans)
+Last activity: 2026-04-05 — Phase 4 discuss-phase complete
 
 Progress: [█████░░░░░] 50%
 
@@ -72,6 +72,6 @@ None yet.
 
 Last session: 2026-04-05
 
-Stopped at: Phase 3 execution complete
+Stopped at: Phase 4 context gathered
 
-Resume file: `.planning/phases/04-*/` — start with discuss-phase 4 when beginning Phase 4
+Resume file: `.planning/phases/04-monitor-ux-capture-truthfulness/04-CONTEXT.md`
