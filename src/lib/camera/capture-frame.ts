@@ -21,7 +21,12 @@ export async function videoToJpegBlob(video: HTMLVideoElement, quality = 0.92): 
   canvas.height = h;
   const ctx = canvas.getContext('2d');
   if (!ctx) return null;
-  ctx.drawImage(video, 0, 0, w, h);
+  try {
+    ctx.drawImage(video, 0, 0, w, h);
+  } catch (e) {
+    if (e instanceof DOMException && e.name === 'SecurityError') return null;
+    return null;
+  }
   try {
     return await canvasToJpegBlob(canvas, quality);
   } catch {
@@ -40,6 +45,12 @@ export async function imageElementToJpegBlob(img: HTMLImageElement, quality = 0.
   if (!ctx) return null;
   try {
     ctx.drawImage(img, 0, 0, w, h);
+  } catch (e) {
+    // Imagem cross-origin sem CORS — canvas contaminado; JPEG não pode ser exportado.
+    if (e instanceof DOMException && e.name === 'SecurityError') return null;
+    return null;
+  }
+  try {
     return await canvasToJpegBlob(canvas, quality);
   } catch {
     return null;

@@ -11,11 +11,16 @@ export async function recognizePlate(
   imageBlob: Blob,
   fileName = 'frame.jpg'
 ): Promise<RecognizePlateResponse> {
-  const form = new FormData();
-  form.append('file', imageBlob, fileName);
+  if (!imageBlob || imageBlob.size === 0) {
+    throw new Error('Imagem vazia: a captura do frame não produziu dados (vídeo pronto? stream com CORS?).');
+  }
 
-  return client.request<RecognizePlateResponse>(API_CONFIG.ENDPOINTS.ML.RECOGNIZE_PLATE, {
-    method: 'POST',
-    body: form,
-  });
+  return client.requestMultipartJson<RecognizePlateResponse>(
+    API_CONFIG.ENDPOINTS.ML.RECOGNIZE_PLATE,
+    () => {
+      const form = new FormData();
+      form.append('file', imageBlob, fileName);
+      return form;
+    }
+  );
 }

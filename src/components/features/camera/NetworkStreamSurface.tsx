@@ -119,8 +119,8 @@ export default function NetworkStreamSurface({
             if (!href) return null;
             if (isHls) {
                 const v = hlsVideoRef.current;
-                if (v?.videoWidth) return videoToJpegBlob(v);
-                return null;
+                if (!v?.videoWidth || v.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return null;
+                return videoToJpegBlob(v);
             }
             const img = imgRef.current;
             if (img?.naturalWidth) return imageElementToJpegBlob(img);

@@ -114,7 +114,7 @@ export default function UsbMonitorLive({
         if (!registerFrameCapture) return;
         const fn: MonitorFrameCaptureFn = async () => {
             const v = videoRef.current;
-            if (!v?.videoWidth) return null;
+            if (!v?.videoWidth || v.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return null;
             return videoToJpegBlob(v);
         };
         registerFrameCapture(fn);

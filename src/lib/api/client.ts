@@ -165,6 +165,53 @@ export class ApiClient {
     return {} as T;
   }
 
+  /**
+   * POST multipart/form-data expecting JSON. Rebuilds the body on every attempt — `FormData` is
+   * one-shot in the Fetch API, so reusing the same instance after 401/refresh would send an empty body.
+   */
+  async requestMultipartJson<T>(endpoint: string, buildFormData: () => FormData, retry = true): Promise<T> {
+    let token = await this.resolveToken();
+    if (token && this.isTokenExpired(token)) {
+      try {
+        await this.refreshTokens();
+        token = await this.resolveToken();
+      } catch {
+        // continue; server may still return 401
+      }
+    }
+
+    const doFetch = async (): Promise<Response> => {
+      const form = buildFormData();
+      const t = await this.resolveToken();
+      const headers: HeadersInit = {
+        ...(t ? { Authorization: `Bearer ${t}` } : {}),
+      };
+      return fetch(`${this.baseUrl}${endpoint}`, {
+        method: 'POST',
+        headers,
+        body: form,
+      });
+    };
+
+    let response = await doFetch();
+
+    if ((response.status === 401 || response.status === 403) && retry) {
+      try {
+        await this.refreshTokens();
+        response = await doFetch();
+      } catch (e) {
+        this.clearTokensCallback();
+        throw e;
+      }
+    }
+
+    if (!response.ok) throw new Error(await parseApiError(response));
+
+    const ct = response.headers.get('content-type');
+    if (ct?.includes('application/json')) return response.json();
+    return {} as T;
+  }
+
   /** Client-only: set tokens after login (cookies). */
   setTokens(access: string | null, refresh: string | null): void {
     this.setTokensImpl(access, refresh);
