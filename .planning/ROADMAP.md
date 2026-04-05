@@ -106,8 +106,13 @@ Plans:
   1. Com o separador do monitor em segundo plano (`document.visibilityState` hidden), o polling configurado em `use-monitor-capture.ts` / `UI_CONFIG.POLLING` pausa ou reduz actividade conforme a implementação acordada, evitindo carga contínua idêntica ao primeiro plano.
   2. Ao voltar o separador a visível, o monitor retoma atualizações dentro do comportamento esperado (sem exigir reload manual para recuperar dados).
   3. Um operador ou desenvolvedor consegue confirmar via DevTools de rede que os pedidos periódicos diminuem ou cessam enquanto o separador está em background.
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
+
+Plans:
+
+- [ ] `06-01-PLAN.md` — PERF-01: visibility-aware `refetchInterval` + resume refetch + `refetchOnWindowFocus` in `use-monitor-capture.ts`
+- [ ] `06-02-PLAN.md` — PERF-01: `06-VALIDATION.md`, `06-VERIFICATION.md`, build + test; depende de 06-01
 
 ## Progress
 
