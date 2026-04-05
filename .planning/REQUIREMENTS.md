@@ -5,7 +5,7 @@
 
 ## v1 Requirements
 
-Escopo do marco atual: **formalização do planejamento** + **higiene e correções** derivadas de `.planning/codebase/CONCERNS.md`, sem feature de produto grande nova.
+Escopo do marco actual: **formalização do planejamento** + **higiene e correções** derivadas de `.planning/codebase/CONCERNS.md`, mais **pré-visualização de câmara** no browser (Phase 7 / CAM-01), sem stream de vídeo pela API.
 
 ### Planning & documentation
 
@@ -35,6 +35,10 @@ Escopo do marco atual: **formalização do planejamento** + **higiene e correç�
 ### Performance
 
 - [x] **PERF-01**: Polling do monitor (`src/hooks/use-monitor-capture.ts` / `UI_CONFIG.POLLING`) não mantém carga desnecessária com o separador em segundo plano (ex. pausar com `document.visibilityState`)
+
+### Camera preview (Phase 7)
+
+- [x] **CAM-01**: Rota autenticada `/camera` com pré-visualização **USB** (`getUserMedia` + `<video>`, cleanup e selecção de dispositivo) e **rede** (URL com validação `http(s)`, bloqueio de schemes inseguros, aviso de conteúdo misto, MJPEG/`img`, HLS/`.m3u8` com `hls.js` quando aplicável); limitações documentadas no README
 
 ## v2 Requirements
 
@@ -78,13 +82,14 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 | MON-02 | Phase 4 | Done |
 | AUTH-01 | Phase 5 | Done |
 | PERF-01 | Phase 6 | Done |
+| CAM-01 | Phase 7 | Done |
 
 **Coverage:**
 
-- v1 requirements: 11 total
-- Mapped to phases: 11
+- v1 requirements: 12 total
+- Mapped to phases: 12
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-04*  
-*Last updated: 2026-04-05 after phase 6 execution*
+*Last updated: 2026-04-05 after phase 7 execution*

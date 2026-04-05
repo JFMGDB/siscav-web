@@ -71,6 +71,7 @@ export const ROUTES = {
   AUTH: {
     DASHBOARD: '/dashboard',
     MONITOR: '/monitor',
+    CAMERA: '/camera',
     WHITELIST: '/whitelist',
     LOGS: '/logs',
     SETTINGS: '/settings',

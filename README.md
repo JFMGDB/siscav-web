@@ -24,6 +24,7 @@ Este repositório (`siscav-web`) contém toda a lógica do lado do cliente e a i
 - **Painel de Visualização de Logs**
 - **Visualização de Imagens**
 - **Acionamento Remoto Manual**
+- **Pré-visualização de câmara** (`/camera`): stream USB ou URL na rede (MJPEG / HLS); o vídeo não passa pela API
 
 ## Pilha Tecnológica
 
@@ -91,6 +92,13 @@ cp .env.example .env.local
 ```
 
 No Windows (PowerShell): `Copy-Item .env.example .env.local`
+
+### Pré-visualização de câmara (`/camera`)
+
+- **USB:** `navigator.mediaDevices.getUserMedia` exige contexto seguro — use **HTTPS** em produção ou **`http://localhost`** / **`https://localhost`** em desenvolvimento.
+- **Conteúdo misto:** se o painel estiver em **HTTPS**, o browser bloqueia streams **HTTP** (ex. câmaras IP só com `http://`). Use URL **https://** ou aceda ao frontend em HTTP na rede local durante testes.
+- **CORS / rede:** pré-visualização por `<img>` costuma ser mais tolerante que `fetch`; streams inacessíveis mostram erro na UI.
+- **Safari / iOS:** comportamento de `getUserMedia` e formatos varia; HLS pode funcionar nativamente onde `hls.js` não é necessário.
 
 ## Scripts
 

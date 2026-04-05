@@ -17,7 +17,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 - [x] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI — **Complete 2026-04-04**
 - [x] **Phase 5: Auth hook reliability** — Bootstrap de auth sem suprimir `exhaustive-deps` sem estratégia estável documentada — **Complete 2026-04-05**
 - [x] **Phase 6: Monitor polling & visibility** — Polling não mantém carga desnecessária com o separador em segundo plano — **Complete 2026-04-05**
-- [ ] **Phase 7: Pré-visualização de câmara (USB e Wi‑Fi)** — Preview em tempo real no browser (`getUserMedia`, URL MJPEG/HLS); sem stream via API SISCAV no MVP
+- [x] **Phase 7: Pré-visualização de câmara (USB e Wi‑Fi)** — Preview em tempo real no browser (`getUserMedia`, URL MJPEG/HLS); sem stream via API SISCAV no MVP — **Complete 2026-04-05**
 
 ## Phase Details
 
@@ -27,7 +27,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 **Requirements**: PLAN-01, PLAN-02
 **Success Criteria** (what must be TRUE):
   1. `.planning/PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md` e `STATE.md` existem e descrevem o painel brownfield, exclusão de treino de IA e foco formalização + higiene.
-  2. Um revisor consegue confirmar em menos de dois minutos que o escopo v1 nas REQUIREMENTS corresponde ao que o ROADMAP cobre (11 requisitos, sem órfãos).
+  2. Um revisor consegue confirmar em menos de dois minutos que o escopo v1 nas REQUIREMENTS corresponde ao que o ROADMAP cobre (12 requisitos v1, sem órfãos).
   3. `NEXT_PUBLIC_API_URL` está documentada para novos contribuidores (`.env.example` e/ou README), com texto suficiente para configurar ambiente local.
 **Plans**: 2 plans
 
@@ -118,17 +118,18 @@ Plans:
 ### Phase 7: Pré-visualização de câmara (USB e Wi‑Fi)
 **Goal**: O operador liga uma câmara **USB** (`getUserMedia` + `<video>`) ou uma fonte **rede** (URL MJPEG / HLS / snapshot) e vê **preview contínuo** no painel Next.js; tráfego de vídeo é **browser ↔ câmara/URL**, não pela API SISCAV no MVP descrito em `07-PRD.md`.
 **Depends on**: Phase 6
-**Requirements**: TBD (mapear para `REQUIREMENTS.md` na planificação)
-**Success Criteria** (draft — refinar em discuss/plan):
+**Requirements**: CAM-01
+**Success Criteria** (what must be TRUE):
   1. Fluxo USB: escolha de câmara, permissão, stream em `<video>` com cleanup ao desmontar/trocar fonte; HTTPS ou localhost em dev.
   2. Fluxo rede: campo URL, validação básica (sem `javascript:`), preview via `<img>` (MJPEG) ou `<video>` (+ `hls.js` se necessário); mensagens para mixed content / erro de rede.
   3. Estados de UI: a aguardar permissão, a carregar, erro, activo; documentar limitações (Safari iOS, CORS) no README ou doc da fase.
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
 
 Plans:
 
-- [ ] TBD — executar `/gsd-plan-phase 7` após `07-CONTEXT.md` (e opcionalmente `gsd-ui-phase 7`)
+- [x] `07-01-PLAN.md` — CAM-01: `/camera`, USB + rede, `validate-camera-url`, `hls.js`, Sidebar
+- [x] `07-02-PLAN.md` — CAM-01: README, `07-VALIDATION.md`, `07-VERIFICATION.md`, ROADMAP/REQUIREMENTS; depende de 07-01
 
 **Canonical implementation guide:** `07-PRD.md` nesta pasta de fase.
 
@@ -146,4 +147,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Monitor UX & capture truthfulness | 2/2 | Complete | 2026-04-04 |
 | 5. Auth hook reliability | 2/2 | Complete | 2026-04-05 |
 | 6. Monitor polling & visibility | 2/2 | Complete | 2026-04-05 |
-| 7. Pré-visualização de câmara (USB e Wi‑Fi) | 0/TBD | Not started | - |
+| 7. Pré-visualização de câmara (USB e Wi‑Fi) | 2/2 | Complete | 2026-04-05 |

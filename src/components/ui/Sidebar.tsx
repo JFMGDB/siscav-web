@@ -40,6 +40,7 @@ import {
     ExitToApp as LogoutIcon,
     Menu as MenuIcon,
     Videocam as VideocamIcon,
+    CameraAlt as CameraAltIcon,
     Settings as SettingsIcon,
     Notifications as NotificationsIcon,
 } from '@mui/icons-material';
@@ -62,6 +63,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     const menuItems = [
         { text: 'Painel', icon: <DashboardIcon />, path: ROUTES.AUTH.DASHBOARD },
         { text: 'Monitoramento', icon: <VideocamIcon />, path: ROUTES.AUTH.MONITOR },
+        { text: 'Pré-visualização', icon: <CameraAltIcon />, path: ROUTES.AUTH.CAMERA },
         { text: 'Veículos Autorizados', icon: <CarIcon />, path: ROUTES.AUTH.WHITELIST },
         { text: 'Histórico de Acesso', icon: <HistoryIcon />, path: ROUTES.AUTH.LOGS },
         { text: 'Configurações', icon: <SettingsIcon />, path: ROUTES.AUTH.SETTINGS },

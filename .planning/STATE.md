@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: active
-stopped_at: null
-last_updated: "2026-04-05T20:00:00.000Z"
+status: completed
+stopped_at: Phase 7 complete — `07-VERIFICATION.md` passed
+last_updated: "2026-04-05T21:00:00.000Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 7
-  completed_phases: 6
-  total_plans: 13
-  completed_plans: 13
-  percent: 86
+  completed_phases: 7
+  total_plans: 15
+  completed_plans: 15
+  percent: 100
 ---
 
 # Project State
@@ -22,19 +22,19 @@ See: `.planning/PROJECT.md` (updated 2026-04-05)
 
 **Core value:** Operadores conseguem controlar e auditar o acesso de veículos de forma confiável, sem depender de interface de treino de IA.
 
-**Current focus:** Fase 7 — pré-visualização de câmara USB e rede (`07-PRD.md`); discussão/planificação antes de executar.
+**Current focus:** Marco v1.0 — fases 1–7 concluídas. Próximo passo opcional: `/gsd-audit-milestone`, `/gsd-complete-milestone` (arquiva roadmap/requirements), `/gsd-cleanup`.
 
 ## Current Position
 
 Phase: 07
 
-Plan: Not started
+Plan: Complete
 
-Status: Executar `/gsd-discuss-phase 7` ou `/gsd-plan-phase 7` (PRD: fase `07-.../07-PRD.md`)
+Status: Todas as fases do roadmap actual concluídas
 
 Last activity: 2026-04-05
 
-Progress: [█████████░] 86%
+Progress: [██████████] 100%
 
 ## Roadmap evolution
 
@@ -62,7 +62,7 @@ Progress: [█████████░] 86%
 
 Decisions are logged in `PROJECT.md` Key Decisions table.
 
-- Marco v1 GSD: formalização + higiene (HTTP, tipos, monitor, auth, polling) concluído; **Phase 7** (preview câmara) adicionada como trabalho seguinte no mesmo marco.
+- Marco v1 GSD: formalização + higiene (HTTP, tipos, monitor, auth, polling) e **Phase 7** (pré-visualização USB/rede em `/camera`) concluídos.
 
 ### Pending Todos
 
@@ -76,6 +76,6 @@ None yet.
 
 Last session: 2026-04-05
 
-Stopped at: Phase 7 adicionada ao roadmap; discuss/plan pendente
+Stopped at: Phase 7 executada — `07-VERIFICATION.md` passed
 
-Resume file: `.planning/phases/07-pre-visualizacao-de-camara-usb-e-wi-fi-preview-em-tempo-real-getusermedia-url-mjpeg-hls-fora-do-escopo-api-stream-e-ocr/07-PRD.md`
+Resume file: `.planning/ROADMAP.md` — para arquivar o marco: `/gsd-complete-milestone v1.0` (após auditoria se desejado)
