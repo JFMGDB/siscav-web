@@ -75,8 +75,13 @@ Plans:
   1. Quando `getLastCapture` ou a cadeia de logs em `monitor.ts` falha, a UI do monitor mostra estado ou mensagem de erro distinguível de “ainda não há captura/dados”.
   2. O campo `confidence` nas capturas apresentado ao utilizador só aparece se vier da API; caso contrário não é mostrado um valor fixo inventado (ex. 0,95).
   3. Em cenário de API indisponível, um operador consegue explicar em palavras o que viu no ecrã sem confundir com “lista vazia normal”.
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
+
+Plans:
+
+- [ ] `04-01-PLAN.md` — MON-01/MON-02 data: `getLastCapture` propaga erros; `Capture.confidence` opcional; sem `0.95`
+- [ ] `04-02-PLAN.md` — MON-01/MON-02 UI: hook `isError`/`isFetching`; `PlateRecognitionDisplay` conforme `04-UI-SPEC.md`; depende de 04-01
 
 ### Phase 5: Auth hook reliability
 **Goal**: O arranque da sessão em `use-auth` é estável e as excepções ao lint de dependências estão justificadas.
