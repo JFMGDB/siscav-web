@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { Typography, Box, CircularProgress } from '@mui/material';
+import { Typography, Box, CircularProgress, Alert, Button } from '@mui/material';
 import { getAccessStatusColor } from '@/lib/access-status';
 import { Card } from '@/components/ui/Card';
 import { StatusChip } from '@/components/ui/StatusChip';
@@ -16,42 +16,80 @@ interface PlateRecognitionDisplayProps {
 }
 
 export default function PlateRecognitionDisplay({ onUnknownPlate }: PlateRecognitionDisplayProps) {
-    const { capture } = useMonitorCapture();
+    const { capture, loading, isError, isFetching, refetch } = useMonitorCapture();
     const lastCaptureIdRef = useRef<string | null>(null);
 
     useEffect(() => {
-        if (capture && capture.id !== lastCaptureIdRef.current && capture.status === 'Denied') {
+        if (isError || !capture) return;
+        if (capture.id !== lastCaptureIdRef.current && capture.status === 'Denied') {
             lastCaptureIdRef.current = capture.id;
             onUnknownPlate(capture.plate);
-        } else if (capture) {
+        } else {
             lastCaptureIdRef.current = capture.id;
         }
-    }, [capture, onUnknownPlate]);
+    }, [capture, onUnknownPlate, isError]);
 
-    if (!capture) {
+    const cardShellSx = {
+        textAlign: 'center' as const,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column' as const,
+        justifyContent: 'center',
+        minHeight: 300,
+    };
+
+    if (isError) {
         return (
-            <Card
-                sx={{
-                    textAlign: 'center',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    minHeight: 300,
-                }}
-            >
+            <Card sx={cardShellSx}>
+                <Alert severity="error" sx={{ textAlign: 'left', width: '100%' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                        Falha ao carregar a última leitura
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 400, mb: 2 }}>
+                        Não foi possível obter os dados. Verifique a ligação à API ou tente novamente.
+                    </Typography>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => refetch()}
+                        disabled={isFetching}
+                    >
+                        Tentar novamente
+                    </Button>
+                </Alert>
+            </Card>
+        );
+    }
+
+    if (loading) {
+        return (
+            <Card sx={cardShellSx}>
                 <CircularProgress size={48} sx={{ mx: 'auto', mb: 2, color: 'primary.main' }} />
-                <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500 }}>
-                    Aguardando veículo...
+                <Typography variant="h6" color="text.primary" sx={{ fontWeight: 600 }}>
+                    A carregar última leitura…
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    O sistema está monitorando o ponto de acesso
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontWeight: 400 }}>
+                    A obter dados do servidor…
+                </Typography>
+            </Card>
+        );
+    }
+
+    if (capture === null) {
+        return (
+            <Card sx={cardShellSx}>
+                <Typography variant="h6" color="text.primary" sx={{ fontWeight: 600 }}>
+                    Sem leituras recentes
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontWeight: 400 }}>
+                    Ainda não há registos de acesso para mostrar.
                 </Typography>
             </Card>
         );
     }
 
     const statusColor = getAccessStatusColor(capture.status);
+    const confidence = capture.confidence;
 
     return (
         <Card
@@ -59,7 +97,6 @@ export default function PlateRecognitionDisplay({ onUnknownPlate }: PlateRecogni
             subtitle="Reconhecimento automático de placa em tempo real"
         >
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 2 }}>
-                {/* Plate Display */}
                 <Box
                     sx={{
                         border: '3px solid',
@@ -87,7 +124,7 @@ export default function PlateRecognitionDisplay({ onUnknownPlate }: PlateRecogni
                     <Typography
                         variant="h2"
                         sx={{
-                            fontWeight: 700,
+                            fontWeight: 600,
                             letterSpacing: 6,
                             fontFamily: 'monospace',
                             position: 'relative',
@@ -99,7 +136,6 @@ export default function PlateRecognitionDisplay({ onUnknownPlate }: PlateRecogni
                     </Typography>
                 </Box>
 
-                {/* Status Chip */}
                 <StatusChip
                     status={capture.status}
                     sx={{
@@ -111,12 +147,11 @@ export default function PlateRecognitionDisplay({ onUnknownPlate }: PlateRecogni
                     }}
                 />
 
-                {/* Metadata */}
                 <Box
                     sx={{
                         width: '100%',
                         display: 'flex',
-                        justifyContent: 'space-between',
+                        justifyContent: typeof confidence === 'number' ? 'space-between' : 'flex-end',
                         alignItems: 'center',
                         mt: 2,
                         pt: 2,
@@ -124,16 +159,26 @@ export default function PlateRecognitionDisplay({ onUnknownPlate }: PlateRecogni
                         borderColor: 'divider',
                     }}
                 >
-                    <Box>
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                            Confiança
-                        </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                            {(capture.confidence * 100).toFixed(1)}%
-                        </Typography>
-                    </Box>
+                    {typeof confidence === 'number' ? (
+                        <Box>
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ display: 'block', fontWeight: 400 }}
+                            >
+                                Confiança
+                            </Typography>
+                            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                {(confidence * 100).toFixed(1)}%
+                            </Typography>
+                        </Box>
+                    ) : null}
                     <Box sx={{ textAlign: 'right' }}>
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                        <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ display: 'block', fontWeight: 400 }}
+                        >
                             Timestamp
                         </Typography>
                         <Typography variant="body2" sx={{ fontWeight: 600, fontFamily: 'monospace' }}>

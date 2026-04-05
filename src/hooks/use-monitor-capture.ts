@@ -20,6 +20,8 @@ export function useMonitorCapture() {
   return {
     capture: query.data ?? null,
     loading: query.isLoading,
+    isError: query.isError,
+    isFetching: query.isFetching,
     error: query.error,
     refetch: query.refetch,
   };
