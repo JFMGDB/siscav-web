@@ -58,8 +58,14 @@ Plans:
   1. `DataTable` não depende de `any` para colunas/linhas onde é possível expressar generics ou tipos de domínio.
   2. `LogsTable` trata o `onChange` do filtro sem `as any`, mantendo typecheck limpo nesse ponto.
   3. `src/lib/api/devices.ts` expõe DTOs ou tipos concretos alinhados a `src/types/` em vez de `unknown` genérico para consumidores.
-**Plans**: TBD
+**Plans**: 3 plans
 **UI hint**: yes
+
+Plans:
+
+- [ ] `03-01-PLAN.md` — TYP-01: `DataTable` column/cell typing; `WhitelistTable` + `LogsTable` column defs (Select cast deferred to 03-02)
+- [ ] `03-02-PLAN.md` — TYP-02: `LogsTable` MUI `Select` typed `onChange`; depends on 03-01
+- [ ] `03-03-PLAN.md` — TYP-03: device DTOs in `src/types/`, `devices.ts` + `api-client` signatures
 
 ### Phase 4: Monitor UX & capture truthfulness
 **Goal**: Operadores percebem claramente falhas de rede/API vs. ausência de dados, e não veem confiança inventada nas capturas.
