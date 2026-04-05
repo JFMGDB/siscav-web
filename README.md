@@ -61,6 +61,10 @@ siscav-web/
 └── tsconfig.json # Configuração do TypeScript
 ```
 
+### Planeamento
+
+A pasta `.planning/` contém artefactos GSD (roadmap, requisitos, estado do projeto) para quem mantém o repositório; não é obrigatório para uma alteração pontual, mas reflete o escopo acordado para evoluções planeadas.
+
 ## Guia de Instalação
 
 ### Pré-requisitos
@@ -75,6 +79,18 @@ git clone https://github.com/JFMGDB/siscav-web.git
 cd siscav-web
 npm install
 ```
+
+### Configuração local da API
+
+O frontend comunica com o backend no repositório **siscav-api** via REST. A variável de ambiente **`NEXT_PUBLIC_API_URL`** define a URL base dessa API. O valor típico em desenvolvimento é **`http://localhost:8000`**, alinhado ao fallback em `src/constants/index.ts` quando a variável não está definida.
+
+Copie o ficheiro de exemplo e ajuste se necessário:
+
+```bash
+cp .env.example .env.local
+```
+
+No Windows (PowerShell): `Copy-Item .env.example .env.local`
 
 ## Scripts
 

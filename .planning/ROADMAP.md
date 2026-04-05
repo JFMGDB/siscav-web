@@ -11,7 +11,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Planning & contributor documentation** — PROJECT/REQUIREMENTS/ROADMAP/STATE alinhados; variável de API documentada para novos contribuidores
+- [x] **Phase 1: Planning & contributor documentation** — PROJECT/REQUIREMENTS/ROADMAP/STATE alinhados; variável de API documentada para novos contribuidores
 - [ ] **Phase 2: API client & HTTP consistency** — Tokens/cookies coerentes entre clientes; registo com mesmo contrato de erros que o resto da API
 - [ ] **Phase 3: Type safety & UI data** — DataTable, LogsTable e devices com tipos explícitos em vez de `any`/`unknown` soltos
 - [ ] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI
@@ -32,8 +32,8 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 
 Plans:
 
-- [ ] `01-PLAN-01.md` — Verificação PLAN-01, traceability v1 (11/0) e marcação do requisito
-- [ ] `01-PLAN-02.md` — `NEXT_PUBLIC_API_URL`, `.env.example`, README (Configuração + Planeamento), excepção `!.env.example` no `.gitignore`
+- [x] `01-PLAN-01.md` — Verificação PLAN-01, traceability v1 (11/0) e marcação do requisito
+- [x] `01-PLAN-02.md` — `NEXT_PUBLIC_API_URL`, `.env.example`, README (Configuração + Planeamento), excepção `!.env.example` no `.gitignore`
 
 ### Phase 2: API client & HTTP consistency
 **Goal**: Chamadas e persistência de sessão comportam-se de forma previsível e unificada em todo o cliente HTTP.
@@ -96,7 +96,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Planning & contributor documentation | 0/2 | Not started | - |
+| 1. Planning & contributor documentation | 2/2 | Complete | 2026-04-05 |
 | 2. API client & HTTP consistency | 0/TBD | Not started | - |
 | 3. Type safety & UI data | 0/TBD | Not started | - |
 | 4. Monitor UX & capture truthfulness | 0/TBD | Not started | - |

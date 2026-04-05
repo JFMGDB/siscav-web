@@ -9,8 +9,8 @@ Escopo do marco atual: **formalização do planejamento** + **higiene e correç�
 
 ### Planning & documentation
 
-- [ ] **PLAN-01**: `.planning/PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md` e `STATE.md` existem e refletem o produto e o escopo acordado (brownfield + exclusão de treino de IA)
-- [ ] **PLAN-02**: Repositório documenta `NEXT_PUBLIC_API_URL` para novos contribuidores (ex. `.env.example` ou secção equivalente no README)
+- [x] **PLAN-01**: `.planning/PROJECT.md`, `REQUIREMENTS.md`, `ROADMAP.md` e `STATE.md` existem e refletem o produto e o escopo acordado (brownfield + exclusão de treino de IA)
+- [x] **PLAN-02**: Repositório documenta `NEXT_PUBLIC_API_URL` para novos contribuidores (ex. `.env.example` ou secção equivalente no README)
 
 ### API client & HTTP consistency
 
@@ -67,8 +67,8 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PLAN-01 | Phase 1 | Pending |
-| PLAN-02 | Phase 1 | Pending |
+| PLAN-01 | Phase 1 | Done |
+| PLAN-02 | Phase 1 | Done |
 | API-01 | Phase 2 | Pending |
 | API-02 | Phase 2 | Pending |
 | TYP-01 | Phase 3 | Pending |
@@ -87,4 +87,4 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 
 ---
 *Requirements defined: 2026-04-04*  
-*Last updated: 2026-04-04 after initialization*
+*Last updated: 2026-04-05 after phase 1 plans 01–02 execution*
