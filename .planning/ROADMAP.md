@@ -47,8 +47,8 @@ Plans:
 
 Plans:
 
-- [ ] `02-PLAN-01.md` — API-01: cookie read helpers exported from `client.ts`; facade `getAccessToken` / `getRefreshToken` delegate (D-01–D-03)
-- [ ] `02-PLAN-02.md` — API-02: `ApiClient.getBaseUrl()`; `register` sem bearer, `parseApiError`, comentário de manutenção (D-04–D-06); depende de 02-01
+- [ ] `02-01-PLAN.md` — API-01: cookie read helpers exported from `client.ts`; facade `getAccessToken` / `getRefreshToken` delegate (D-01–D-03)
+- [ ] `02-02-PLAN.md` — API-02: `ApiClient.getBaseUrl()`; `register` sem bearer, `parseApiError`, comentário de manutenção (D-04–D-06); depende de 02-01
 
 ### Phase 3: Type safety & UI data
 **Goal**: Tabelas e dados de API usados na UI têm tipos alinhados ao domínio, reduzindo `any` e `as any` desnecessários.
