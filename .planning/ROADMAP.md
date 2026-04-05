@@ -43,7 +43,12 @@ Plans:
   1. Leitura e gravação de tokens/cookies são consistentes entre `src/lib/api/client.ts` e `src/lib/api-client.ts` (ou o duplicado foi eliminado com facade segura documentada no código).
   2. O fluxo `register` em `src/lib/api/auth.ts` usa o mesmo caminho de tratamento de erro/HTTP que o restante do cliente, ou a excepção documentada está visível no código para quem mantém o projeto.
   3. Um operador de código consegue seguir um único “caminho feliz” para autenticação HTTP sem encontrar regras contraditórias entre os dois ficheiros de cliente.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+
+- [ ] `02-PLAN-01.md` — API-01: cookie read helpers exported from `client.ts`; facade `getAccessToken` / `getRefreshToken` delegate (D-01–D-03)
+- [ ] `02-PLAN-02.md` — API-02: `ApiClient.getBaseUrl()`; `register` sem bearer, `parseApiError`, comentário de manutenção (D-04–D-06); depende de 02-01
 
 ### Phase 3: Type safety & UI data
 **Goal**: Tabelas e dados de API usados na UI têm tipos alinhados ao domínio, reduzindo `any` e `as any` desnecessários.
