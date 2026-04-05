@@ -15,7 +15,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 - [x] **Phase 2: API client & HTTP consistency** — Tokens/cookies coerentes entre clientes; registo com mesmo contrato de erros que o resto da API
 - [x] **Phase 3: Type safety & UI data** — DataTable, LogsTable e devices com tipos explícitos em vez de `any`/`unknown` soltos
 - [x] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI — **Complete 2026-04-04**
-- [ ] **Phase 5: Auth hook reliability** — Bootstrap de auth sem suprimir `exhaustive-deps` sem estratégia estável documentada
+- [x] **Phase 5: Auth hook reliability** — Bootstrap de auth sem suprimir `exhaustive-deps` sem estratégia estável documentada — **Complete 2026-04-05**
 - [ ] **Phase 6: Monitor polling & visibility** — Polling não mantém carga desnecessária com o separador em segundo plano
 
 ## Phase Details
@@ -95,8 +95,8 @@ Plans:
 
 Plans:
 
-- [ ] `05-01-PLAN.md` — AUTH-01: async bootstrap, await refresh, exhaustive-deps satisfied or documented in `use-auth.tsx`
-- [ ] `05-02-PLAN.md` — AUTH-01: `AuthLayout` review, `05-VALIDATION.md`, build + test; depende de 05-01
+- [x] `05-01-PLAN.md` — AUTH-01: async bootstrap, await refresh, exhaustive-deps satisfied or documented in `use-auth.tsx`
+- [x] `05-02-PLAN.md` — AUTH-01: `AuthLayout` review, `05-VALIDATION.md`, build + test; depende de 05-01
 
 ### Phase 6: Monitor polling & visibility
 **Goal**: O monitor deixa de gastar rede/CPU desnecessariamente quando o separador não está visível.
@@ -121,5 +121,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. API client & HTTP consistency | 2/2 | Complete | 2026-04-05 |
 | 3. Type safety & UI data | 3/3 | Complete | 2026-04-05 |
 | 4. Monitor UX & capture truthfulness | 2/2 | Complete | 2026-04-04 |
-| 5. Auth hook reliability | 0/TBD | Not started | - |
+| 5. Auth hook reliability | 2/2 | Complete | 2026-04-05 |
 | 6. Monitor polling & visibility | 0/TBD | Not started | - |

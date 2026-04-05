@@ -30,7 +30,7 @@ Escopo do marco atual: **formalização do planejamento** + **higiene e correç�
 
 ### Auth hook reliability
 
-- [ ] **AUTH-01**: Bootstrap de auth em `src/hooks/use-auth.tsx` não depende de suprimir `exhaustive-deps` sem uma estratégia estável (efeitos/callbacks documentados)
+- [x] **AUTH-01**: Bootstrap de auth em `src/hooks/use-auth.tsx` não depende de suprimir `exhaustive-deps` sem uma estratégia estável (efeitos/callbacks documentados)
 
 ### Performance
 
@@ -74,9 +74,9 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 | TYP-01 | Phase 3 | Done |
 | TYP-02 | Phase 3 | Done |
 | TYP-03 | Phase 3 | Done |
-| MON-01 | Phase 4 | Pending |
-| MON-02 | Phase 4 | Pending |
-| AUTH-01 | Phase 5 | Pending |
+| MON-01 | Phase 4 | Done |
+| MON-02 | Phase 4 | Done |
+| AUTH-01 | Phase 5 | Done |
 | PERF-01 | Phase 6 | Pending |
 
 **Coverage:**
@@ -87,4 +87,4 @@ Melhorias maiores, fora do compromisso mínimo do marco atual:
 
 ---
 *Requirements defined: 2026-04-04*  
-*Last updated: 2026-04-04 after phase 4 execution*
+*Last updated: 2026-04-05 after phase 5 execution*
