@@ -72,6 +72,6 @@ None yet.
 
 Last session: 2026-04-05
 
-Stopped at: Phase 4 context gathered
+Stopped at: Phase 4 UI-SPEC approved
 
 Resume file: `.planning/phases/04-monitor-ux-capture-truthfulness/04-CONTEXT.md` + `04-UI-SPEC.md`
