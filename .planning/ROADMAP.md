@@ -14,7 +14,7 @@ Este marco **brownfield** formaliza o planejamento GSD e reduz dívida técnica 
 - [x] **Phase 1: Planning & contributor documentation** — PROJECT/REQUIREMENTS/ROADMAP/STATE alinhados; variável de API documentada para novos contribuidores
 - [x] **Phase 2: API client & HTTP consistency** — Tokens/cookies coerentes entre clientes; registo com mesmo contrato de erros que o resto da API
 - [x] **Phase 3: Type safety & UI data** — DataTable, LogsTable e devices com tipos explícitos em vez de `any`/`unknown` soltos
-- [ ] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI
+- [x] **Phase 4: Monitor UX & capture truthfulness** — Falhas distinguíveis de “sem dados”; `confidence` só se vier da API ou ausente na UI — **Complete 2026-04-04**
 - [ ] **Phase 5: Auth hook reliability** — Bootstrap de auth sem suprimir `exhaustive-deps` sem estratégia estável documentada
 - [ ] **Phase 6: Monitor polling & visibility** — Polling não mantém carga desnecessária com o separador em segundo plano
 
@@ -80,8 +80,8 @@ Plans:
 
 Plans:
 
-- [ ] `04-01-PLAN.md` — MON-01/MON-02 data: `getLastCapture` propaga erros; `Capture.confidence` opcional; sem `0.95`
-- [ ] `04-02-PLAN.md` — MON-01/MON-02 UI: hook `isError`/`isFetching`; `PlateRecognitionDisplay` conforme `04-UI-SPEC.md`; depende de 04-01
+- [x] `04-01-PLAN.md` — MON-01/MON-02 data: `getLastCapture` propaga erros; `Capture.confidence` opcional; sem `0.95`
+- [x] `04-02-PLAN.md` — MON-01/MON-02 UI: hook `isError`/`isFetching`; `PlateRecognitionDisplay` conforme `04-UI-SPEC.md`; depende de 04-01
 
 ### Phase 5: Auth hook reliability
 **Goal**: O arranque da sessão em `use-auth` é estável e as excepções ao lint de dependências estão justificadas.
@@ -113,8 +113,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Planning & contributor documentation | 2/2 | Complete | 2026-04-05 |
-| 2. API client & HTTP consistency | 0/TBD | Not started | - |
-| 3. Type safety & UI data | 0/TBD | Not started | - |
-| 4. Monitor UX & capture truthfulness | 0/TBD | Not started | - |
+| 2. API client & HTTP consistency | 2/2 | Complete | 2026-04-05 |
+| 3. Type safety & UI data | 3/3 | Complete | 2026-04-05 |
+| 4. Monitor UX & capture truthfulness | 2/2 | Complete | 2026-04-04 |
 | 5. Auth hook reliability | 0/TBD | Not started | - |
 | 6. Monitor polling & visibility | 0/TBD | Not started | - |

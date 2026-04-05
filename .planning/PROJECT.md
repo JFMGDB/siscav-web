@@ -15,7 +15,7 @@ Operadores conseguem **controlar e auditar o acesso de veículos** de forma conf
 - ✓ Login e sessão com JWT (cookies + refresh) — existente (`src/hooks/use-auth.tsx`, `src/lib/api/client.ts`)
 - ✓ CRUD da whitelist de veículos autorizados — existente (`src/app/(auth)/whitelist/`, `src/lib/api/whitelist.ts`)
 - ✓ Visualização de logs de acesso e imagens associadas — existente (`src/app/(auth)/logs/`, `src/lib/api/logs.ts`)
-- ✓ Monitor / captura com polling — existente (`src/app/(auth)/monitor/`, `src/hooks/use-monitor-capture.ts`)
+- ✓ Monitor / captura com polling — existente (`src/app/(auth)/monitor/`, `src/hooks/use-monitor-capture.ts`); **Phase 4:** erros de API distinguíveis de lista vazia; confiança só quando existir valor da API (`PlateRecognitionDisplay`, `getLastCapture`)
 - ✓ Acionamento remoto do portão — existente (`src/lib/api/gate.ts`, feature gate)
 - ✓ Dashboard e navegação autenticada (sidebar, rotas `(auth)`) — existente (`src/app/(auth)/`, `src/components/ui/Sidebar.tsx`)
 - ✓ Configurações e fluxos de dispositivos (Bluetooth, vídeo) — existente (`src/components/features/settings/`)
@@ -73,4 +73,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-04 after initialization*
+*Last updated: 2026-04-04 after phase 4 (monitor UX & capture truthfulness)*
