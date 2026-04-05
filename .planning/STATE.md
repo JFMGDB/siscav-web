@@ -74,4 +74,4 @@ Last session: 2026-04-05
 
 Stopped at: Phase 4 context gathered
 
-Resume file: `.planning/phases/04-monitor-ux-capture-truthfulness/04-CONTEXT.md`
+Resume file: `.planning/phases/04-monitor-ux-capture-truthfulness/04-CONTEXT.md` + `04-UI-SPEC.md`
