@@ -37,7 +37,7 @@ npm test
 npm test -- --coverage
 
 # Executar testes de um arquivo específico
-npm test -- src/components/features/auth/Login-Form.test.tsx
+npm test -- src/__tests__/smoke.test.ts
 ```
 
 ## 4. Executar o Build de Produção

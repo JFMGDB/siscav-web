@@ -7,13 +7,13 @@
 #### Adicionado (Added)
 
 - **FND-04: Estrutura da Aplicação Frontend**
-  - Inicializada a estrutura do projeto com Next.js 14, TypeScript e App Router.
+  - Inicializada a estrutura do projeto com Next.js 16, TypeScript e App Router.
   - Adicionadas as dependências principais, incluindo a biblioteca de UI Material-UI (`@mui/material`).
   - Configuradas e integradas as ferramentas de qualidade de código: ESLint para linting e Prettier para formatação.
 
 - **FND-07: Página de Placeholder**
   - Implementada a página inicial (`/`) com um conteúdo de placeholder, servindo como ponto de entrada da aplicação.
-  - Removidos todos os ativos e estilos padrão do template `create-next-app` para limpar a base de código.
+  - Removidos ativos padrão do template `create-next-app`; metadados do layout e estilos globais foram simplificados em limpeza posterior.
 
 - **FND-08: Pipeline de CI para o Frontend**
   - Criado o workflow de Integração Contínua com GitHub Actions (`.github/workflows/ci.yml`).
