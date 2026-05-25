@@ -131,10 +131,10 @@ accent: {
 #### Cores Semânticas
 
 ```typescript
-success: "#10b981"; // Ações bem-sucedidas
-error: "#ef4444"; // Erros e ações destrutivas
-warning: "#f59e0b"; // Avisos
-info: "#3b82f6"; // Informações
+success: '#10b981'    // Ações bem-sucedidas
+error: '#ef4444'      // Erros e ações destrutivas
+warning: '#f59e0b'    // Avisos
+info: '#3b82f6'       // Informações
 ```
 
 #### Cores Neutras
@@ -157,14 +157,14 @@ O sistema utiliza fontes nativas do sistema operacional para melhor performance:
 
 ```typescript
 fontFamily: [
-  "-apple-system",
-  "BlinkMacSystemFont",
+  '-apple-system',
+  'BlinkMacSystemFont',
   '"Segoe UI"',
-  "Roboto",
+  'Roboto',
   '"Helvetica Neue"',
-  "Arial",
-  "sans-serif",
-].join(",");
+  'Arial',
+  'sans-serif',
+].join(',')
 ```
 
 #### Hierarquia Tipográfica
@@ -210,8 +210,9 @@ Sistema de grid baseado em 8px:
 
 #### Arquivos e Diretórios
 
-- **Componentes** (shared UI and features): PascalCase matching the exported name (ex: `LoginForm.tsx`, `LogsFilter.tsx`, `StatCard.tsx`). See [ADR 0006](../adr/0006-component-file-naming.md).
-- **Hooks**: kebab-case under `src/hooks/` (ex: `use-auth.ts`)
+- **Componentes**: PascalCase (ex: `LoginForm.tsx`, `StatCard.tsx`)
+- **Componentes de feature**: `FeatureName-ComponentName.tsx` (ex: `Login-Form.tsx`)
+- **Hooks**: camelCase com prefixo `use-` (ex: `use-auth.tsx`)
 - **Utilitários**: camelCase (ex: `utils.tsx`, `api-client.ts`)
 - **Tipos**: camelCase (ex: `auth.ts`, `whitelist.ts`)
 - **Constantes**: UPPER_SNAKE_CASE dentro de arquivos
@@ -261,7 +262,7 @@ Exemplo:
 
 /**
  * Descrição do componente
- *
+ * 
  * Decisões de design e implementação
  */
 
@@ -313,7 +314,6 @@ import { Card } from '@/components/ui/Card';
 ```
 
 **Props:**
-
 - `title?: string` - Título do card
 - `subtitle?: string` - Subtítulo do card
 - `children: React.ReactNode` - Conteúdo
@@ -338,7 +338,6 @@ import { CheckCircle as CheckCircleIcon } from '@mui/icons-material';
 ```
 
 **Props:**
-
 - `title: string` - Título da métrica
 - `value: string | number` - Valor da métrica
 - `icon?: React.ReactNode` - Ícone opcional
@@ -367,7 +366,6 @@ const columns = [
 ```
 
 **Props:**
-
 - `columns: Column<T>[]` - Definição das colunas
 - `rows: T[]` - Dados da tabela
 - `loading?: boolean` - Estado de carregamento
@@ -397,12 +395,12 @@ Componentes com lógica de negócio específica, organizados por domínio.
 ```
 components/features/
 ├── auth/
-│   └── LoginForm.tsx
+│   └── Login-Form.tsx
 ├── gate/
-│   └── GateControl.tsx
+│   └── Gate-Control.tsx
 ├── logs/
-│   ├── LogsFilter.tsx
-│   └── LogsTable.tsx
+│   ├── Logs-Filter.tsx
+│   └── Logs-Table.tsx
 └── ...
 ```
 
@@ -413,7 +411,7 @@ components/features/
 
 /**
  * Descrição do componente de feature
- *
+ * 
  * Responsabilidades:
  * - Lógica de negócio específica
  * - Chamadas de API
@@ -541,11 +539,11 @@ Todos os tipos são re-exportados em `types/index.ts`:
 
 ```typescript
 // ✅ Correto
-import { User, AuthResponse } from "@/types";
+import { User, AuthResponse } from '@/types';
 
 // ❌ Incorreto
-import { User } from "@/types/auth";
-import { AuthResponse } from "@/types/auth";
+import { User } from '@/types/auth';
+import { AuthResponse } from '@/types/auth';
 ```
 
 ### Definição de Tipos
@@ -559,7 +557,7 @@ export interface User {
 }
 
 // Types para uniões e tipos mais complexos
-export type AccessStatus = "granted" | "denied" | "pending";
+export type AccessStatus = 'granted' | 'denied' | 'pending';
 
 // Props interfaces
 export interface ComponentProps {
@@ -610,7 +608,7 @@ export function MyProvider({ children }: { children: React.ReactNode }) {
 Gerencia autenticação do usuário:
 
 ```typescript
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from '@/hooks/use-auth';
 
 const { user, login, logout, isAuthenticated } = useAuth();
 ```
@@ -620,12 +618,12 @@ const { user, login, logout, isAuthenticated } = useAuth();
 Gerencia mensagens do sistema:
 
 ```typescript
-import { useSnackbar } from "@/hooks/use-snackbar";
+import { useSnackbar } from '@/hooks/use-snackbar';
 
 const { showSnackbar } = useSnackbar();
 
-showSnackbar("Mensagem de sucesso", "success");
-showSnackbar("Mensagem de erro", "error");
+showSnackbar('Mensagem de sucesso', 'success');
+showSnackbar('Mensagem de erro', 'error');
 ```
 
 ---
@@ -639,15 +637,15 @@ Sempre tratar erros em operações assíncronas:
 ```typescript
 const handleAction = async () => {
   setLoading(true);
-  setError("");
-
+  setError('');
+  
   try {
     await apiClient.someEndpoint();
-    showSnackbar("Operação realizada com sucesso", "success");
+    showSnackbar('Operação realizada com sucesso', 'success');
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Erro desconhecido";
+    const message = err instanceof Error ? err.message : 'Erro desconhecido';
     setError(message);
-    showSnackbar(message, "error");
+    showSnackbar(message, 'error');
   } finally {
     setLoading(false);
   }
@@ -659,9 +657,9 @@ const handleAction = async () => {
 Usar constantes centralizadas quando possível:
 
 ```typescript
-import { MESSAGES } from "@/constants";
+import { MESSAGES } from '@/constants';
 
-showSnackbar(MESSAGES.WHITELIST.ADD_ERROR, "error");
+showSnackbar(MESSAGES.WHITELIST.ADD_ERROR, 'error');
 ```
 
 ---
@@ -768,8 +766,8 @@ Antes de finalizar uma feature, verificar:
 Este styleguide é um documento vivo e será atualizado conforme o projeto evolui. Mudanças significativas devem ser documentadas aqui.
 
 **Versão 1.0** (Data atual)
-
 - Criação inicial do styleguide
 - Documentação do design system atual
 - Definição de convenções de código
 - Padrões de componentes e arquitetura
+

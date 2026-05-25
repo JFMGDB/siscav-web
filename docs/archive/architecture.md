@@ -1,7 +1,5 @@
 # Arquitetura do Projeto SISCAV Web
 
-> **Archived:** This document is kept for historical context only. For current decisions, see [docs/adr/](../adr/) (especially [ADR 0003: Cookie-based authentication](../adr/0003-cookie-based-authentication.md), which supersedes JWT storage in `localStorage` described below).
-
 ## Visão Geral
 
 Este documento descreve a arquitetura e organização do projeto SISCAV Web, um sistema de controle de acesso veicular automatizado construído com Next.js 16 e TypeScript.

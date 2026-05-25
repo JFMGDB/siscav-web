@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../styles/globals.css";
+import { Providers } from "@/components/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SISCAV Web",
-  description:
-    "Vehicle access control administration panel for authorized plate management and access logs.",
+  title: "SISCAV - Controle de Acesso de Veículos",
+  description: "Sistema Automatizado de Controle de Acesso de Veículos",
 };
 
 export default function RootLayout({
@@ -16,8 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="pt-BR">
+      <body className={inter.className}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
