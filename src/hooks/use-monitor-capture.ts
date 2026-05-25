@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useSyncExternalStore, useEffect, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getClientApiClient } from '@/lib/api/client';
-import * as monitorApi from '@/lib/api/monitor';
-import { UI_CONFIG } from '@/constants';
+import { useSyncExternalStore, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getClientApiClient } from "@/lib/api/client";
+import * as monitorApi from "@/lib/api/monitor";
+import { UI_CONFIG } from "@/constants";
 
-const QUERY_KEY = ['monitor', 'lastCapture'] as const;
+const QUERY_KEY = ["monitor", "lastCapture"] as const;
 
 function subscribeVisibility(onStoreChange: () => void) {
-  document.addEventListener('visibilitychange', onStoreChange);
-  return () => document.removeEventListener('visibilitychange', onStoreChange);
+  document.addEventListener("visibilitychange", onStoreChange);
+  return () => document.removeEventListener("visibilitychange", onStoreChange);
 }
 
 function getVisibilitySnapshot() {
@@ -18,7 +18,7 @@ function getVisibilitySnapshot() {
 }
 
 function getVisibilityServerSnapshot(): DocumentVisibilityState {
-  return 'visible';
+  return "visible";
 }
 
 export function useMonitorCapture() {
@@ -26,9 +26,9 @@ export function useMonitorCapture() {
   const visibilityState = useSyncExternalStore(
     subscribeVisibility,
     getVisibilitySnapshot,
-    getVisibilityServerSnapshot
+    getVisibilityServerSnapshot,
   );
-  const isVisible = visibilityState === 'visible';
+  const isVisible = visibilityState === "visible";
   const wasHiddenRef = useRef(false);
 
   const query = useQuery({

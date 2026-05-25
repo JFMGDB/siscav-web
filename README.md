@@ -30,7 +30,7 @@ Este repositório (`siscav-web`) contém toda a lógica do lado do cliente e a i
 
 - **Framework:** Next.js 16 (React 19)
 - **Linguagem:** TypeScript
-- **Estilização:** CSS Modules
+- **Estilização:** MUI (Material UI) + Emotion
 - **Testes:** Jest, React Testing Library
 - **Qualidade de Código:** ESLint, Prettier
 - **DevOps:** GitHub Actions
@@ -57,14 +57,10 @@ siscav-web/
 ├── .gitignore
 ├── eslint.config.mjs # Configuração do ESLint (formato "flat")
 ├── jest.config.mjs # Configuração do Jest
-├── next.config.mjs # Configuração do Next.js
+├── next.config.ts # Configuração do Next.js
 ├── package.json # Dependências e scripts do projeto
 └── tsconfig.json # Configuração do TypeScript
 ```
-
-### Planeamento
-
-A pasta `.planning/` contém artefactos GSD (roadmap, requisitos, estado do projeto) para quem mantém o repositório; não é obrigatório para uma alteração pontual, mas reflete o escopo acordado para evoluções planeadas.
 
 ## Guia de Instalação
 
@@ -114,7 +110,7 @@ Abra [http://localhost:3000](http://localhost:3000) para visualizá-la no seu na
 
 Executa a suíte de testes unitários e de componentes utilizando o Jest. É ideal para ser executado antes de enviar alterações para o repositório.
 
-### `npm run lint` (Deprecated)
+### `npm run lint`
 
 Executa o ESLint para analisar estaticamente o código em busca de problemas de qualidade e estilo.
 

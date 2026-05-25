@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from '@/hooks/use-auth';
-import { SnackbarProvider } from '@/hooks/use-snackbar';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import theme from '@/theme';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "@/hooks/use-auth";
+import { SnackbarProvider } from "@/hooks/use-snackbar";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import theme from "@/theme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,9 +24,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <AuthProvider>
-            <SnackbarProvider>
-              {children}
-            </SnackbarProvider>
+            <SnackbarProvider>{children}</SnackbarProvider>
           </AuthProvider>
         </ThemeProvider>
       </AppRouterCacheProvider>

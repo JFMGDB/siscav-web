@@ -1,4 +1,3 @@
-<!-- gsd-project-start source:PROJECT.md -->
 ## Project
 
 **SISCAV-Web**
@@ -12,187 +11,74 @@ Frontend administrativo do **Sistema de Controle de Entrada Automática de Veíc
 - **Stack:** Manter alinhamento com `package.json` / CI (Node 20, Next.js, TypeScript strict) salvo decisão explícita de migração
 - **Backend:** Contratos e auth dependem de `siscav-api`; o frontend não persiste domínio além de estado de UI e tokens no cliente
 - **Compatibilidade:** Navegadores suportados pelos fluxos atuais (incl. APIs como Web Bluetooth onde usadas)
-<!-- gsd-project-end -->
 
-<!-- gsd-stack-start source:codebase/STACK.md -->
 ## Technology Stack
 
-## Languages
-- **TypeScript** (5.x, `typescript` in `package.json`) — Application source under `src/**/*.ts` and `src/**/*.tsx`; strict mode enabled in `tsconfig.json` (`"strict": true`).
-- **JavaScript (ES modules)** — Tooling configs: `eslint.config.mjs`, `jest.config.mjs`, `jest.setup.mjs`.
-## Runtime
-- **Node.js** — CI pins **20** in `.github/workflows/ci.yml` (`node-version: "20"`). `README.md` recommends Node 20.x or newer for local development.
-- **npm** — Scripts and `npm ci` in CI.
-- Lockfile: **`package-lock.json`** present at repository root.
-## Frameworks
-- **Next.js** `16.0.3` — App Router; entry under `src/app/` (`layout.tsx`, route groups). Config: `next.config.ts` enables **`reactCompiler: true`** (React Compiler integration).
-- **React** `19.2.0` / **react-dom** `19.2.0` — UI layer.
-- **MUI (Material UI)** `^7.3.5` — `@mui/material`, `@mui/icons-material`, Emotion (`@emotion/react`, `@emotion/styled`).
-- **MUI Next.js integration** — `@mui/material-nextjs` with `AppRouterCacheProvider` from `@mui/material-nextjs/v13-appRouter` in `src/components/providers.tsx`.
-- **Theme** — `src/theme/index.ts` uses `createTheme` from MUI.
-- **Global CSS** — `src/styles/globals.css`; README also references CSS Modules where used in components.
-- **TanStack React Query** `^5.90.21` — `QueryClientProvider` and defaults in `src/components/providers.tsx`; hooks such as `src/hooks/use-whitelist.ts` use `useQuery` / `useMutation`.
-- **Jest** `^30.2.0` with **`jest-environment-jsdom`** — Config: `jest.config.mjs` uses `next/jest` from `next/jest.js` and `setupFilesAfterEnv`: `jest.setup.mjs`.
-- **React Testing Library** — `@testing-library/react`, `@testing-library/jest-dom` (extended in `jest.setup.mjs`).
-- **Next.js built-in bundler** (Turbopack in dev per Next 16 defaults where applicable).
-- **TypeScript** — `noEmit: true`, `moduleResolution: "bundler"`, Next plugin in `tsconfig.json`.
-- **ESLint** `^9` — Flat config `eslint.config.mjs`: `eslint-config-next` (core-web-vitals + typescript), `eslint-config-prettier`.
-- **Prettier** `^3.6.2` — `npm run format` / `format:check`; config file `.prettierrc` (empty object = Prettier defaults).
-- **babel-plugin-react-compiler** `1.0.0` (devDependency) — Aligns with `reactCompiler` in `next.config.ts`.
-## Key Dependencies
-- `next`, `react`, `react-dom` — Shell and rendering.
-- `@tanstack/react-query` — Server state and cache for API-backed views.
-- `@mui/material` (+ Emotion) — Component library and styling runtime.
-- `eslint`, `eslint-config-next`, `prettier`, `jest`, `@testing-library/*`, `@types/*` — Quality and tests.
-## Configuration
-- Public API base URL: **`NEXT_PUBLIC_API_URL`** — Read in `src/constants/index.ts` (`API_CONFIG.BASE_URL`); falls back to `http://localhost:8000`.
-- `.env*` files are gitignored per `.gitignore`; no committed `.env.example` was found — document required vars in README or add an example file for onboarding.
-- `next.config.ts` — Next.js and React Compiler.
-- `tsconfig.json` — Path alias `@/*` → `./src/*`.
-- `next-env.d.ts` — Next.js TypeScript ambient types (generated/updated by Next).
-## Platform Requirements
-- Node.js 20+ and npm; clone repo, `npm install`, `npm run dev` (default dev server URL documented in `README.md` as http://localhost:3000).
-- Standard **Next.js** production build: `npm run build` then `npm run start` — deploy target not fixed in-repo (e.g. Node host or Vercel-compatible); `.vercel` is gitignored.
-<!-- gsd-stack-end -->
+### Languages
+- **TypeScript** (5.x) — `src/**/*.ts`, `src/**/*.tsx`; strict mode in `tsconfig.json`
+- **JavaScript (ES modules)** — `eslint.config.mjs`, `jest.config.mjs`, `jest.setup.mjs`
 
-<!-- gsd-conventions-start source:CONVENTIONS.md -->
+### Runtime
+- **Node.js** 20 — CI in `.github/workflows/ci.yml`
+- **npm** — `package-lock.json` at repo root
+
+### Frameworks
+- **Next.js** 16 — App Router under `src/app/`; `reactCompiler: true` in `next.config.ts`
+- **React** 19 / **react-dom** 19
+- **MUI** 7 — `@mui/material`, `@mui/icons-material`, Emotion; `AppRouterCacheProvider` in `src/components/providers.tsx`
+- **Theme** — `src/theme/index.ts`
+- **Global CSS** — `src/styles/globals.css`
+- **TanStack React Query** 5 — `QueryClientProvider` in `providers.tsx`
+- **Jest** 30 + **React Testing Library**
+- **ESLint** 9 flat + **Prettier** 3
+
+### Configuration
+- API base URL: `NEXT_PUBLIC_SISCAV_API_URL` or `NEXT_PUBLIC_API_URL` — see `src/constants/index.ts` and `.env.example`
+- Path alias: `@/*` → `./src/*`
+
 ## Conventions
 
-## Naming Patterns
-- React feature and UI components: PascalCase — e.g. `Button.tsx`, `LoginForm.tsx`, `GateControl.tsx` under `src/components/`.
-- Custom hooks: kebab-case file with `use-` prefix — e.g. `use-snackbar.tsx`, `use-auth.tsx` under `src/hooks/`.
-- App Router routes: Next.js conventions — `page.tsx`, `layout.tsx` inside route groups such as `src/app/(auth)/` and `src/app/(public)/`.
-- Shared types: split by domain under `src/types/` (`auth.ts`, `logs.ts`, …) with barrel `src/types/index.ts`.
-- API modules: lowercase kebab or single name under `src/lib/api/` — e.g. `client.ts`, `auth.ts`, `monitor.ts`.
-- Exported React components: `function ComponentName` or `export default function PageName` for route pages — see `src/components/ui/Button.tsx`, `src/components/features/auth/LoginForm.tsx`.
-- Hooks: camelCase with `use` prefix — `useSnackbar`, `useAuth` in `src/hooks/use-snackbar.tsx`, `src/hooks/use-auth.tsx`.
-- camelCase for locals and state — consistent across `src/components/features/auth/LoginForm.tsx` and hooks.
-- PascalCase for interfaces and types — e.g. `ButtonProps`, `ApiClientOptions`, `SnackbarContextValue` in `src/components/ui/Button.tsx`, `src/lib/api/client.ts`, `src/hooks/use-snackbar.tsx`.
-- Shared domain types live in `src/types/` and are imported via `@/types`.
-## Code Style
-- Prettier — `package.json` scripts `format` / `format:check`; config is `c:\src\personal\siscav-web\.prettierrc` (empty object → Prettier defaults).
-- CI enforces `npm run format:check` in `.github/workflows/ci.yml`.
-- ESLint 9 flat config in `eslint.config.mjs`: `eslint-config-next` (core-web-vitals + TypeScript) plus `eslint-config-prettier` to avoid rule clashes with Prettier.
-- Run `npm run lint` / `npm run lint:fix` from `package.json`.
-- Strict mode enabled — `tsconfig.json` sets `"strict": true`, `"noEmit": true`, JSX `react-jsx`, path alias `"@/*": ["./src/*"]`.
-## Import Organization
-- Use `@/` for everything under `src/` — e.g. `import { useAuth } from '@/hooks/use-auth'` in `src/components/features/auth/LoginForm.tsx`.
-- `src/types/index.ts` re-exports domain modules — prefer `import { X } from '@/types'` for shared types.
-## Error Handling
-- **Invalid hook usage:** throw `new Error('...must be used within a ...Provider')` — see `src/hooks/use-snackbar.tsx`, `src/hooks/use-auth.tsx`.
-- **HTTP / API:** `ApiClient` in `src/lib/api/client.ts` throws `new Error(...)` with messages from `parseApiError` or fixed strings (session, refresh). Domain helpers in `src/lib/api/auth.ts` map status codes to `throw new Error(...)`.
-- **UI forms:** `try` / `catch` / `finally`, narrow unknown errors with `err instanceof Error` and map to user-facing strings — `src/components/features/auth/LoginForm.tsx`.
-- **Auth provider:** log with `console.error`, rethrow after failed `login`/`register` — `src/hooks/use-auth.tsx`; corrupt stored user JSON clears storage and tokens in `catch`.
-- **Fire-and-forget or non-critical paths:** empty `catch {}` or `catch` with minimal handling appears in `src/lib/api/monitor.ts`, `src/lib/api/auth.ts`, and some feature components — acceptable for swallowing parse/network noise but hides failures; prefer logging or surfacing when adding features.
-## Logging
-- Use for auth and parse failures where the user is not shown a dedicated UI message yet.
-## Comments
-- File-level blocks explain purpose and UX/architecture decisions — e.g. `src/components/features/auth/LoginForm.tsx`, `src/lib/api/client.ts`, `src/types/index.ts`.
-- Portuguese and English both appear in the repo; new code should match the surrounding file’s language for consistency.
-- Occasional block comments on modules; not required on every export. Interface fields sometimes documented in `src/lib/api/client.ts`.
-## Function Design
-## Module Design
-- Named exports for shared UI and hooks; `default` for `page.tsx` and some feature entry components (e.g. `LoginForm`).
-- `src/types/index.ts` is the main barrel; `src/lib/api-client.ts` aggregates API surface for backward compatibility — prefer `getClientApiClient()` and `src/lib/api/*` for new code per comment in `src/lib/api-client.ts`.
-## Next.js & Client Boundaries
-- Mark interactive components with `'use client'` at top — hooks, forms, MUI-heavy trees — see `src/hooks/use-auth.tsx`, `LoginForm.tsx`.
-- Root layout stays a Server Component — `src/app/layout.tsx` imports `Providers` from `src/components/providers.tsx` for client-side QueryClient, theme, auth, snackbar.
-<!-- gsd-conventions-end -->
+### Naming
+- React components: PascalCase (`LoginForm.tsx`, `GateControl.tsx`)
+- Hooks: kebab-case with `use-` prefix (`use-auth.tsx`)
+- App Router: `page.tsx`, `layout.tsx` in `src/app/(auth)/` and `(public)/`
+- Types: `src/types/` with barrel `index.ts`
+- API modules: `src/lib/api/*.ts`
 
-<!-- gsd-architecture-start source:ARCHITECTURE.md -->
+### Code style
+- Prettier: `.prettierrc` (defaults); `npm run format` / `format:check`
+- ESLint: `eslint.config.mjs` (next + prettier)
+- Strict TypeScript; imports via `@/`
+
+### Error handling
+- Hooks: throw if used outside provider (`useAuth`, `useSnackbar`)
+- HTTP: `ApiClient` in `src/lib/api/client.ts`; domain modules map status codes
+- Forms: `try/catch`, narrow with `instanceof Error`
+
+### Module design
+- Prefer `getClientApiClient()` + `src/lib/api/*` for HTTP calls
+- `'use client'` only where needed (hooks, forms, browser APIs)
+- Root layout is a Server Component wrapping `Providers`
+
 ## Architecture
 
-## Pattern Overview
-- **App Router** with **route groups** `(public)` and `(auth)` to separate unauthenticated and authenticated shells without affecting URLs.
-- **Client-first UI:** Most feature pages and the authenticated layout are Client Components (`'use client'`), while the root layout and a few pages (e.g. login shell) remain Server Components where metadata is set.
-- **Layered access to HTTP:** A shared `ApiClient` class (`src/lib/api/client.ts`) centralizes auth headers, token refresh, and JSON parsing; thin domain modules in `src/lib/api/*.ts` expose functions that accept an `ApiClient` instance.
-- **Facade for legacy call sites:** `src/lib/api-client.ts` exposes a single `apiClient` object that delegates to `getClientApiClient()` and the domain modules—used heavily by `src/hooks/use-auth.tsx`.
-## Layers
-- Purpose: URL mapping, layout hierarchy, page-level composition.
-- Location: `src/app/`
-- Contains: `layout.tsx`, `page.tsx`, route-group layouts.
-- Depends on: `@/components/*`, `@/hooks/*`, Next.js navigation and metadata APIs.
-- Used by: Browser navigation to `/`, `/login`, `/dashboard`, `/monitor`, `/whitelist`, `/logs`, `/settings`.
-- Purpose: Screens and domain-specific widgets (forms, tables, gate control, camera UI).
-- Location: `src/components/features/*`
-- Contains: React components colocated by domain (`auth`, `gate`, `logs`, `monitor`, `settings`, `whitelist`).
-- Depends on: `@/components/ui/*`, MUI, hooks, `apiClient` or `getClientApiClient()` + domain API functions.
-- Used by: App Router pages under `src/app/(auth)/*/page.tsx` and `src/app/(public)/login/page.tsx`.
-- Purpose: Reusable layout and display building blocks (sidebar, tables, cards, buttons).
-- Location: `src/components/ui/`
-- Contains: `Sidebar.tsx`, `DataTable.tsx`, `StatCard.tsx`, etc.
-- Depends on: MUI, `useAuth`, `ROUTES` from `@/constants`.
-- Used by: Feature components and `src/app/(auth)/layout.tsx`.
-- Purpose: Global React context, server/client theming bridge, async data defaults.
-- Location: `src/components/providers.tsx`
-- Contains: `QueryClientProvider`, MUI `ThemeProvider` + `AppRouterCacheProvider`, `AuthProvider`, `SnackbarProvider`.
-- Depends on: `@tanstack/react-query`, `@mui/material-nextjs`, `@/theme`, `@/hooks/use-auth`, `@/hooks/use-snackbar`.
-- Used by: `src/app/layout.tsx` wrapping all children.
-- Purpose: Auth state, TanStack Query data fetching, snackbars, monitor/whitelist helpers.
-- Location: `src/hooks/`
-- Contains: `use-auth.tsx` (context + provider), `use-logs.ts`, `use-whitelist.ts`, `use-monitor-capture.ts`, `use-snackbar.tsx`.
-- Depends on: `apiClient` or `getClientApiClient()` + `src/lib/api/*`, `@tanstack/react-query`.
-- Used by: Layouts, feature components, and pages.
-- Purpose: Typed calls to the external backend; token lifecycle (cookies + refresh).
-- Location: `src/lib/api/client.ts` (core), `src/lib/api/{auth,whitelist,logs,gate,monitor,devices}.ts` (domains), `src/lib/api-client.ts` (facade).
-- Contains: `ApiClient`, `getClientApiClient()`, `getServerApiClient()`, `parseApiError`, domain `login`, `getLogs`, etc.
-- Depends on: `API_CONFIG`, `AUTH_CONFIG` from `@/constants`; `next/headers` only in server factory paths.
-- Used by: Hooks, `apiClient` facade, and any code that obtains a client instance.
-- Purpose: Helpers with no React dependency (e.g. image URL building, access status logic).
-- Location: `src/lib/access-status.ts`, `src/lib/image-url.ts`
-- Used by: Components and tests under `src/__tests__/`.
-- Purpose: Shared TypeScript models and app-wide constants (routes, messages, API paths).
-- Location: `src/types/` (barrel: `src/types/index.ts`), `src/constants/index.ts`
-- Used by: API layer, hooks, and components.
-- Purpose: MUI theme (palette, typography, component overrides).
-- Location: `src/theme/index.ts`
-- Used by: `src/components/providers.tsx`.
-## Data Flow
-- **Server state:** TanStack React Query (`staleTime` 60s, `refetchOnWindowFocus: false` defaults in `src/components/providers.tsx`).
-- **Auth session:** React Context in `use-auth.tsx` plus cookies (tokens) and `localStorage` (user profile JSON).
-## Key Abstractions
-- Purpose: Injectable HTTP client with `getToken`, optional cookie persistence, and refresh coordination.
-- Examples: `src/lib/api/client.ts`
-- Pattern: Class with `request<T>()`, `refreshTokens()`, factories `getClientApiClient()` / `getServerApiClient()` / `createServerApiClient()`.
-- Purpose: One file per backend area; functions take `ApiClient` as first argument (except `register`, which uses standalone `fetch`).
-- Examples: `src/lib/api/auth.ts`, `src/lib/api/logs.ts`, `src/lib/api/gate.ts`
-- Purpose: Stable object API for existing consumers (`login`, `getWhitelist`, `openGate`, etc.).
-- Examples: `src/lib/api-client.ts`
-## Entry Points
-- Location: `src/app/layout.tsx`
-- Triggers: Every document request.
-- Responsibilities: HTML shell, font (`next/font/google`), global CSS import, metadata, wraps tree with `Providers`.
-- Location: `src/app/page.tsx`
-- Triggers: Visit `/`
-- Responsibilities: `redirect('/dashboard')` (authenticated area still gated by `(auth)` layout).
-- Location: `src/app/(public)/login/page.tsx`
-- Triggers: `/login`
-- Responsibilities: Renders `LoginForm` from `src/components/features/auth/LoginForm.tsx`; exports page `metadata`.
-## Error Handling
-- `parseApiError` in `src/lib/api/client.ts` reads response body and prefers `detail` or `message` from JSON.
-- Domain modules (e.g. `src/lib/api/auth.ts`) map status codes (401, 409, 429) to specific thrown messages.
-- `ApiClient.request` throws on non-OK responses after refresh retry; callers use `try/catch` or React Query `error` state.
-## Cross-Cutting Concerns
-<!-- gsd-architecture-end -->
+### Pattern overview
+- **App Router** with route groups `(public)` and `(auth)`
+- **Layered HTTP:** `ApiClient` + domain modules in `src/lib/api/`
+- **Server state:** TanStack Query; **auth:** Context + cookies + `localStorage` user profile
 
-<!-- gsd-workflow-start source:GSD defaults -->
-## GSD Workflow Enforcement
+### Layers
+- `src/app/` — routes and layouts
+- `src/components/features/` — domain UI
+- `src/components/ui/` — shared primitives (Sidebar, DataTable, Card, StatCard, StatusChip)
+- `src/components/providers.tsx` — QueryClient, MUI theme, Auth, Snackbar
+- `src/hooks/` — auth, snackbar, logs, whitelist, monitor, camera config
+- `src/lib/api/` — HTTP client and domain API functions
+- `src/lib/` — `access-status.ts`, `image-url.ts`, `camera/*`
+- `src/types/`, `src/constants/`, `src/theme/`
 
-Before using Edit, Write, or other file-changing tools, start work through a GSD command so planning artifacts and execution context stay in sync.
-
-Use these entry points:
-- `/gsd-quick` for small fixes, doc updates, and ad-hoc tasks
-- `/gsd-debug` for investigation and bug fixing
-- `/gsd-execute-phase` for planned phase work
-
-Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
-<!-- gsd-workflow-end -->
-
-
-
-<!-- gsd-profile-start -->
-## Developer Profile
-
-> Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
-> This section is managed by `generate-claude-profile` -- do not edit manually.
-<!-- gsd-profile-end -->
+### Entry points
+- `src/app/layout.tsx` — root shell + `Providers`
+- `src/app/page.tsx` — redirect to `/dashboard`
+- `src/app/(public)/login/page.tsx` — `LoginForm`
+- Authenticated routes under `src/app/(auth)/` gated by `(auth)/layout.tsx`

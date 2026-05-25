@@ -1,6 +1,6 @@
-import type { ApiClient } from '@/lib/api/client';
-import { API_CONFIG } from '@/constants';
-import type { RecognizePlateResponse } from '@/types';
+import type { ApiClient } from "@/lib/api/client";
+import { API_CONFIG } from "@/constants";
+import type { RecognizePlateResponse } from "@/types";
 
 /**
  * OCR de placa no servidor (JWT obrigatório). Campo multipart: `file`.
@@ -9,18 +9,20 @@ import type { RecognizePlateResponse } from '@/types';
 export async function recognizePlate(
   client: ApiClient,
   imageBlob: Blob,
-  fileName = 'frame.jpg'
+  fileName = "frame.jpg",
 ): Promise<RecognizePlateResponse> {
   if (!imageBlob || imageBlob.size === 0) {
-    throw new Error('Imagem vazia: a captura do frame não produziu dados (vídeo pronto? stream com CORS?).');
+    throw new Error(
+      "Imagem vazia: a captura do frame não produziu dados (vídeo pronto? stream com CORS?).",
+    );
   }
 
   return client.requestMultipartJson<RecognizePlateResponse>(
     API_CONFIG.ENDPOINTS.ML.RECOGNIZE_PLATE,
     () => {
       const form = new FormData();
-      form.append('file', imageBlob, fileName);
+      form.append("file", imageBlob, fileName);
       return form;
-    }
+    },
   );
 }

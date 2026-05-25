@@ -2,7 +2,7 @@
  * Tipos relacionados aos logs de acesso
  */
 
-import { AccessStatus } from './common';
+import { AccessStatus } from "./common";
 
 export interface AccessLog {
   id: string;
@@ -21,4 +21,3 @@ export interface AccessLogFilters {
   start_date?: string; // ISO 8601 format
   end_date?: string; // ISO 8601 format
 }
-

@@ -24,4 +24,3 @@ export interface PaginatedResponse<T> {
   has_next: boolean;
   has_prev: boolean;
 }
-

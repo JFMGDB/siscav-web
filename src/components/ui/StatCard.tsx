@@ -1,24 +1,12 @@
-/**
- * Componente StatCard
- * 
- * Card especializado para exibir métricas e estatísticas.
- * Segue Single Responsibility Principle: apenas exibe estatísticas.
- * 
- * Decisões:
- * - Design moderno com ícone, valor e label
- * - Suporta cores customizadas
- * - Layout responsivo
- */
-
-import React from 'react';
-import { Box, Typography, SxProps, Theme } from '@mui/material';
-import { Card } from './Card';
+import React from "react";
+import { Box, Typography, SxProps, Theme } from "@mui/material";
+import { Card } from "./Card";
 
 export interface StatCardProps {
   title: string;
   value: string | number;
   icon?: React.ReactNode;
-  color?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
+  color?: "primary" | "secondary" | "success" | "error" | "warning" | "info";
   trend?: {
     value: number;
     label: string;
@@ -28,15 +16,22 @@ export interface StatCardProps {
 }
 
 const colorMap = {
-  primary: '#2563eb',
-  secondary: '#10b981',
-  success: '#10b981',
-  error: '#ef4444',
-  warning: '#f59e0b',
-  info: '#3b82f6',
+  primary: "#2563eb",
+  secondary: "#10b981",
+  success: "#10b981",
+  error: "#ef4444",
+  warning: "#f59e0b",
+  info: "#3b82f6",
 };
 
-export function StatCard({ title, value, icon, color = 'primary', trend, sx }: StatCardProps) {
+export function StatCard({
+  title,
+  value,
+  icon,
+  color = "primary",
+  trend,
+  sx,
+}: StatCardProps) {
   const colorValue = colorMap[color];
 
   return (
@@ -47,7 +42,13 @@ export function StatCard({ title, value, icon, color = 'primary', trend, sx }: S
         ...sx,
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+        }}
+      >
         <Box sx={{ flex: 1 }}>
           <Typography variant="body2" color="text.secondary" gutterBottom>
             {title}
@@ -68,12 +69,13 @@ export function StatCard({ title, value, icon, color = 'primary', trend, sx }: S
               variant="caption"
               sx={{
                 mt: 1,
-                display: 'block',
-                color: trend.positive ? 'success.main' : 'error.main',
+                display: "block",
+                color: trend.positive ? "success.main" : "error.main",
                 fontWeight: 500,
               }}
             >
-              {trend.positive ? '↑' : '↓'} {Math.abs(trend.value)}% {trend.label}
+              {trend.positive ? "↑" : "↓"} {Math.abs(trend.value)}%{" "}
+              {trend.label}
             </Typography>
           )}
         </Box>
@@ -82,9 +84,9 @@ export function StatCard({ title, value, icon, color = 'primary', trend, sx }: S
             sx={{
               color: colorValue,
               opacity: 0.8,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             {icon}
@@ -94,13 +96,3 @@ export function StatCard({ title, value, icon, color = 'primary', trend, sx }: S
     </Card>
   );
 }
-
-
-
-
-
-
-
-
-
-

@@ -2,7 +2,7 @@
  * Tipos relacionados ao monitoramento em tempo real
  */
 
-import { AccessStatus } from './common';
+import { AccessStatus } from "./common";
 
 export interface Capture {
   id: string;
@@ -12,13 +12,3 @@ export interface Capture {
   timestamp: string;
   imageUrl: string;
 }
-
-
-
-
-
-
-
-
-
-

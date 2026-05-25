@@ -1,6 +1,6 @@
 /**
  * Tipos da API REST de dispositivos (siscav-api).
- * Forma alinhada a `BluetoothDevice` em `bluetooth.ts` onde o JSON do backend espelha o mesmo domínio.
+ * Device scan/connect payloads from the REST API.
  */
 
 /** Item devolvido por GET .../devices/scan (lista de dispositivos descobertos). */

@@ -1,11 +1,11 @@
-import LogsTable from '@/components/features/logs/LogsTable';
-import { getServerApiClient } from '@/lib/api/client';
-import * as logsApi from '@/lib/api/logs';
-import { Metadata } from 'next';
+import LogsTable from "@/components/features/logs/LogsTable";
+import { getServerApiClient } from "@/lib/api/client";
+import * as logsApi from "@/lib/api/logs";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Histórico de Acesso - SISCAV',
-  description: 'Visualizar histórico de acesso de veículos',
+  title: "Histórico de Acesso - SISCAV",
+  description: "Visualizar histórico de acesso de veículos",
 };
 
 export default async function LogsPage() {

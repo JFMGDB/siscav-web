@@ -1,9 +1,10 @@
 # Archived Documentation
 
-Files in this directory are **historical references** superseded by current project documentation. Do not treat them as the source of truth for implementation.
+Historical references kept for the academic project. For current implementation guidance, use [ADRs](../adr/) and [API documentation](../api/siscav_api_documentation.md).
 
-| File                                                                 | Description                                                                | Superseded by                                                                                                                                                                                                                                        |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [architecture.md](./architecture.md)                                 | Early frontend architecture (folder layout, patterns, JWT in localStorage) | [ADR 0001](../adr/0001-feature-based-folder-structure.md), [ADR 0002](../adr/0002-server-components-default.md), [ADR 0003](../adr/0003-cookie-based-authentication.md), [design-system/siscav-styleguide.md](../design-system/siscav-styleguide.md) |
-| [architecture-product-backlog.md](./architecture-product-backlog.md) | Split-repo rationale, epics, and task matrix                               | [specifications/spec-siscav.md](../specifications/spec-siscav.md), project backlog tooling                                                                                                                                                           |
-| [technical-api-siscav.md](./technical-api-siscav.md)                 | API integration notes and data models (summary)                            | [api/siscav_api_documentation.md](../api/siscav_api_documentation.md)                                                                                                                                                                                |
+| File                                                                                                         | Description                                  |
+| ------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| [architecture-product-backlog.md](./architecture-product-backlog.md)                                         | Split-repo rationale, epics, and task matrix |
+| [Modelo_de_dados.md](./Modelo_de_dados.md)                                                                   | Data model reference                         |
+| [Especificacao de Projeto.md](./Especificacao%20de%20Projeto.md)                                             | Expanded project specification               |
+| [Arquitetura - Criterios de Aceite e Devops.md](./Arquitetura%20-%20Criterios%20de%20Aceite%20e%20Devops.md) | Acceptance criteria and DevOps matrix        |

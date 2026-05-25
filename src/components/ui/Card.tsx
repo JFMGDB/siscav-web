@@ -1,35 +1,29 @@
-/**
- * Componente Card Moderno
- * 
- * Card reutilizável com design moderno, seguindo princípios SOLID:
- * - Single Responsibility: apenas renderiza um card
- * - Open/Closed: extensível via props sem modificar o componente
- * 
- * Decisões:
- * - Usa Paper do MUI como base para consistência
- * - Suporta hover effects para melhor feedback visual
- * - Padding e espaçamento consistentes
- */
+import React from "react";
+import { Paper, PaperProps, Box, Typography } from "@mui/material";
 
-import React from 'react';
-import { Paper, PaperProps, Box, Typography } from '@mui/material';
-
-export interface CardProps extends Omit<PaperProps, 'title'> {
+export interface CardProps extends Omit<PaperProps, "title"> {
   title?: string;
   subtitle?: string;
   children: React.ReactNode;
   hover?: boolean;
 }
 
-export function Card({ title, subtitle, children, hover = true, sx, ...props }: CardProps) {
+export function Card({
+  title,
+  subtitle,
+  children,
+  hover = true,
+  sx,
+  ...props
+}: CardProps) {
   return (
     <Paper
       {...props}
       sx={{
         p: 3,
         ...(hover && {
-          '&:hover': {
-            transform: 'translateY(-2px)',
+          "&:hover": {
+            transform: "translateY(-2px)",
           },
         }),
         ...sx,
@@ -53,13 +47,3 @@ export function Card({ title, subtitle, children, hover = true, sx, ...props }: 
     </Paper>
   );
 }
-
-
-
-
-
-
-
-
-
-

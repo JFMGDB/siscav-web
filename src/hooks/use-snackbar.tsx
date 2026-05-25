@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Snackbar, Alert, AlertColor } from '@mui/material';
-import type { MessageType, Message } from '@/types';
-import { UI_CONFIG } from '@/constants';
+import React, { createContext, useContext, useState, useCallback } from "react";
+import { Snackbar, Alert, AlertColor } from "@mui/material";
+import type { MessageType, Message } from "@/types";
+import { UI_CONFIG } from "@/constants";
 
 interface SnackbarContextValue {
   message: Message | null;
@@ -11,14 +11,19 @@ interface SnackbarContextValue {
   hideMessage: () => void;
 }
 
-const SnackbarContext = createContext<SnackbarContextValue | undefined>(undefined);
+const SnackbarContext = createContext<SnackbarContextValue | undefined>(
+  undefined,
+);
 
 export function SnackbarProvider({ children }: { children: React.ReactNode }) {
   const [message, setMessage] = useState<Message | null>(null);
 
-  const showMessage = useCallback((text: string, type: MessageType = 'info') => {
-    setMessage({ text, type });
-  }, []);
+  const showMessage = useCallback(
+    (text: string, type: MessageType = "info") => {
+      setMessage({ text, type });
+    },
+    [],
+  );
 
   const hideMessage = useCallback(() => {
     setMessage(null);
@@ -35,8 +40,8 @@ export function SnackbarProvider({ children }: { children: React.ReactNode }) {
       >
         <Alert
           onClose={hideMessage}
-          severity={(message?.type ?? 'info') as AlertColor}
-          sx={{ width: '100%' }}
+          severity={(message?.type ?? "info") as AlertColor}
+          sx={{ width: "100%" }}
         >
           {message?.text}
         </Alert>
@@ -48,7 +53,7 @@ export function SnackbarProvider({ children }: { children: React.ReactNode }) {
 export function useSnackbar(): SnackbarContextValue {
   const context = useContext(SnackbarContext);
   if (context === undefined) {
-    throw new Error('useSnackbar must be used within a SnackbarProvider');
+    throw new Error("useSnackbar must be used within a SnackbarProvider");
   }
   return context;
 }

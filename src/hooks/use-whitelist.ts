@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getClientApiClient } from '@/lib/api/client';
-import * as whitelistApi from '@/lib/api/whitelist';
-import type { AuthorizedPlate, PaginatedResponse } from '@/types';
-import { useSnackbar } from '@/hooks/use-snackbar';
-import { MESSAGES } from '@/constants';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getClientApiClient } from "@/lib/api/client";
+import * as whitelistApi from "@/lib/api/whitelist";
+import type { AuthorizedPlate, PaginatedResponse } from "@/types";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import { MESSAGES } from "@/constants";
 
-const QUERY_KEY = ['whitelist'] as const;
+const QUERY_KEY = ["whitelist"] as const;
 
 export function useWhitelist(initialData?: PaginatedResponse<AuthorizedPlate>) {
   const queryClient = useQueryClient();
@@ -21,32 +21,44 @@ export function useWhitelist(initialData?: PaginatedResponse<AuthorizedPlate>) {
   });
 
   const addMutation = useMutation({
-    mutationFn: ({ plate, description }: { plate: string; description?: string }) =>
-      whitelistApi.addPlate(client, plate, description),
+    mutationFn: ({
+      plate,
+      description,
+    }: {
+      plate: string;
+      description?: string;
+    }) => whitelistApi.addPlate(client, plate, description),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
-      showMessage(MESSAGES.WHITELIST.ADD_SUCCESS, 'success');
+      showMessage(MESSAGES.WHITELIST.ADD_SUCCESS, "success");
     },
-    onError: () => showMessage(MESSAGES.WHITELIST.ADD_ERROR, 'error'),
+    onError: () => showMessage(MESSAGES.WHITELIST.ADD_ERROR, "error"),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, plate, description }: { id: string; plate: string; description?: string }) =>
-      whitelistApi.updatePlate(client, id, plate, description),
+    mutationFn: ({
+      id,
+      plate,
+      description,
+    }: {
+      id: string;
+      plate: string;
+      description?: string;
+    }) => whitelistApi.updatePlate(client, id, plate, description),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
-      showMessage(MESSAGES.WHITELIST.UPDATE_SUCCESS, 'success');
+      showMessage(MESSAGES.WHITELIST.UPDATE_SUCCESS, "success");
     },
-    onError: () => showMessage(MESSAGES.WHITELIST.UPDATE_ERROR, 'error'),
+    onError: () => showMessage(MESSAGES.WHITELIST.UPDATE_ERROR, "error"),
   });
 
   const removeMutation = useMutation({
     mutationFn: (id: string) => whitelistApi.removePlate(client, id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
-      showMessage(MESSAGES.WHITELIST.REMOVE_SUCCESS, 'success');
+      showMessage(MESSAGES.WHITELIST.REMOVE_SUCCESS, "success");
     },
-    onError: () => showMessage(MESSAGES.WHITELIST.REMOVE_ERROR, 'error'),
+    onError: () => showMessage(MESSAGES.WHITELIST.REMOVE_ERROR, "error"),
   });
 
   const items = query.data?.items ?? [];

@@ -1,15 +1,4 @@
-/**
- * Tipos relacionados ao gerenciamento de dispositivos Bluetooth
- */
-
-export interface BluetoothDevice {
-  id: string;
-  name: string;
-  address: string; // MAC address
-  rssi?: number; // Signal strength
-  paired: boolean;
-  connected: boolean;
-}
+/** Connection status from the devices REST API. */
 
 export interface ConnectionStatus {
   connected: boolean;
@@ -18,13 +7,3 @@ export interface ConnectionStatus {
   connectedAt?: string;
   error?: string;
 }
-
-
-
-
-
-
-
-
-
-

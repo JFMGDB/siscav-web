@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 /**
  * Whitelist Table - uses useWhitelist (TanStack Query) for data and mutations.
  */
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Button,
   IconButton,
@@ -16,36 +16,38 @@ import {
   Typography,
   Box,
   Chip,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Add as AddIcon,
   DirectionsCar as CarIcon,
-} from '@mui/icons-material';
-import type { AuthorizedPlate, PaginatedResponse } from '@/types';
-import { DataTable, Column } from '@/components/ui/DataTable';
-import { useSnackbar } from '@/hooks/use-snackbar';
-import { useWhitelist } from '@/hooks/use-whitelist';
+} from "@mui/icons-material";
+import type { AuthorizedPlate, PaginatedResponse } from "@/types";
+import { DataTable, Column } from "@/components/ui/DataTable";
+import { useSnackbar } from "@/hooks/use-snackbar";
+import { useWhitelist } from "@/hooks/use-whitelist";
 
 interface WhitelistTableProps {
   initialData?: PaginatedResponse<AuthorizedPlate>;
 }
 
-export default function WhitelistTable({ initialData }: WhitelistTableProps = {}) {
+export default function WhitelistTable({
+  initialData,
+}: WhitelistTableProps = {}) {
   const [open, setOpen] = useState(false);
-  const [currentPlate, setCurrentPlate] = useState<Partial<AuthorizedPlate>>({});
+  const [currentPlate, setCurrentPlate] = useState<Partial<AuthorizedPlate>>(
+    {},
+  );
   const { showMessage } = useSnackbar();
   const {
     plates,
     loading,
-    refetch,
     addPlate,
     updatePlate,
     removePlate,
     isAdding,
     isUpdating,
-    isRemoving,
   } = useWhitelist(initialData);
 
   const handleOpen = (plate?: AuthorizedPlate) => {
@@ -64,7 +66,7 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
 
   const handleSave = async () => {
     if (!currentPlate.plate) {
-      showMessage('Por favor, informe a placa do veículo', 'warning');
+      showMessage("Por favor, informe a placa do veículo", "warning");
       return;
     }
     try {
@@ -75,7 +77,10 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
           description: currentPlate.description,
         });
       } else {
-        await addPlate({ plate: currentPlate.plate, description: currentPlate.description });
+        await addPlate({
+          plate: currentPlate.plate,
+          description: currentPlate.description,
+        });
       }
       handleClose();
     } catch {
@@ -84,7 +89,11 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Tem certeza que deseja remover este veículo da lista de autorizados?')) {
+    if (
+      window.confirm(
+        "Tem certeza que deseja remover este veículo da lista de autorizados?",
+      )
+    ) {
       try {
         await removePlate(id);
       } catch {
@@ -95,47 +104,56 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
 
   const columns: Column<AuthorizedPlate>[] = [
     {
-      columnType: 'field',
-      id: 'plate',
-      label: 'Placa',
+      columnType: "field",
+      id: "plate",
+      label: "Placa",
       format: (value) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <CarIcon sx={{ fontSize: 20, color: 'primary.main' }} />
-          <Typography variant="body2" sx={{ fontWeight: 600, fontFamily: 'monospace' }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <CarIcon sx={{ fontSize: 20, color: "primary.main" }} />
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: 600, fontFamily: "monospace" }}
+          >
             {value}
           </Typography>
         </Box>
       ),
     },
     {
-      columnType: 'field',
-      id: 'description',
-      label: 'Descrição',
-      format: (value) => value || (
-        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-          Sem descrição
-        </Typography>
-      ),
+      columnType: "field",
+      id: "description",
+      label: "Descrição",
+      format: (value) =>
+        value || (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontStyle: "italic" }}
+          >
+            Sem descrição
+          </Typography>
+        ),
     },
     {
-      columnType: 'field',
-      id: 'created_at',
-      label: 'Criado em',
-      format: (value) => new Date(value as string).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
+      columnType: "field",
+      id: "created_at",
+      label: "Criado em",
+      format: (value) =>
+        new Date(value as string).toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
     },
     {
-      columnType: 'actions',
-      id: 'actions',
-      label: 'Ações',
-      align: 'right',
+      columnType: "actions",
+      id: "actions",
+      label: "Ações",
+      align: "right",
       format: (row) => (
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+        <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
           <IconButton
             size="small"
             onClick={(e) => {
@@ -143,9 +161,9 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
               handleOpen(row);
             }}
             sx={{
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+              color: "primary.main",
+              "&:hover": {
+                backgroundColor: "rgba(37, 99, 235, 0.1)",
               },
             }}
           >
@@ -158,9 +176,9 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
               handleDelete(row.id);
             }}
             sx={{
-              color: 'error.main',
-              '&:hover': {
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              color: "error.main",
+              "&:hover": {
+                backgroundColor: "rgba(239, 68, 68, 0.1)",
               },
             }}
           >
@@ -175,7 +193,14 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
     <>
       <Box>
         {/* Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
               Veículos Autorizados
@@ -189,11 +214,11 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
             startIcon={<AddIcon />}
             onClick={() => handleOpen()}
             sx={{
-              background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
-              boxShadow: '0 4px 15px -3px rgba(37, 99, 235, 0.4)',
-              '&:hover': {
-                boxShadow: '0 6px 20px -3px rgba(37, 99, 235, 0.5)',
-                transform: 'translateY(-1px)',
+              background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
+              boxShadow: "0 4px 15px -3px rgba(37, 99, 235, 0.4)",
+              "&:hover": {
+                boxShadow: "0 6px 20px -3px rgba(37, 99, 235, 0.5)",
+                transform: "translateY(-1px)",
               },
             }}
           >
@@ -202,7 +227,7 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
         </Box>
 
         {/* Stats */}
-        <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
           <Chip
             label={`Total: ${plates.length} veículos`}
             color="primary"
@@ -234,26 +259,28 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
       >
         <DialogTitle sx={{ pb: 1 }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {currentPlate.id ? 'Editar Veículo' : 'Adicionar Veículo'}
+            {currentPlate.id ? "Editar Veículo" : "Adicionar Veículo"}
           </Typography>
         </DialogTitle>
         <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
             <TextField
               autoFocus
               label="Placa do Veículo"
               placeholder="ABC-1234"
               fullWidth
-              value={currentPlate.plate || ''}
+              value={currentPlate.plate || ""}
               onChange={(e) => {
-                const value = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+                const value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z0-9-]/g, "");
                 setCurrentPlate({ ...currentPlate, plate: value });
               }}
               helperText="Digite a placa no formato ABC-1234 ou ABC1234"
               sx={{
-                '& .MuiOutlinedInput-root': {
-                  fontFamily: 'monospace',
-                  fontSize: '1.125rem',
+                "& .MuiOutlinedInput-root": {
+                  fontFamily: "monospace",
+                  fontSize: "1.125rem",
                   fontWeight: 600,
                 },
               }}
@@ -264,13 +291,18 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
               fullWidth
               multiline
               rows={3}
-              value={currentPlate.description || ''}
-              onChange={(e) => setCurrentPlate({ ...currentPlate, description: e.target.value })}
+              value={currentPlate.description || ""}
+              onChange={(e) =>
+                setCurrentPlate({
+                  ...currentPlate,
+                  description: e.target.value,
+                })
+              }
             />
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2.5 }}>
-          <Button onClick={handleClose} sx={{ color: 'text.secondary' }}>
+          <Button onClick={handleClose} sx={{ color: "text.secondary" }}>
             Cancelar
           </Button>
           <Button
@@ -278,9 +310,9 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
             variant="contained"
             disabled={isAdding || isUpdating}
             sx={{
-              background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)',
+              background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)",
               },
             }}
           >
@@ -288,7 +320,6 @@ export default function WhitelistTable({ initialData }: WhitelistTableProps = {}
           </Button>
         </DialogActions>
       </Dialog>
-
     </>
   );
 }

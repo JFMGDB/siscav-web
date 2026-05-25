@@ -3,14 +3,16 @@
  * No sessionStorage/localStorage; cookie-based auth per ADR 0003.
  */
 
-import { API_CONFIG, AUTH_CONFIG } from '@/constants';
+import { API_CONFIG, AUTH_CONFIG } from "@/constants";
 
 const COOKIE_MAX_AGE_ACCESS = 60 * 60; // 1 hour
 const COOKIE_MAX_AGE_REFRESH = 60 * 60 * 24 * 7; // 7 days
 
 function getCookie(name: string): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(new RegExp('(?:^|; )' + encodeURIComponent(name) + '=([^;]*)'));
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(
+    new RegExp("(?:^|; )" + encodeURIComponent(name) + "=([^;]*)"),
+  );
   return match ? decodeURIComponent(match[1]) : null;
 }
 
@@ -25,18 +27,18 @@ export function readBrowserRefreshToken(): string | null {
 }
 
 function setCookie(name: string, value: string, maxAge: number): void {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
   document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; SameSite=Lax`;
 }
 
 function deleteCookie(name: string): void {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
   document.cookie = `${encodeURIComponent(name)}=; path=/; max-age=0`;
 }
 
 export async function parseApiError(response: Response): Promise<string> {
   const text = await response.text();
-  let message = response.statusText || 'API Error';
+  let message = response.statusText || "API Error";
   try {
     const json = JSON.parse(text);
     message = json.detail ?? json.message ?? message;
@@ -63,14 +65,17 @@ export interface ApiClientOptions {
 export class ApiClient {
   private baseUrl: string;
   private getToken: GetToken;
-  private setTokensImpl: (access: string | null, refresh: string | null) => void;
+  private setTokensImpl: (
+    access: string | null,
+    refresh: string | null,
+  ) => void;
   private clearTokensCallback: () => void;
   private getRefreshToken: () => string | null;
   private isRefreshing = false;
   private refreshPromise: Promise<void> | null = null;
 
   constructor(options: ApiClientOptions) {
-    this.baseUrl = options.baseUrl.replace(/\/$/, '');
+    this.baseUrl = options.baseUrl.replace(/\/$/, "");
     this.getToken = options.getToken;
     this.setTokensImpl = options.setTokens ?? (() => {});
     this.clearTokensCallback = options.clearTokens ?? (() => {});
@@ -79,7 +84,7 @@ export class ApiClient {
 
   private isTokenExpired(token: string): boolean {
     try {
-      const parts = token.split('.');
+      const parts = token.split(".");
       if (parts.length !== 3) return true;
       const payload = JSON.parse(atob(parts[1]));
       const exp = payload.exp * 1000;
@@ -100,16 +105,20 @@ export class ApiClient {
     this.refreshPromise = (async () => {
       try {
         const refresh = this.getRefreshToken();
-        if (!refresh) throw new Error('Refresh token not found');
+        if (!refresh) throw new Error("Refresh token not found");
         const form = new URLSearchParams({ refresh_token: refresh });
-        const res = await fetch(`${this.baseUrl}${API_CONFIG.ENDPOINTS.AUTH.REFRESH}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: form,
-        });
+        const res = await fetch(
+          `${this.baseUrl}${API_CONFIG.ENDPOINTS.AUTH.REFRESH}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: form,
+          },
+        );
         if (!res.ok) {
           this.clearTokensCallback();
-          if (res.status === 403 || res.status === 404) throw new Error('Session expired. Please log in again.');
+          if (res.status === 403 || res.status === 404)
+            throw new Error("Session expired. Please log in again.");
           throw new Error(await parseApiError(res));
         }
         const data = await res.json();
@@ -122,7 +131,11 @@ export class ApiClient {
     return this.refreshPromise;
   }
 
-  async request<T>(endpoint: string, options: RequestInit = {}, retry = true): Promise<T> {
+  async request<T>(
+    endpoint: string,
+    options: RequestInit = {},
+    retry = true,
+  ): Promise<T> {
     let token = await this.resolveToken();
     if (token && this.isTokenExpired(token)) {
       try {
@@ -138,7 +151,10 @@ export class ApiClient {
       ...options.headers,
     };
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, { ...options, headers });
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      ...options,
+      headers,
+    });
 
     if ((response.status === 401 || response.status === 403) && retry) {
       try {
@@ -146,11 +162,14 @@ export class ApiClient {
         token = await this.resolveToken();
         const retryRes = await fetch(`${this.baseUrl}${endpoint}`, {
           ...options,
-          headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers },
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...options.headers,
+          },
         });
         if (!retryRes.ok) throw new Error(await parseApiError(retryRes));
-        const ct = retryRes.headers.get('content-type');
-        if (ct?.includes('application/json')) return retryRes.json();
+        const ct = retryRes.headers.get("content-type");
+        if (ct?.includes("application/json")) return retryRes.json();
         return {} as T;
       } catch (e) {
         this.clearTokensCallback();
@@ -160,8 +179,8 @@ export class ApiClient {
 
     if (!response.ok) throw new Error(await parseApiError(response));
 
-    const ct = response.headers.get('content-type');
-    if (ct?.includes('application/json')) return response.json();
+    const ct = response.headers.get("content-type");
+    if (ct?.includes("application/json")) return response.json();
     return {} as T;
   }
 
@@ -169,7 +188,11 @@ export class ApiClient {
    * POST multipart/form-data expecting JSON. Rebuilds the body on every attempt — `FormData` is
    * one-shot in the Fetch API, so reusing the same instance after 401/refresh would send an empty body.
    */
-  async requestMultipartJson<T>(endpoint: string, buildFormData: () => FormData, retry = true): Promise<T> {
+  async requestMultipartJson<T>(
+    endpoint: string,
+    buildFormData: () => FormData,
+    retry = true,
+  ): Promise<T> {
     let token = await this.resolveToken();
     if (token && this.isTokenExpired(token)) {
       try {
@@ -187,7 +210,7 @@ export class ApiClient {
         ...(t ? { Authorization: `Bearer ${t}` } : {}),
       };
       return fetch(`${this.baseUrl}${endpoint}`, {
-        method: 'POST',
+        method: "POST",
         headers,
         body: form,
       });
@@ -207,8 +230,8 @@ export class ApiClient {
 
     if (!response.ok) throw new Error(await parseApiError(response));
 
-    const ct = response.headers.get('content-type');
-    if (ct?.includes('application/json')) return response.json();
+    const ct = response.headers.get("content-type");
+    if (ct?.includes("application/json")) return response.json();
     return {} as T;
   }
 
@@ -228,14 +251,6 @@ export class ApiClient {
   }
 }
 
-/** Create client for server (e.g. in Server Components). Pass getToken from cookies(). */
-export async function createServerApiClient(getToken: GetToken): Promise<ApiClient> {
-  return new ApiClient({
-    baseUrl: API_CONFIG.BASE_URL,
-    getToken,
-  });
-}
-
 /** Singleton for client-side. Reads/writes cookies. */
 let clientSingleton: ApiClient | null = null;
 
@@ -245,9 +260,19 @@ function getClientSingleton(): ApiClient {
       baseUrl: API_CONFIG.BASE_URL,
       getToken: () => readBrowserAccessToken(),
       setTokens: (access, refresh) => {
-        if (access) setCookie(AUTH_CONFIG.ACCESS_TOKEN_KEY, access, COOKIE_MAX_AGE_ACCESS);
+        if (access)
+          setCookie(
+            AUTH_CONFIG.ACCESS_TOKEN_KEY,
+            access,
+            COOKIE_MAX_AGE_ACCESS,
+          );
         else deleteCookie(AUTH_CONFIG.ACCESS_TOKEN_KEY);
-        if (refresh) setCookie(AUTH_CONFIG.REFRESH_TOKEN_KEY, refresh, COOKIE_MAX_AGE_REFRESH);
+        if (refresh)
+          setCookie(
+            AUTH_CONFIG.REFRESH_TOKEN_KEY,
+            refresh,
+            COOKIE_MAX_AGE_REFRESH,
+          );
         else deleteCookie(AUTH_CONFIG.REFRESH_TOKEN_KEY);
       },
       clearTokens: () => {
@@ -266,10 +291,11 @@ export function getClientApiClient(): ApiClient {
 
 /** Use only in Server Components or Server Actions. Reads token from next/headers cookies(). */
 export async function getServerApiClient(): Promise<ApiClient> {
-  const { cookies } = await import('next/headers');
+  const { cookies } = await import("next/headers");
   const store = await cookies();
   return new ApiClient({
     baseUrl: API_CONFIG.BASE_URL,
-    getToken: () => Promise.resolve(store.get(AUTH_CONFIG.ACCESS_TOKEN_KEY)?.value ?? null),
+    getToken: () =>
+      Promise.resolve(store.get(AUTH_CONFIG.ACCESS_TOKEN_KEY)?.value ?? null),
   });
 }
