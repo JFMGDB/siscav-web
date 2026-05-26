@@ -11,4 +11,9 @@
 10038	WARN	(Content Security Policy Header Not Set - deferred; Phase 2 with nonce)
 10015	WARN	(Incomplete or No Cache-control and Pragma HTTP Header Set)
 
+10044	IGNORE	(Big Redirect Detected - expected / to /dashboard redirect)
+10049	IGNORE	(Non-Storable Content - typical Next.js assets and 404s)
+10109	IGNORE	(Modern Web Application - informational for SPAs)
+90004	IGNORE	(Cross-Origin-Embedder-Policy - not required for this app)
+
 10016	IGNORE	(Web Browser XSS Protection Not Enabled - modern browsers ignore X-XSS-Protection)
