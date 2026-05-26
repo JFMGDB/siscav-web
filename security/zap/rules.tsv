@@ -1,0 +1,14 @@
+# zap-baseline rule configuration file
+# Action values: WARN / IGNORE / FAIL
+# Only the rule identifiers are used; names are informational.
+
+10020	FAIL	(X-Frame-Options Header Scanner)
+10021	FAIL	(X-Content-Type-Options Header Missing)
+
+10010	WARN	(Cookie No HttpOnly Flag - current design uses JS-readable cookies)
+10011	WARN	(Cookie Without Secure Flag - environment-dependent; requires HTTPS)
+
+10038	WARN	(Content Security Policy Header Not Set - deferred; Phase 2 with nonce)
+10015	WARN	(Incomplete or No Cache-control and Pragma HTTP Header Set)
+
+10016	IGNORE	(Web Browser XSS Protection Not Enabled - modern browsers ignore X-XSS-Protection)

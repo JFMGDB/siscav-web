@@ -131,3 +131,23 @@ Este projeto utiliza **GitHub Actions** para automação de CI. O workflow defin
 3. **Testes:** Garante que a lógica existente não foi quebrada.
 
 Se qualquer uma dessas etapas falhar, a mesclagem do pullrequest será bloqueada.
+
+## Varredura de Segurança (DAST)
+
+Este repositório inclui varredura automatizada de **DAST (Dynamic Application Security Testing)** usando **OWASP ZAP**.
+
+### Workflow no CI
+
+- Baseline scan: `.github/workflows/zap-scan.yml` roda em `push` (main/develop) e `pull_request` (develop).
+- Full scan: roda semanalmente via `schedule` e pode ser acionado manualmente via `workflow_dispatch`.
+
+Relatórios são enviados como artefatos do GitHub Actions:
+
+- `zap-baseline-report` (HTML + JSON)
+- `zap-full-report` (HTML + JSON)
+
+Os thresholds (FAIL/WARN/IGNORE) ficam em `security/zap/rules.tsv`.
+
+A varredura é executada **somente no CI** (GitHub Actions). Não é necessário Docker no repositório: as actions oficiais do ZAP (`zaproxy/action-baseline`, `zaproxy/action-full-scan`) rodam o scanner no runner do GitHub.
+
+Para obter os relatórios: **Actions** → workflow **ZAP DAST** → job concluído → **Artifacts**.
