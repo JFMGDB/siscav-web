@@ -17,9 +17,11 @@ import {
   DirectionsCar as CarIcon,
   Description as DescriptionIcon,
   DocumentScanner as OcrIcon,
+  Sensors as SensorsIcon,
 } from "@mui/icons-material";
 import { getClientApiClient } from "@/lib/api/client";
 import * as mlApi from "@/lib/api/ml";
+import * as logsApi from "@/lib/api/logs";
 import * as whitelistApi from "@/lib/api/whitelist";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { Card } from "@/components/ui/Card";
@@ -31,15 +33,18 @@ const AUTO_OCR_INTERVAL_MS = 4500;
 interface ManualRegistrationFormProps {
   initialPlate?: string;
   onSuccess?: () => void;
+  onAccessLogRegistered?: () => void;
 }
 
 export default function ManualRegistrationForm({
   initialPlate,
   onSuccess,
+  onAccessLogRegistered,
 }: ManualRegistrationFormProps) {
   const [plate, setPlate] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [accessLogBusy, setAccessLogBusy] = useState(false);
   const [ocrBusy, setOcrBusy] = useState(false);
   const [autoOcrEnabled, setAutoOcrEnabled] = useState(true);
   const [candidates, setCandidates] = useState<PlateCandidate[]>([]);
@@ -133,6 +138,56 @@ export default function ManualRegistrationForm({
       clearInterval(id);
     };
   }, [autoOcrEnabled, runServerOcr]);
+
+  const handleRegisterAccessAttempt = async () => {
+    if (!plate) return;
+
+    setAccessLogBusy(true);
+    try {
+      let blob = await captureFrame();
+      if (!blob || blob.size === 0) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 640;
+        canvas.height = 360;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = "#1e293b";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#94a3b8";
+          ctx.font = "24px sans-serif";
+          ctx.fillText("Simulação IoT — sem frame de câmara", 80, 180);
+        }
+        blob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(
+            (b) => (b ? resolve(b) : reject(new Error("Falha ao gerar imagem."))),
+            "image/jpeg",
+            0.92,
+          );
+        });
+      }
+
+      const log = await logsApi.createAccessLog(
+        getClientApiClient(),
+        plate,
+        blob,
+        "monitor-access.jpg",
+      );
+
+      const statusLabel =
+        log.status === "Authorized" ? "autorizado" : "negado";
+      showMessage(
+        `Tentativa registrada: ${log.plate_string_detected} (${statusLabel}).`,
+        log.status === "Authorized" ? "success" : "warning",
+      );
+      onAccessLogRegistered?.();
+    } catch (e) {
+      const msg =
+        e instanceof Error ? e.message : "Erro ao registrar tentativa de acesso.";
+      showMessage(msg, "error");
+    } finally {
+      setAccessLogBusy(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -278,6 +333,28 @@ export default function ManualRegistrationForm({
               ),
             }}
           />
+
+          <Button
+            type="button"
+            variant="contained"
+            color="secondary"
+            size="large"
+            startIcon={accessLogBusy ? null : <SensorsIcon />}
+            onClick={() => void handleRegisterAccessAttempt()}
+            disabled={accessLogBusy || loading || !plate}
+            fullWidth
+            sx={{ py: 1.5, fontWeight: 600 }}
+          >
+            {accessLogBusy
+              ? "Registrando tentativa…"
+              : "Registrar tentativa de acesso"}
+          </Button>
+          <Typography variant="caption" color="text.secondary" display="block">
+            Simula o dispositivo IoT:{" "}
+            <code style={{ fontSize: "0.75rem" }}>POST /api/v1/access_logs/</code>{" "}
+            (multipart <code style={{ fontSize: "0.75rem" }}>file</code> +{" "}
+            <code style={{ fontSize: "0.75rem" }}>plate</code>).
+          </Typography>
 
           <Button
             type="submit"

@@ -5,13 +5,22 @@
 
 import { API_CONFIG } from "@/constants";
 
+/** API stores keys like `uploads/uuid.jpg`; the image route expects the file name only. */
+export function getAccessLogImageFileName(key: string): string {
+  const trimmed = key.trim();
+  if (!trimmed) return "";
+  const parts = trimmed.split(/[/\\]/);
+  return parts[parts.length - 1] ?? trimmed;
+}
+
 /**
  * Returns the full URL for an access log image given its storage key.
- * Used for log thumbnails and capture images served at /api/v1/access_logs/images/{key}.
+ * Prefer fetchAccessLogImage() with JWT — this URL alone cannot authenticate.
  */
 export function getAccessLogImageUrl(key: string): string {
-  if (!key) return "";
+  const fileName = getAccessLogImageFileName(key);
+  if (!fileName) return "";
   const base = API_CONFIG.BASE_URL.replace(/\/$/, "");
-  const path = `${API_CONFIG.ENDPOINTS.IMAGES.BASE}/${encodeURIComponent(key)}`;
+  const path = `${API_CONFIG.ENDPOINTS.IMAGES.BASE}/${encodeURIComponent(fileName)}`;
   return `${base}${path.startsWith("/") ? "" : "/"}${path}`;
 }

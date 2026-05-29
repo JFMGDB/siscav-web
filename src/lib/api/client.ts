@@ -249,6 +249,41 @@ export class ApiClient {
   getBaseUrl(): string {
     return this.baseUrl;
   }
+
+  /** GET binary response (e.g. access log images) with Bearer auth and refresh retry. */
+  async requestBlob(endpoint: string, retry = true): Promise<Blob> {
+    let token = await this.resolveToken();
+    if (token && this.isTokenExpired(token)) {
+      try {
+        await this.refreshTokens();
+        token = await this.resolveToken();
+      } catch {
+        // continue; server may still return 401
+      }
+    }
+
+    const fetchOnce = async (authToken: string | null) =>
+      fetch(`${this.baseUrl}${endpoint}`, {
+        method: "GET",
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+      });
+
+    let response = await fetchOnce(token);
+
+    if ((response.status === 401 || response.status === 403) && retry) {
+      try {
+        await this.refreshTokens();
+        token = await this.resolveToken();
+        response = await fetchOnce(token);
+      } catch (e) {
+        this.clearTokensCallback();
+        throw e;
+      }
+    }
+
+    if (!response.ok) throw new Error(await parseApiError(response));
+    return response.blob();
+  }
 }
 
 /** Singleton for client-side. Reads/writes cookies. */

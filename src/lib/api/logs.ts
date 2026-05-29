@@ -1,6 +1,43 @@
 import type { ApiClient } from "./client";
 import type { AccessLog, AccessLogFilters, PaginatedResponse } from "@/types";
 import { API_CONFIG } from "@/constants";
+import { getAccessLogImageFileName } from "@/lib/image-url";
+
+export async function createAccessLog(
+  client: ApiClient,
+  plate: string,
+  imageBlob: Blob,
+  fileName = "capture.jpg",
+): Promise<AccessLog> {
+  if (!imageBlob || imageBlob.size === 0) {
+    throw new Error(
+      "Imagem vazia: capture um frame da câmara ou use a webcam em /camera.",
+    );
+  }
+
+  return client.requestMultipartJson<AccessLog>(
+    `${API_CONFIG.ENDPOINTS.LOGS}/`,
+    () => {
+      const form = new FormData();
+      form.append("file", imageBlob, fileName);
+      form.append("plate", plate);
+      return form;
+    },
+    false,
+  );
+}
+
+export async function fetchAccessLogImage(
+  client: ApiClient,
+  imageStorageKey: string,
+): Promise<Blob> {
+  const fileName = getAccessLogImageFileName(imageStorageKey);
+  if (!fileName) {
+    throw new Error("Chave de imagem inválida.");
+  }
+  const endpoint = `${API_CONFIG.ENDPOINTS.IMAGES.BASE}/${encodeURIComponent(fileName)}`;
+  return client.requestBlob(endpoint);
+}
 
 function normalizePaginated(
   response: PaginatedResponse<AccessLog> | AccessLog[],

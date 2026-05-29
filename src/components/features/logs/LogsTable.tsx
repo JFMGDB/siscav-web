@@ -4,7 +4,7 @@
  * Logs Table - uses useLogs (TanStack Query) with filters.
  */
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Chip,
   Typography,
@@ -19,6 +19,8 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import {
@@ -31,7 +33,8 @@ import type { AccessLog, AccessLogFilters, PaginatedResponse } from "@/types";
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { Card } from "@/components/ui/Card";
 import { StatusChip } from "@/components/ui/StatusChip";
-import { getAccessLogImageUrl } from "@/lib/image-url";
+import { getClientApiClient } from "@/lib/api/client";
+import * as logsApi from "@/lib/api/logs";
 import { useLogs } from "@/hooks/use-logs";
 
 interface LogsTableProps {
@@ -49,7 +52,10 @@ function parseLogStatusFilter(value: string): LogStatusFilter {
 export default function LogsTable({ initialData }: LogsTableProps = {}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<LogStatusFilter>("ALL");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageKey, setSelectedImageKey] = useState<string | null>(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const filters: AccessLogFilters = useMemo(() => {
     const f: AccessLogFilters = { skip: 0, limit: 100 };
@@ -59,6 +65,55 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
   }, [statusFilter, searchTerm]);
 
   const { logs, loading, refetch } = useLogs(filters, initialData);
+
+  useEffect(() => {
+    if (!selectedImageKey) {
+      setSelectedImageUrl(null);
+      setImageError(null);
+      setImageLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadImage = async () => {
+      setImageLoading(true);
+      setImageError(null);
+      setSelectedImageUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
+      try {
+        const blob = await logsApi.fetchAccessLogImage(
+          getClientApiClient(),
+          selectedImageKey,
+        );
+        if (cancelled) return;
+        setSelectedImageUrl(URL.createObjectURL(blob));
+      } catch (e) {
+        if (cancelled) return;
+        setImageError(
+          e instanceof Error ? e.message : "Não foi possível carregar a imagem.",
+        );
+      } finally {
+        if (!cancelled) setImageLoading(false);
+      }
+    };
+
+    void loadImage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedImageKey]);
+
+  const closeImageDialog = () => {
+    if (selectedImageUrl) URL.revokeObjectURL(selectedImageUrl);
+    setSelectedImageKey(null);
+    setSelectedImageUrl(null);
+    setImageError(null);
+    setImageLoading(false);
+  };
 
   const columns: Column<AccessLog>[] = [
     {
@@ -109,9 +164,7 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
             size="small"
             variant="outlined"
             startIcon={<ImageIcon />}
-            onClick={() =>
-              setSelectedImage(getAccessLogImageUrl(value as string))
-            }
+            onClick={() => setSelectedImageKey(value as string)}
             sx={{
               textTransform: "none",
               "&:hover": {
@@ -222,8 +275,8 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
 
       {/* Image Modal */}
       <Dialog
-        open={!!selectedImage}
-        onClose={() => setSelectedImage(null)}
+        open={!!selectedImageKey}
+        onClose={closeImageDialog}
         maxWidth="md"
         fullWidth
         PaperProps={{
@@ -232,9 +285,9 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
           },
         }}
       >
-        <DialogContent sx={{ p: 0, position: "relative" }}>
+        <DialogContent sx={{ p: 0, position: "relative", minHeight: 240 }}>
           <IconButton
-            onClick={() => setSelectedImage(null)}
+            onClick={closeImageDialog}
             sx={{
               position: "absolute",
               top: 8,
@@ -249,10 +302,27 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
           >
             <CloseIcon />
           </IconButton>
-          {selectedImage && (
+          {imageLoading && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 240,
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          )}
+          {imageError && !imageLoading && (
+            <Alert severity="error" sx={{ m: 2 }}>
+              {imageError}
+            </Alert>
+          )}
+          {selectedImageUrl && !imageLoading && (
             <Box
               component="img"
-              src={selectedImage}
+              src={selectedImageUrl}
               alt="Imagem capturada"
               sx={{
                 width: "100%",

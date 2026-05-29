@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Box, Grid, Typography, Container } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 import CameraFeed from "@/components/features/monitor/CameraFeed";
 import PlateRecognitionDisplay from "@/components/features/monitor/PlateRecognitionDisplay";
 import ManualRegistrationForm from "@/components/features/monitor/ManualRegistrationForm";
@@ -9,6 +10,7 @@ import { MonitorFrameCaptureProvider } from "@/contexts/monitor-frame-capture-co
 
 export default function MonitorPage() {
   const [unknownPlate, setUnknownPlate] = useState<string>("");
+  const queryClient = useQueryClient();
 
   const handleUnknownPlate = (plate: string) => {
     setUnknownPlate(plate);
@@ -16,6 +18,11 @@ export default function MonitorPage() {
 
   const handleRegistrationSuccess = () => {
     setUnknownPlate("");
+  };
+
+  const handleAccessLogRegistered = () => {
+    void queryClient.invalidateQueries({ queryKey: ["monitor", "lastCapture"] });
+    void queryClient.invalidateQueries({ queryKey: ["logs"] });
   };
 
   return (
@@ -52,6 +59,7 @@ export default function MonitorPage() {
                 <ManualRegistrationForm
                   initialPlate={unknownPlate}
                   onSuccess={handleRegistrationSuccess}
+                  onAccessLogRegistered={handleAccessLogRegistered}
                 />
               </Box>
             </Box>
