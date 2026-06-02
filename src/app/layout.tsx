@@ -6,7 +6,11 @@ import { Providers } from "@/components/providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Mantis - Controle de Acesso Veicular",
+  applicationName: "Mantis",
+  title: {
+    default: "Mantis - Controle de Acesso Veicular",
+    template: "%s | Mantis",
+  },
   description: "Sistema de controle de acesso veicular",
 };
 

@@ -23,7 +23,7 @@ The stack remains Next.js, React, TypeScript, MUI, and TanStack Query. A full UI
 
 - **Palette:** Teal primary (`#0d9488`) replacing generic Tailwind blue.
 - **Typography:** Inter (loaded in root layout) aligned with MUI `typography.fontFamily`.
-- **Assets:** `public/mantis-logo-mark.png` (icon), `public/mantis-illustration.jpg` (login panel). Favicon deferred.
+- **Assets:** `public/mantis-logo-mark.png` (icon), `public/mantis-illustration.jpg` (login panel). Favicon implemented in ADR 0009.
 - **Icons:** Continue using `@mui/icons-material`; no new icon library in Phase 1.
 - **Login:** Split layout (form column left, full-bleed illustration right on desktop; image strip + form on mobile). Removed gradient backgrounds, SVG pattern overlays, elevation-24 cards, and overlay marketing text on the illustration.
 - **Auth routes:** `/login` and `/register` share `AuthPage` (no MUI tabs). Mode switch via footer links only. Welcome copy per route (`AuthWelcomeHeader`). Display font: Manrope on public auth layout.
@@ -49,7 +49,7 @@ The stack remains Next.js, React, TypeScript, MUI, and TanStack Query. A full UI
 
 - Existing users lose camera config in `localStorage` if they had data under `siscav-web.camera.v1` (key renamed; migration not implemented in Phase 1).
 - CI/docs may still reference SISCAV until updated in a follow-up.
-- Favicon and empty-state illustrations remain future work.
+- Empty-state illustrations remain future work (favicon: see ADR 0009).
 - Components that hardcoded blue (`#2563eb`) in `sx` may need per-file updates in later phases; theme and StatCard primary color were updated in Phase 1.
 
 ## Alternatives considered
