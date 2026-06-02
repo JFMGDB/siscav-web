@@ -6,7 +6,7 @@ Accepted.
 
 ## Context
 
-The SISCAV front-end had grown with mixed naming (hyphenated vs PascalCase component files), shared and feature code interleaved, and no clear convention for where to place new code. This made navigation and onboarding harder and increased the risk of inconsistent patterns.
+The Mantis frontend had grown with mixed naming (hyphenated vs PascalCase component files), shared and feature code interleaved, and no clear convention for where to place new code. This made navigation and onboarding harder and increased the risk of inconsistent patterns.
 
 ## Decision
 

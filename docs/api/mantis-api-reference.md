@@ -1,4 +1,6 @@
-# SISCAV-API DOCUMENTATION
+# Mantis API Reference
+
+> Local reference copy for frontend integration. The backend repository owns the canonical API contract.
 
 **Versão:** 1.0.0  
 **Base URL:** `http://localhost:8000/api/v1`  

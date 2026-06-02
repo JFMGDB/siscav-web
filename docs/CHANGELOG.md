@@ -19,8 +19,9 @@
 
 ### Documentation
 
-- `docs/api/siscav_api_documentation.md`: register 422, `GET /users/me`, rate limits aligned with backend (3/min register)
+- `docs/api/mantis-api-reference.md`: register 422, `GET /users/me`, rate limits aligned with backend (3/min register)
 - ADR 0008 updated for auth UX (routes, Zod, error handling)
+- Documentation rebrand and consolidation (Mantis, English)
 
 ## [0.4.0] - 2025-12-06
 

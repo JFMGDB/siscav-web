@@ -1,5 +1,6 @@
 {
   "name": "mantis-web",
+  "description": "Mantis vehicle access control admin panel (Next.js)",
   "version": "0.1.0",
   "private": true,
   "scripts": {

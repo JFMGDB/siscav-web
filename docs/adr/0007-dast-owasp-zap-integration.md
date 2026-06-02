@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-The `siscav-web` frontend is a Next.js (App Router) web application that authenticates against an external FastAPI backend using JWT (access/refresh tokens). The project currently has:
+The **Mantis Web** frontend (`siscav-web` repository folder) is a Next.js (App Router) web application that authenticates against an external FastAPI backend using JWT (access/refresh tokens). The project currently has:
 
 - No automated Dynamic Application Security Testing (DAST)
 - No consistent security-header baseline (CSP/HSTS/anti-clickjacking/etc.)
@@ -16,7 +16,7 @@ Given the academic nature of the project and the browser-exposed attack surface 
 
 ## Decision
 
-Adopt **OWASP ZAP** as the DAST tool for `siscav-web`, integrated into GitHub Actions with:
+Adopt **OWASP ZAP** as the DAST tool for Mantis Web, integrated into GitHub Actions with:
 
 - **Baseline scans** (passive-focused) on every push and pull request
 - **Full scans** (active + passive) on a weekly schedule and via manual dispatch

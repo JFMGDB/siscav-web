@@ -1,87 +1,87 @@
 ---
-name: Template de Pull Request
-about: Template padrão para a abertura de Pull Requests neste projeto.
-title: "feat: Descreva a nova funcionalidade"
+name: Pull Request Template
+about: Standard template for opening pull requests in this project.
+title: "feat: Describe the new feature"
 labels: "enhancement"
 assignees: ""
 ---
 
-## 📝 Descrição
+## Description
 
-<!-- Descreva suas alterações de forma clara e concisa. Qual problema está sendo resolvido? Qual é o objetivo deste PR? -->
-
----
-
-## 🎯 Tipo de Mudança
-
-<!-- Marque com 'x' o tipo de mudança que este PR introduz. -->
-
-- [ ] 🐛 Correção de Bug (bug fix)
-- [ ] ✨ Nova Funcionalidade (new feature)
-- [ ] 💥 Mudança Que Quebra (breaking change)
-- [ ] 📚 Atualização de Documentação (documentation)
-- [ ] 🎨 Refatoração de Código (refactoring)
-- [ ] ⚡ Melhoria de Performance (performance improvement)
-- [ ] ✅ Adição ou Melhoria de Testes (tests)
-- [ ] 🔧 Configuração ou CI/CD (chore)
+<!-- Describe your changes clearly and concisely. What problem does this solve? What is the goal of this PR? -->
 
 ---
 
-## 🔗 Tarefa Relacionada
+## Type of Change
 
-<!-- Se aplicável, referencie a tarefa do backlog. Ex: FND-08 -->
+<!-- Mark with 'x' the type of change this PR introduces. -->
 
-- **Tarefa:**
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+- [ ] Code refactoring
+- [ ] Performance improvement
+- [ ] Tests added or improved
+- [ ] Configuration or CI/CD (chore)
 
 ---
 
-## 📋 Checklist de Verificação
+## Related Task
 
-<!-- Passe por todos os pontos a seguir e marque as caixas que se aplicam. -->
+<!-- If applicable, reference the backlog task. Ex: FND-08 -->
 
-### Antes de Abrir o PR
+- **Task:**
 
-- [ ] Eu li o `GUIA_CI.md` e o `GUIA_TESTES_LOCAIS.md`.
-- [ ] Meu código segue o estilo e as convenções deste projeto.
-- [ ] Eu executei a verificação completa do CI localmente e todos os checks passaram.
+---
+
+## Checklist
+
+<!-- Go through each item and mark the boxes that apply. -->
+
+### Before Opening the PR
+
+- [ ] I read the [Continuous Integration](https://github.com/JFMGDB/siscav-web/blob/develop/README.md#continuous-integration) and [Scripts](https://github.com/JFMGDB/siscav-web/blob/develop/README.md#scripts) sections in `README.md`.
+- [ ] My code follows this project's style and conventions.
+- [ ] I ran the full local CI checks and all passed:
   - `npm run lint`
   - `npm test`
   - `npm run build`
-- [ ] Todos os testes novos e existentes passaram. ✅
+- [ ] All new and existing tests passed.
 
-### Código e Documentação
+### Code and Documentation
 
-- [ ] Eu adicionei testes que provam que minha correção é eficaz ou que minha funcionalidade funciona.
-- [ ] A documentação relevante (como `README.md` ou outros guias) foi atualizada para refletir minhas mudanças.
-- [ ] Meu código não gera novos warnings no console ou no terminal.
-- [ ] Meus commits seguem o padrão de [Commits Convencionais](https://www.conventionalcommits.org/).
-
----
-
-## 🧪 Como Testar Manualmente
-
-<!-- Forneça instruções passo a passo para que um revisor possa testar suas alterações. -->
-
-1. Faça o checkout desta branch (`git fetch origin && git checkout <nome-da-branch>`).
-2. Instale as dependências (`npm install`).
-3. Inicie a aplicação (`npm run dev`).
-4. Navegue para a página `X` e verifique que o componente `Y` agora se comporta de maneira `Z`.
+- [ ] I added tests that prove my fix is effective or my feature works.
+- [ ] Relevant documentation (`README.md`, `docs/`, or ADRs) was updated to reflect my changes.
+- [ ] My code does not introduce new console or terminal warnings.
+- [ ] My commits follow [Conventional Commits](https://www.conventionalcommits.org/).
 
 ---
 
-## 📸 Screenshots (Se aplicável)
+## Manual Testing
 
-<!-- Se o seu PR inclui mudanças na UI, adicione screenshots ou um GIF para demonstrar as alterações. -->
+<!-- Step-by-step instructions for reviewers to test your changes. -->
+
+1. Check out this branch (`git fetch origin && git checkout <branch-name>`).
+2. Install dependencies (`npm install`).
+3. Start the app (`npm run dev`).
+4. Navigate to page `X` and verify component `Y` behaves as `Z`.
 
 ---
 
-## 📝 Notas Adicionais
+## Screenshots (if applicable)
 
-<!-- Qualquer outra informação que você acredite ser relevante para o revisor (ex: bibliotecas adicionadas, decisões de arquitetura, etc.). -->
+<!-- If this PR includes UI changes, add screenshots or a GIF. -->
 
 ---
 
-### ✅ Revisão Final
+## Additional Notes
 
-- [ ] Eu revisei meu próprio código linha por linha.
-- [ ] Eu verifiquei que não há código comentado ou logs de debug desnecessários.
+<!-- Any other information relevant to the reviewer (libraries added, architecture decisions, etc.). -->
+
+---
+
+### Final Review
+
+- [ ] I reviewed my own code line by line.
+- [ ] I verified there is no commented-out code or unnecessary debug logs.

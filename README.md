@@ -1,75 +1,81 @@
-# Sistema de Controle de Entrada de Automática de Veículos (SISCAV-WEB) - Frontend
+# Mantis Web — Frontend
 
 [![CI Pipeline](https://github.com/JFMGDB/siscav-web/actions/workflows/ci.yml/badge.svg)](https://github.com/JFMGDB/siscav-web/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2.6-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Code style: Prettier](https://img.shields.io/badge/code%20style-Prettier-ff69b4.svg)](https://prettier.io/)
-[![License: Academic](https://img.shields.io/badge/license-Academic-green.svg)](https://unicap.br)
+[![License: Academic](https://img.shields.io/badge/license-Academic-green.svg)](https://portal.unicap.br/)
 
-## Visão Geral
+## Overview
 
-O projeto é dividido em dois repositórios: `siscav-api` (para o backend) e `siscav-web` (para o frontend).
+**Mantis** is a vehicle access control system. The project is split across two repositories:
 
-Este repositório (`siscav-web`) contém toda a lógica do lado do cliente e a interface do usuário, construída como um painel de administração. Ele é responsável por:
+- **`siscav-api`** — Mantis API backend (REST)
+- **`siscav-web`** — this repository; admin panel frontend
 
-- Fornecer uma interface de login para administradores.
-- Permitir o gerenciamento (CRUD) da lista de veículos autorizados.
-- Exibir o histórico de logs de acesso.
-- Oferecer a funcionalidade de acionamento remoto do portão.
+This repository contains the client-side application: an admin dashboard responsible for:
 
-## Principais Funcionalidades
+- Administrator login and access control
+- CRUD management of the authorized vehicle whitelist
+- Access log history
+- Remote gate triggering
 
-- **Página de Login e Controle de Acesso**
-- **Painel de Gerenciamento da Whitelist**
-- **Painel de Visualização de Logs**
-- **Visualização de Imagens**
-- **Acionamento Remoto Manual**
-- **Pré-visualização de câmara** (`/camera`): stream USB ou URL na rede (MJPEG / HLS); o vídeo não passa pela API
+Further documentation lives under [`docs/`](docs/README.md) (ADRs, changelog, API reference).
 
-## Pilha Tecnológica
+## Features
+
+- Login, registration, and access control
+- Whitelist management panel
+- Access log viewer with images
+- Manual remote gate trigger
+- Camera preview (`/camera`): USB or network stream (MJPEG / HLS); video does not pass through the API
+
+## Tech Stack
 
 - **Framework:** Next.js 16 (React 19)
-- **Linguagem:** TypeScript
-- **Estilização:** MUI (Material UI) + Emotion
-- **Testes:** Jest, React Testing Library
-- **Qualidade de Código:** ESLint, Prettier
+- **Language:** TypeScript
+- **Styling:** MUI (Material UI) + Emotion
+- **Testing:** Jest, React Testing Library
+- **Code quality:** ESLint, Prettier
 - **DevOps:** GitHub Actions
 
-## Estrutura do Projeto
+## Project Structure
 
 ```bash
 siscav-web/
-├── .github/
-│   └── workflows/
-│       └── ci.yml # Pipeline de CI (lint, build, testes)
-├── public/ # Ativos estáticos
+├── .github/workflows/     # CI and ZAP DAST pipelines
+├── docs/                  # ADRs, changelog, API reference
+├── public/                # Static assets
+├── security/zap/          # OWASP ZAP rule thresholds
 ├── src/
 │   ├── app/
-│   │   ├── (auth)/ # Rotas protegidas (ex: /dashboard)
-│   │   ├── (public)/ # Rotas públicas (ex: /login)
-│   │   ├── layout.tsx # Layout raiz da aplicação
-│   │   └── page.tsx # Página inicial
+│   │   ├── (auth)/        # Protected routes (e.g. /dashboard)
+│   │   ├── (public)/      # Public routes (e.g. /login)
+│   │   ├── layout.tsx
+│   │   └── page.tsx
 │   ├── components/
-│   │   ├── features/ # Componentes "inteligentes" com lógica de negócio
-│   │   └── ui/ # Componentes de UI genéricos e reutilizáveis
-│   ├── hooks/ # Hooks React customizados
-│   └── lib/ # Funções utilitárias, cliente de API, etc.
-├── .gitignore
-├── eslint.config.mjs # Configuração do ESLint (formato "flat")
-├── jest.config.mjs # Configuração do Jest
-├── next.config.ts # Configuração do Next.js
-├── package.json # Dependências e scripts do projeto
-└── tsconfig.json # Configuração do TypeScript
+│   │   ├── features/      # Domain components with business logic
+│   │   └── ui/            # Shared reusable UI primitives
+│   ├── constants/
+│   ├── hooks/
+│   ├── lib/               # API client, utilities
+│   ├── theme/
+│   └── types/
+├── eslint.config.mjs
+├── jest.config.mjs
+├── next.config.ts
+├── package.json
+└── tsconfig.json
 ```
 
-## Guia de Instalação
+## Installation
 
-### Pré-requisitos
+### Prerequisites
 
-- [Node.js](https://nodejs.org/) (versão 20.x ou superior)
-- [npm](https://www.npmjs.com/) (geralmente instalado com o Node.js)
+- [Node.js](https://nodejs.org/) 20.x or later
+- [npm](https://www.npmjs.com/)
 
-### Instalação
+### Setup
 
 ```bash
 git clone https://github.com/JFMGDB/siscav-web.git
@@ -77,77 +83,80 @@ cd siscav-web
 npm install
 ```
 
-### Configuração local da API
+### API configuration
 
-O frontend comunica com o backend no repositório **siscav-api** via REST. A variável de ambiente **`NEXT_PUBLIC_API_URL`** define a URL base dessa API. O valor típico em desenvolvimento é **`http://localhost:8000`**, alinhado ao fallback em `src/constants/index.ts` quando a variável não está definida.
+The frontend communicates with the Mantis API backend (`siscav-api`) over REST. Set the base URL via environment variables:
 
-Copie o ficheiro de exemplo e ajuste se necessário:
+- **Preferred:** `NEXT_PUBLIC_MANTIS_API_URL`
+- **Legacy fallbacks:** `NEXT_PUBLIC_SISCAV_API_URL`, `NEXT_PUBLIC_API_URL` (see `src/constants/index.ts`)
+
+Typical development value: `http://localhost:8000`.
+
+Copy the example env file and adjust if needed:
 
 ```bash
 cp .env.example .env.local
 ```
 
-No Windows (PowerShell): `Copy-Item .env.example .env.local`
+Windows (PowerShell): `Copy-Item .env.example .env.local`
 
-### Pré-visualização de câmara (`/camera`)
+### Camera preview (`/camera`)
 
-- **USB:** `navigator.mediaDevices.getUserMedia` exige contexto seguro — use **HTTPS** em produção ou **`http://localhost`** / **`https://localhost`** em desenvolvimento.
-- **Conteúdo misto:** se o painel estiver em **HTTPS**, o browser bloqueia streams **HTTP** (ex. câmaras IP só com `http://`). Use URL **https://** ou aceda ao frontend em HTTP na rede local durante testes.
-- **CORS / rede:** pré-visualização por `<img>` costuma ser mais tolerante que `fetch`; streams inacessíveis mostram erro na UI.
-- **Safari / iOS:** comportamento de `getUserMedia` e formatos varia; HLS pode funcionar nativamente onde `hls.js` não é necessário.
-- **Monitoramento:** em **Pré-visualização**, use **Guardar configuração** (USB ou URL). O mesmo feed ao vivo aparece em **Monitoramento**; a configuração fica em `localStorage` neste browser (ver também **Configurações**).
-- **OCR no servidor:** em **Monitoramento → Cadastro rápido**, **OCR automático** (por defeito) e **Ler placa agora** enviam JPEG em `multipart` (`file`) para `POST /api/v1/ml/recognize-plate` com JWT. Após refresh de token o pedido é refeito com um **novo** `FormData` (o corpo multipart só pode ser lido uma vez). Streams de rede noutro domínio **sem CORS** não permitem capturar o frame no canvas — use USB ou URL com CORS. Requer `requirements-ml.txt` na API para o OCR; caso contrário **503**.
+- **USB:** `navigator.mediaDevices.getUserMedia` requires a secure context — use **HTTPS** in production or **`http://localhost`** / **`https://localhost`** in development.
+- **Mixed content:** if the panel is served over **HTTPS**, the browser blocks **HTTP** streams (e.g. IP cameras with `http://` only). Use an **https://** URL or access the frontend over HTTP on the local network during testing.
+- **CORS / network:** preview via `<img>` is usually more tolerant than `fetch`; inaccessible streams show an error in the UI.
+- **Safari / iOS:** `getUserMedia` and format support varies; HLS may work natively where `hls.js` is not required.
+- **Monitoring:** under **Preview**, use **Save configuration** (USB or URL). The same live feed appears under **Monitoring**; configuration is stored in `localStorage` in this browser (see also **Settings**).
+- **Server OCR:** under **Monitoring → Quick registration**, **Automatic OCR** (default) and **Read plate now** send a JPEG as `multipart` (`file`) to `POST /api/v1/ml/recognize-plate` with a JWT. After a token refresh the request is retried with a **new** `FormData` (multipart bodies can only be read once). Network streams on another domain **without CORS** cannot be captured on canvas — use USB or a CORS-enabled URL. Requires `requirements-ml.txt` on the API; otherwise **503**.
 
 ## Scripts
 
 ### `npm run dev`
 
-Inicia a aplicação em modo de desenvolvimento.
-
-Abra [http://localhost:3000](http://localhost:3000) para visualizá-la no seu navegador. A página será recarregada automaticamente após as edições.
+Starts the development server. Open [http://localhost:3000](http://localhost:3000). The page reloads on file changes.
 
 ### `npm test`
 
-Executa a suíte de testes unitários e de componentes utilizando o Jest. É ideal para ser executado antes de enviar alterações para o repositório.
+Runs unit and component tests with Jest. Run before pushing changes.
 
 ### `npm run lint`
 
-Executa o ESLint para analisar estaticamente o código em busca de problemas de qualidade e estilo.
+Runs ESLint for static analysis.
 
 ### `npm run format`
 
-Formata automaticamente todo o código do projeto utilizando o Prettier para garantir um estilo consistente.
+Formats the codebase with Prettier.
 
 ### `npm run build`
 
-Compila a aplicação para um ambiente de produção. Este comando valida se o projeto está livre de erros de compilação e de tipos do TypeScript.
+Production build. Validates TypeScript types and compilation.
 
-## Integração Contínua (CI)
+## Continuous Integration
 
-Este projeto utiliza **GitHub Actions** para automação de CI. O workflow definido em `.github/workflows/ci.yml` é acionado a cada pull request para a branch `develop` e executa as seguintes verificações:
+GitHub Actions runs on every pull request to `develop` (`.github/workflows/ci.yml`):
 
-1. **Linting:** Garante que o código segue as convenções.
-2. **Build:** Garante que a aplicação compila sem erros.
-3. **Testes:** Garante que a lógica existente não foi quebrada.
+1. **Lint** — code style and conventions
+2. **Build** — compilation succeeds
+3. **Test** — existing logic is not broken
 
-Se qualquer uma dessas etapas falhar, a mesclagem do pullrequest será bloqueada.
+If any step fails, the pull request cannot be merged.
 
-## Varredura de Segurança (DAST)
+## Security Scanning (DAST)
 
-Este repositório inclui varredura automatizada de **DAST (Dynamic Application Security Testing)** usando **OWASP ZAP**.
+Automated **Dynamic Application Security Testing** with **OWASP ZAP** is included. See [ADR 0007](docs/adr/0007-dast-owasp-zap-integration.md) for rationale.
 
-### Workflow no CI
+### CI workflow
 
-- Baseline scan: `.github/workflows/zap-scan.yml` roda em `push` (main/develop) e `pull_request` (develop).
-- Full scan: roda semanalmente via `schedule` e pode ser acionado manualmente via `workflow_dispatch`.
+- **Baseline scan:** `.github/workflows/zap-scan.yml` on `push` (main/develop) and `pull_request` (develop)
+- **Full scan:** weekly via `schedule`; manual trigger via `workflow_dispatch`
 
-Relatórios são enviados como artefatos do GitHub Actions:
+Reports are uploaded as GitHub Actions artifacts:
 
 - `zap-baseline-report` (HTML + JSON)
 - `zap-full-report` (HTML + JSON)
 
-Os thresholds (FAIL/WARN/IGNORE) ficam em `security/zap/rules.tsv`.
+Thresholds (FAIL/WARN/IGNORE) are defined in `security/zap/rules.tsv`.
 
-A varredura é executada **somente no CI** (GitHub Actions). Não é necessário Docker no repositório: as actions oficiais do ZAP (`zaproxy/action-baseline`, `zaproxy/action-full-scan`) rodam o scanner no runner do GitHub.
+Scans run **only in CI** (GitHub Actions). No Docker is required in the repo: official ZAP actions (`zaproxy/action-baseline`, `zaproxy/action-full-scan`) run on the GitHub runner.
 
-Para obter os relatórios: **Actions** → workflow **ZAP DAST** → job concluído → **Artifacts**.
+To download reports: **Actions** → **ZAP DAST** workflow → completed job → **Artifacts**.

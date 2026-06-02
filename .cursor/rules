@@ -1,16 +1,16 @@
 ## Project
 
-**SISCAV-Web**
+**Mantis Web**
 
-Frontend administrativo do **Sistema de Controle de Entrada Automática de Veículos (SISCAV)**: painel web em **Next.js** (App Router) que se integra ao backend **`siscav-api`** via REST. Administradores autenticam-se, gerenciam a whitelist de placas, consultam logs de acesso (com imagens), acompanham o monitor/captura e acionam o portão; há também fluxos de dispositivos (ex. Bluetooth) em configurações.
+Administrative frontend for **Mantis**, a vehicle access control system. Next.js App Router panel that integrates with the Mantis API backend (`siscav-api` repo) via REST. Administrators authenticate, manage the plate whitelist, review access logs (with images), monitor camera capture, and trigger the gate; settings also include device flows (e.g. Bluetooth).
 
-**Core Value:** Operadores conseguem **controlar e auditar o acesso de veículos** de forma confiável: whitelist correta, visibilidade dos eventos e acionamento do portão quando necessário, sem depender de uma interface de treino de modelo ou de features fora do escopo operacional.
+**Core value:** Operators can **control and audit vehicle access** reliably: correct whitelist, event visibility, and gate triggering when needed, without model-training UI or out-of-scope features.
 
 ### Constraints
 
-- **Stack:** Manter alinhamento com `package.json` / CI (Node 20, Next.js, TypeScript strict) salvo decisão explícita de migração
-- **Backend:** Contratos e auth dependem de `siscav-api`; o frontend não persiste domínio além de estado de UI e tokens no cliente
-- **Compatibilidade:** Navegadores suportados pelos fluxos atuais (incl. APIs como Web Bluetooth onde usadas)
+- **Stack:** Align with `package.json` / CI (Node 20, Next.js, TypeScript strict) unless an explicit migration is decided
+- **Backend:** Contracts and auth depend on `siscav-api`; the frontend does not persist domain data beyond UI state and client-side auth cache
+- **Compatibility:** Browsers supported by current flows (including Web Bluetooth where used)
 
 ## Technology Stack
 
@@ -33,7 +33,7 @@ Frontend administrativo do **Sistema de Controle de Entrada Automática de Veíc
 - **ESLint** 9 flat + **Prettier** 3
 
 ### Configuration
-- API base URL: `NEXT_PUBLIC_SISCAV_API_URL` or `NEXT_PUBLIC_API_URL` — see `src/constants/index.ts` and `.env.example`
+- API base URL: `NEXT_PUBLIC_MANTIS_API_URL` (preferred); legacy fallbacks `NEXT_PUBLIC_SISCAV_API_URL`, `NEXT_PUBLIC_API_URL` — see `src/constants/index.ts` and `.env.example`
 - Path alias: `@/*` → `./src/*`
 
 ## Conventions
@@ -65,7 +65,7 @@ Frontend administrativo do **Sistema de Controle de Entrada Automática de Veíc
 ### Pattern overview
 - **App Router** with route groups `(public)` and `(auth)`
 - **Layered HTTP:** `ApiClient` + domain modules in `src/lib/api/`
-- **Server state:** TanStack Query; **auth:** Context + cookies + `localStorage` user profile
+- **Server state:** TanStack Query; **auth:** Context + cookie-based JWT (see ADR 0003) + `localStorage` for cached user profile
 
 ### Layers
 - `src/app/` — routes and layouts
@@ -80,5 +80,10 @@ Frontend administrativo do **Sistema de Controle de Entrada Automática de Veíc
 ### Entry points
 - `src/app/layout.tsx` — root shell + `Providers`
 - `src/app/page.tsx` — redirect to `/dashboard`
-- `src/app/(public)/login/page.tsx` — `LoginForm`
+- `src/app/(public)/login/page.tsx` — auth flow
 - Authenticated routes under `src/app/(auth)/` gated by `(auth)/layout.tsx`
+
+### Documentation
+- Onboarding: root `README.md`
+- Index: `docs/README.md`
+- Decisions: `docs/adr/`

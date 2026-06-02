@@ -48,7 +48,6 @@ The stack remains Next.js, React, TypeScript, MUI, and TanStack Query. A full UI
 ## Consequences
 
 - Existing users lose camera config in `localStorage` if they had data under `siscav-web.camera.v1` (key renamed; migration not implemented in Phase 1).
-- CI/docs may still reference SISCAV until updated in a follow-up.
 - Empty-state illustrations remain future work (favicon: see ADR 0009).
 - Components that hardcoded blue (`#2563eb`) in `sx` may need per-file updates in later phases; theme and StatCard primary color were updated in Phase 1.
 
