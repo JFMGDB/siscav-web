@@ -2,11 +2,11 @@ import AuthPage from "@/components/features/auth/AuthPage";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Entrar - Mantis",
+  title: "Criar conta - Mantis",
   description:
-    "Entre no painel Mantis para gerenciar o controle de acesso veicular",
+    "Crie sua conta no Mantis para gerenciar o controle de acesso veicular",
 };
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return <AuthPage />;
 }

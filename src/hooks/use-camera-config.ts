@@ -25,10 +25,10 @@ export function useCameraConfig() {
     };
     const onCustom = () => refresh();
     window.addEventListener("storage", onStorage);
-    window.addEventListener("siscav-camera-config-change", onCustom);
+    window.addEventListener("mantis-camera-config-change", onCustom);
     return () => {
       window.removeEventListener("storage", onStorage);
-      window.removeEventListener("siscav-camera-config-change", onCustom);
+      window.removeEventListener("mantis-camera-config-change", onCustom);
     };
   }, [refresh]);
 

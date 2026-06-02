@@ -159,7 +159,8 @@ export default function ManualRegistrationForm({
         }
         blob = await new Promise<Blob>((resolve, reject) => {
           canvas.toBlob(
-            (b) => (b ? resolve(b) : reject(new Error("Falha ao gerar imagem."))),
+            (b) =>
+              b ? resolve(b) : reject(new Error("Falha ao gerar imagem.")),
             "image/jpeg",
             0.92,
           );
@@ -173,8 +174,7 @@ export default function ManualRegistrationForm({
         "monitor-access.jpg",
       );
 
-      const statusLabel =
-        log.status === "Authorized" ? "autorizado" : "negado";
+      const statusLabel = log.status === "Authorized" ? "autorizado" : "negado";
       showMessage(
         `Tentativa registrada: ${log.plate_string_detected} (${statusLabel}).`,
         log.status === "Authorized" ? "success" : "warning",
@@ -182,7 +182,9 @@ export default function ManualRegistrationForm({
       onAccessLogRegistered?.();
     } catch (e) {
       const msg =
-        e instanceof Error ? e.message : "Erro ao registrar tentativa de acesso.";
+        e instanceof Error
+          ? e.message
+          : "Erro ao registrar tentativa de acesso.";
       showMessage(msg, "error");
     } finally {
       setAccessLogBusy(false);
@@ -351,7 +353,9 @@ export default function ManualRegistrationForm({
           </Button>
           <Typography variant="caption" color="text.secondary" display="block">
             Simula o dispositivo IoT:{" "}
-            <code style={{ fontSize: "0.75rem" }}>POST /api/v1/access_logs/</code>{" "}
+            <code style={{ fontSize: "0.75rem" }}>
+              POST /api/v1/access_logs/
+            </code>{" "}
             (multipart <code style={{ fontSize: "0.75rem" }}>file</code> +{" "}
             <code style={{ fontSize: "0.75rem" }}>plate</code>).
           </Typography>

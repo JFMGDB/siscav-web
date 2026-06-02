@@ -4,7 +4,7 @@ import * as whitelistApi from "@/lib/api/whitelist";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Veículos Autorizados - SISCAV",
+  title: "Veículos Autorizados - Mantis",
   description: "Gerenciar veículos autorizados",
 };
 

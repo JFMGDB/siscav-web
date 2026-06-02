@@ -4,7 +4,7 @@ import * as logsApi from "@/lib/api/logs";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Histórico de Acesso - SISCAV",
+  title: "Histórico de Acesso - Mantis",
   description: "Visualizar histórico de acesso de veículos",
 };
 

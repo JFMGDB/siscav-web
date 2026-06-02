@@ -46,6 +46,6 @@ describe("resolveNetworkStreamFromConfig", () => {
 
 describe("CAMERA_CONFIG_STORAGE_KEY", () => {
   it("is stable", () => {
-    expect(CAMERA_CONFIG_STORAGE_KEY).toBe("siscav-web.camera.v1");
+    expect(CAMERA_CONFIG_STORAGE_KEY).toBe("mantis-web.camera.v1");
   });
 });

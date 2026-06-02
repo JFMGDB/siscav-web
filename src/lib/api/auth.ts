@@ -1,15 +1,46 @@
+/**
+ * Auth API layer — maps HTTP status codes to pt-BR ApiHttpError
+ * per the contract in siscav-api/docs/api/frontend-integration.md.
+ *
+ * Registration bypasses ApiClient.request() intentionally:
+ *   - No Authorization header (signup must not reuse a session token)
+ *   - No 401 refresh loop
+ *
+ * @see siscav-api/apps/api/src/api/v1/endpoints/auth.py
+ * @see siscav-api/apps/api/src/api/v1/schemas/user.py (UserCreate: min_length=8)
+ */
+
 import type { ApiClient } from "./client";
 import type { AuthResponse, User } from "@/types";
 import { API_CONFIG } from "@/constants";
-import { parseApiError } from "./client";
+import { ApiHttpError, parseApiResponse } from "./errors";
 
-/**
- * Registration intentionally bypasses ApiClient.request(): no Authorization header (signup must not
- * reuse an existing session token), and failed responses are not run through the client refresh loop
- * on 401. Errors still use parseApiError for message shape consistency. The request URL uses
- * client.getBaseUrl() so it stays aligned with the ApiClient instance (same as API_CONFIG.BASE_URL
- * for the default browser singleton).
- */
+const REGISTER_INVALID_DATA_MSG = "Dados inválidos. Verifique e-mail e senha.";
+
+/** Matches API `UserRead` (no password). */
+interface UserReadResponse {
+  id: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+function toAuthUser(data: UserReadResponse): User {
+  return {
+    id: String(data.id),
+    email: data.email,
+    name: data.email.split("@")[0] ?? data.email,
+  };
+}
+
+/** Loads the authenticated user from GET /api/v1/users/me (Bearer access token). */
+export async function fetchCurrentUser(client: ApiClient): Promise<User> {
+  const data = await client.request<UserReadResponse>(
+    API_CONFIG.ENDPOINTS.AUTH.ME,
+  );
+  return toAuthUser(data);
+}
+
 export async function register(
   client: ApiClient,
   email: string,
@@ -28,13 +59,27 @@ export async function register(
       body: JSON.stringify({ email, password }),
     },
   );
+
   if (!res.ok) {
-    const msg = await parseApiError(res);
-    if (res.status === 409) throw new Error("Email already registered");
-    if (res.status === 429)
-      throw new Error("Too many attempts. Wait 1 minute.");
-    throw new Error(msg);
+    switch (res.status) {
+      case 409:
+        throw new ApiHttpError(
+          409,
+          "Este e-mail já está registrado. Tente fazer login.",
+        );
+      case 429:
+        throw new ApiHttpError(
+          429,
+          "Muitas tentativas. Aguarde 1 minuto antes de tentar novamente.",
+        );
+      case 400:
+      case 422:
+        throw new ApiHttpError(res.status, REGISTER_INVALID_DATA_MSG);
+      default:
+        throw await parseApiResponse(res);
+    }
   }
+
   return res.json();
 }
 
@@ -52,33 +97,36 @@ export async function login(
       body: form,
     },
   );
+
   if (!res.ok) {
-    const msg = await parseApiError(res);
-    if (res.status === 401)
-      throw new Error(
-        msg !== "Erro ao fazer login" ? msg : "Invalid credentials",
-      );
-    if (res.status === 429)
-      throw new Error("Too many attempts. Wait 1 minute.");
-    throw new Error(msg);
+    switch (res.status) {
+      case 401:
+        throw new ApiHttpError(
+          401,
+          "E-mail ou senha inválidos. Verifique suas credenciais e tente novamente.",
+        );
+      case 400:
+        throw new ApiHttpError(400, "Informe e-mail e senha para entrar.");
+      case 429:
+        throw new ApiHttpError(
+          429,
+          "Muitas tentativas. Aguarde 1 minuto antes de tentar novamente.",
+        );
+      default: {
+        const parsed = await parseApiResponse(res);
+        throw new ApiHttpError(
+          res.status,
+          parsed.detail || "Erro ao fazer login. Tente novamente.",
+        );
+      }
+    }
   }
+
   const token = await res.json();
   client.setTokens(token.access_token, token.refresh_token ?? null);
-  let userId = "";
-  try {
-    const parts = token.access_token.split(".");
-    if (parts.length === 3) {
-      const payload = JSON.parse(atob(parts[1]));
-      userId = payload.sub ?? "";
-    }
-  } catch {
-    // ignore
-  }
-  const user: User = {
-    id: userId,
-    email,
-    name: email.split("@")[0],
-  };
+
+  const user = await fetchCurrentUser(client);
+
   return {
     access_token: token.access_token,
     token_type: token.token_type,

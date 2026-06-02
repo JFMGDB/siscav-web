@@ -1,5 +1,27 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Auth routes `/login` and `/register` sharing `AuthPage` (footer links only, no tabs)
+- `AuthWelcomeHeader`, `AuthBrandPanel`, `AuthCredentialsForm` (react-hook-form + Zod)
+- `src/lib/auth-schema.ts` and `src/lib/api/errors.ts` (`ApiHttpError`, FastAPI `detail` parsing)
+- `GET /api/v1/users/me` (backend) and `fetchCurrentUser` after login (no JWT decode on client)
+- Tests for auth schema, API error formatting, and `resolveAuthError`
+
+### Changed
+
+- Mantis rebrand on login/register (teal theme, Manrope display font on auth pages)
+- `src/lib/api/auth.ts`: errors by HTTP status with pt-BR copy; register 400/422 → fixed validation message
+- `parseApiError` in API client uses `formatApiErrorDetail` for 422 arrays
+- Removed deprecated client validators from `auth-form.ts` (validation lives in Zod)
+
+### Documentation
+
+- `docs/api/siscav_api_documentation.md`: register 422, `GET /users/me`, rate limits aligned with backend (3/min register)
+- ADR 0008 updated for auth UX (routes, Zod, error handling)
+
 ## [0.4.0] - 2025-12-06
 
 ### Added

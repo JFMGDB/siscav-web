@@ -21,7 +21,9 @@ export default function MonitorPage() {
   };
 
   const handleAccessLogRegistered = () => {
-    void queryClient.invalidateQueries({ queryKey: ["monitor", "lastCapture"] });
+    void queryClient.invalidateQueries({
+      queryKey: ["monitor", "lastCapture"],
+    });
     void queryClient.invalidateQueries({ queryKey: ["logs"] });
   };
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import {
   Box,
   Drawer,
@@ -80,7 +81,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         sx={{
           minHeight: "80px !important",
           borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
-          background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
+          background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
         }}
       >
         <Box
@@ -96,29 +97,34 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               width: 40,
               height: 40,
               borderRadius: 2,
-              background: "rgba(255, 255, 255, 0.2)",
+              background: "rgba(255, 255, 255, 0.95)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "white",
-              fontWeight: 700,
-              fontSize: "1.25rem",
+              overflow: "hidden",
+              flexShrink: 0,
             }}
           >
-            S
+            <Image
+              src="/mantis-logo-mark.png"
+              alt="Mantis"
+              width={32}
+              height={32}
+              style={{ objectFit: "contain" }}
+            />
           </Box>
           <Box>
             <Typography
               variant="h6"
               sx={{ color: "white", fontWeight: 700, lineHeight: 1.2 }}
             >
-              SISCAV
+              Mantis
             </Typography>
             <Typography
               variant="caption"
-              sx={{ color: "rgba(255, 255, 255, 0.8)", fontSize: "0.7rem" }}
+              sx={{ color: "rgba(255, 255, 255, 0.85)", fontSize: "0.7rem" }}
             >
-              Sistema de Controle
+              Controle de acesso
             </Typography>
           </Box>
         </Box>
@@ -139,10 +145,10 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                     py: 1.5,
                     transition: "all 0.2s ease-in-out",
                     "&.Mui-selected": {
-                      backgroundColor: "rgba(37, 99, 235, 0.1)",
+                      backgroundColor: "rgba(13, 148, 136, 0.1)",
                       color: "primary.main",
                       "&:hover": {
-                        backgroundColor: "rgba(37, 99, 235, 0.15)",
+                        backgroundColor: "rgba(13, 148, 136, 0.15)",
                       },
                       "& .MuiListItemIcon-root": {
                         color: "primary.main",
@@ -198,7 +204,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               color="text.secondary"
               sx={{ fontSize: "0.75rem" }}
             >
-              {user?.email || "admin@siscav.com"}
+              {user?.email || "admin@mantis.local"}
             </Typography>
           </Box>
         </Box>

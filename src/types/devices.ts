@@ -1,5 +1,5 @@
 /**
- * Tipos da API REST de dispositivos (siscav-api).
+ * Tipos da API REST de dispositivos (backend Mantis API).
  * Device scan/connect payloads from the REST API.
  */
 

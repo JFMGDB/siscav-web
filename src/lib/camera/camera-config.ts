@@ -1,6 +1,6 @@
 import { validateCameraPreviewUrl } from "@/lib/camera/validate-camera-url";
 
-export const CAMERA_CONFIG_STORAGE_KEY = "siscav-web.camera.v1";
+export const CAMERA_CONFIG_STORAGE_KEY = "mantis-web.camera.v1";
 
 export type CameraSource = "usb" | "network";
 
@@ -51,7 +51,7 @@ export function saveCameraConfig(config: CameraPersistedConfig): void {
     CAMERA_CONFIG_STORAGE_KEY,
     JSON.stringify(config),
   );
-  window.dispatchEvent(new Event("siscav-camera-config-change"));
+  window.dispatchEvent(new Event("mantis-camera-config-change"));
 }
 
 /** Valida URL guardada no contexto da página actual (mixed content). */

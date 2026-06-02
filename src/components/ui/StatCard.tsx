@@ -16,7 +16,7 @@ export interface StatCardProps {
 }
 
 const colorMap = {
-  primary: "#2563eb",
+  primary: "#0d9488",
   secondary: "#10b981",
   success: "#10b981",
   error: "#ef4444",

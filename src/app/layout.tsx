@@ -6,8 +6,8 @@ import { Providers } from "@/components/providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SISCAV - Controle de Acesso de Veículos",
-  description: "Sistema Automatizado de Controle de Acesso de Veículos",
+  title: "Mantis - Controle de Acesso Veicular",
+  description: "Sistema de controle de acesso veicular",
 };
 
 export default function RootLayout({

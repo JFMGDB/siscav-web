@@ -4,6 +4,7 @@
  */
 
 import { API_CONFIG, AUTH_CONFIG } from "@/constants";
+import { formatApiErrorDetail } from "./errors";
 
 const COOKIE_MAX_AGE_ACCESS = 60 * 60; // 1 hour
 const COOKIE_MAX_AGE_REFRESH = 60 * 60 * 24 * 7; // 7 days
@@ -41,7 +42,8 @@ export async function parseApiError(response: Response): Promise<string> {
   let message = response.statusText || "API Error";
   try {
     const json = JSON.parse(text);
-    message = json.detail ?? json.message ?? message;
+    const raw = json.detail ?? json.message;
+    message = raw !== undefined ? formatApiErrorDetail(raw) : message;
   } catch {
     if (text) message = text;
   }

@@ -117,7 +117,8 @@ Content-Type: application/json
 
 **Respostas de Erro:**
 
-- **400 Bad Request**: E-mail inválido ou senha com menos de 8 caracteres
+- **400 Bad Request**: E-mail inválido ou senha com menos de 8 caracteres (quando validado no controller)
+- **422 Unprocessable Entity**: Falha de validação Pydantic (e-mail inválido, senha &lt; 8, etc.) — corpo com `detail` em array
 - **409 Conflict**: E-mail já está registrado
 - **429 Too Many Requests**: Rate limit excedido
 
@@ -159,7 +160,37 @@ password: string (senha do usuário)
 - **401 Unauthorized**: Credenciais inválidas
 - **429 Too Many Requests**: Rate limit excedido
 
-#### 3. Renovar Tokens
+#### 3. Obter Usuário Autenticado
+
+```
+GET /api/v1/users/me
+```
+
+- **Descrição:** Retorna os dados do usuário associado ao access token.
+- **Autenticação:** Bearer token (access token)
+- **Headers:**
+
+```
+Authorization: Bearer {access_token}
+```
+
+**Resposta de Sucesso (200):**
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "email": "usuario@example.com",
+  "created_at": "2025-01-15T10:30:00Z",
+  "updated_at": "2025-01-15T10:30:00Z"
+}
+```
+
+**Respostas de Erro:**
+
+- **401 Unauthorized**: Token ausente
+- **403 Forbidden**: Token inválido, expirado ou tipo incorreto (use access token, não refresh)
+
+#### 4. Renovar Tokens
 
 ```
 POST /api/v1/login/refresh-token

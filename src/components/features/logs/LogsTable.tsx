@@ -93,7 +93,9 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
       } catch (e) {
         if (cancelled) return;
         setImageError(
-          e instanceof Error ? e.message : "Não foi possível carregar a imagem.",
+          e instanceof Error
+            ? e.message
+            : "Não foi possível carregar a imagem.",
         );
       } finally {
         if (!cancelled) setImageLoading(false);

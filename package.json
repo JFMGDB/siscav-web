@@ -1,5 +1,5 @@
 {
-  "name": "siscav-web",
+  "name": "mantis-web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,6 +15,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@hookform/resolvers": "^5.4.0",
     "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
     "@mui/material-nextjs": "^7.3.5",
@@ -22,7 +23,9 @@
     "hls.js": "^1.6.15",
     "next": "^16.2.6",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "react-hook-form": "^7.77.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

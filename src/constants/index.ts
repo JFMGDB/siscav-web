@@ -1,5 +1,6 @@
 export const API_CONFIG = {
   BASE_URL:
+    process.env.NEXT_PUBLIC_MANTIS_API_URL ||
     process.env.NEXT_PUBLIC_SISCAV_API_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
     "http://localhost:8000",
@@ -8,6 +9,7 @@ export const API_CONFIG = {
       REGISTER: "/api/v1/register",
       LOGIN: "/api/v1/login/access-token",
       REFRESH: "/api/v1/login/refresh-token",
+      ME: "/api/v1/users/me",
     },
     ML: {
       RECOGNIZE_PLATE: "/api/v1/ml/recognize-plate",
@@ -55,6 +57,7 @@ export const UI_CONFIG = {
 export const ROUTES = {
   PUBLIC: {
     LOGIN: "/login",
+    REGISTER: "/register",
     HOME: "/",
   },
   AUTH: {
@@ -68,6 +71,19 @@ export const ROUTES = {
 } as const;
 
 export const MESSAGES = {
+  AUTH: {
+    LOGIN_EYEBROW: "",
+    LOGIN_TITLE: "Bem-vindo de volta",
+    LOGIN_SUBTITLE: "Informe suas credenciais para acessar o painel.",
+    REGISTER_EYEBROW: "Comece sua jornada",
+    REGISTER_TITLE: "Crie sua conta",
+    REGISTER_SUBTITLE:
+      "Preencha seus dados para gerenciar o acesso de veículos no Mantis.",
+    FOOTER_NO_ACCOUNT: "Não tem conta?",
+    FOOTER_HAS_ACCOUNT: "Já tem conta?",
+    LINK_CREATE_ACCOUNT: "Criar conta",
+    LINK_SIGN_IN: "Entrar",
+  },
   WHITELIST: {
     ADD_SUCCESS: "Placa adicionada com sucesso!",
     ADD_ERROR: "Erro ao adicionar placa.",

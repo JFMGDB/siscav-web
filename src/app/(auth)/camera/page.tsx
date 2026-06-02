@@ -13,7 +13,7 @@ export default function CameraPage() {
         </Typography>
         <Typography variant="body1" color="text.secondary">
           Vídeo em tempo real a partir de uma câmara USB ou de uma URL na rede
-          (MJPEG / HLS). O stream não passa pela API SISCAV.
+          (MJPEG / HLS). O stream não passa pela API Mantis.
         </Typography>
       </Box>
       <CameraPreviewPanel />
