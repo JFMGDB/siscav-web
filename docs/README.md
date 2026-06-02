@@ -4,11 +4,11 @@ Documentation for the **Mantis** vehicle access control admin panel (`siscav-web
 
 ## Index
 
-| Document | Description |
-| -------- | ----------- |
-| [CHANGELOG](./CHANGELOG.md) | Release history |
-| [Architecture Decision Records](./adr/) | Numbered ADRs (0001–0009); sequential and permanent — do not renumber |
-| [API reference (Portuguese)](./api/mantis-api-reference.md) | Local REST API copy for frontend development |
+| Document                                                    | Description                                                           |
+| ----------------------------------------------------------- | --------------------------------------------------------------------- |
+| [CHANGELOG](./CHANGELOG.md)                                 | Release history                                                       |
+| [Architecture Decision Records](./adr/)                     | Numbered ADRs (0001–0009); sequential and permanent — do not renumber |
+| [API reference (Portuguese)](./api/mantis-api-reference.md) | Local REST API copy for frontend development                          |
 
 ## Onboarding
 
