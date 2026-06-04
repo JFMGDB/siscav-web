@@ -2,28 +2,19 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import NextLink from "next/link";
-import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
-import { Box, Typography, Alert, Link } from "@mui/material";
+import { Box, Typography, Alert } from "@mui/material";
 import AuthBrandPanel from "./AuthBrandPanel";
 import AuthCredentialsForm, {
   type AuthSubmitValues,
 } from "./AuthCredentialsForm";
 import AuthWelcomeHeader from "./AuthWelcomeHeader";
-import { resolveAuthError, type AuthFormMode } from "@/lib/auth-form";
-import { MESSAGES, ROUTES } from "@/constants";
+import { resolveAuthError } from "@/lib/auth-form";
 
 const displayFont = 'var(--font-auth-display), "Inter", sans-serif';
 
-function modeFromPathname(pathname: string): AuthFormMode {
-  return pathname === ROUTES.PUBLIC.REGISTER ? "register" : "login";
-}
-
 export default function AuthPage() {
-  const pathname = usePathname();
-  const mode = modeFromPathname(pathname);
-  const { login, register } = useAuth();
+  const { login } = useAuth();
 
   const [apiError, setApiError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,17 +23,9 @@ export default function AuthPage() {
     setApiError("");
     setLoading(true);
     try {
-      if (mode === "login") {
-        await login(email, password);
-      } else {
-        if (!register) {
-          setApiError("Registro indisponível.");
-          return;
-        }
-        await register(email, password);
-      }
+      await login(email, password);
     } catch (err) {
-      setApiError(resolveAuthError(err, mode));
+      setApiError(resolveAuthError(err, "login"));
     } finally {
       setLoading(false);
     }
@@ -114,7 +97,7 @@ export default function AuthPage() {
               pt: { xs: 6, md: 7 },
             }}
           >
-            <AuthWelcomeHeader mode={mode} />
+            <AuthWelcomeHeader mode="login" />
 
             {apiError && (
               <Alert severity="error" sx={{ mb: 2 }}>
@@ -123,43 +106,11 @@ export default function AuthPage() {
             )}
 
             <AuthCredentialsForm
-              key={mode}
-              mode={mode}
+              key="login"
+              mode="login"
               loading={loading}
               onSubmit={handleValidSubmit}
             />
-
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mt: 3, textAlign: "center" }}
-            >
-              {mode === "login" ? (
-                <>
-                  {MESSAGES.AUTH.FOOTER_NO_ACCOUNT}{" "}
-                  <Link
-                    component={NextLink}
-                    href={ROUTES.PUBLIC.REGISTER}
-                    variant="body2"
-                    sx={{ fontWeight: 600 }}
-                  >
-                    {MESSAGES.AUTH.LINK_CREATE_ACCOUNT}
-                  </Link>
-                </>
-              ) : (
-                <>
-                  {MESSAGES.AUTH.FOOTER_HAS_ACCOUNT}{" "}
-                  <Link
-                    component={NextLink}
-                    href={ROUTES.PUBLIC.LOGIN}
-                    variant="body2"
-                    sx={{ fontWeight: 600 }}
-                  >
-                    {MESSAGES.AUTH.LINK_SIGN_IN}
-                  </Link>
-                </>
-              )}
-            </Typography>
           </Box>
         </Box>
       </Box>

@@ -2,15 +2,15 @@
  * Auth API layer — maps HTTP status codes to pt-BR ApiHttpError
  * per the contract in siscav-api/docs/api/frontend-integration.md.
  *
- * Registration bypasses ApiClient.request() intentionally:
- *   - No Authorization header (signup must not reuse a session token)
- *   - No 401 refresh loop
+ * Registration sends Bearer token (superadmin only). Uses fetch directly so 403
+ * is not treated as a session refresh trigger (see ApiClient.request).
  *
  * @see siscav-api/apps/api/src/api/v1/endpoints/auth.py
  * @see siscav-api/apps/api/src/api/v1/schemas/user.py (UserCreate: min_length=8)
  */
 
 import type { ApiClient } from "./client";
+import { readBrowserAccessToken } from "./client";
 import type { AuthResponse, User } from "@/types";
 import { API_CONFIG } from "@/constants";
 import { ApiHttpError, parseApiResponse } from "./errors";
@@ -21,6 +21,8 @@ const REGISTER_INVALID_DATA_MSG = "Dados inválidos. Verifique e-mail e senha.";
 interface UserReadResponse {
   id: string;
   email: string;
+  is_admin: boolean;
+  is_superadmin: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -30,6 +32,8 @@ function toAuthUser(data: UserReadResponse): User {
     id: String(data.id),
     email: data.email,
     name: data.email.split("@")[0] ?? data.email,
+    is_admin: data.is_admin,
+    is_superadmin: data.is_superadmin,
   };
 }
 
@@ -45,23 +49,27 @@ export async function register(
   client: ApiClient,
   email: string,
   password: string,
-): Promise<{
-  id: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
-}> {
+): Promise<UserReadResponse> {
+  const token = readBrowserAccessToken();
   const res = await fetch(
     `${client.getBaseUrl()}${API_CONFIG.ENDPOINTS.AUTH.REGISTER}`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       body: JSON.stringify({ email, password }),
     },
   );
 
   if (!res.ok) {
     switch (res.status) {
+      case 403:
+        throw new ApiHttpError(
+          403,
+          "Sem permissão para criar usuários. Apenas superadministradores do Siscav.",
+        );
       case 409:
         throw new ApiHttpError(
           409,

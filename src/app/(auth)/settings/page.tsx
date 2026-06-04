@@ -10,11 +10,13 @@ import {
   Paper,
   Stack,
 } from "@mui/material";
+import { useAuth } from "@/hooks/use-auth";
 import { useCameraConfig } from "@/hooks/use-camera-config";
 import { ROUTES } from "@/constants";
 import { redactUrlForDisplay } from "@/lib/camera/validate-camera-url";
 
 export default function SettingsPage() {
+  const { user } = useAuth();
   const { config } = useCameraConfig();
 
   return (
@@ -27,6 +29,24 @@ export default function SettingsPage() {
           Configure a câmara usada no monitoramento (USB ou URL na rede).
         </Typography>
       </Box>
+
+      {user?.is_superadmin && (
+        <Paper sx={{ p: 3, mb: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Usuários
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Crie contas de acesso para operadores do sistema.
+          </Typography>
+          <Button
+            component={Link}
+            href={ROUTES.AUTH.USERS_CREATE}
+            variant="contained"
+          >
+            Criar usuário
+          </Button>
+        </Paper>
+      )}
 
       <Paper sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom>

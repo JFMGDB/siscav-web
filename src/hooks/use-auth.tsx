@@ -41,6 +41,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           try {
             const parsedUser = JSON.parse(storedUser);
             if (!cancelled) setUser(parsedUser);
+            try {
+              const freshUser = await authApi.fetchCurrentUser(getApi());
+              if (!cancelled) {
+                setUser(freshUser);
+                localStorage.setItem(
+                  AUTH_CONFIG.USER_KEY,
+                  JSON.stringify(freshUser),
+                );
+              }
+            } catch {
+              // keep parsed user from storage when refresh fails transiently
+            }
           } catch (error) {
             console.error("Failed to parse stored user", error);
             localStorage.removeItem(AUTH_CONFIG.USER_KEY);
@@ -94,7 +106,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (email: string, password: string) => {
     try {
       await authApi.register(getApi(), email, password);
-      await login(email, password);
     } catch (error) {
       console.error("Registration failed", error);
       throw error;

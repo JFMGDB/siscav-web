@@ -50,7 +50,6 @@ export const UI_CONFIG = {
 export const ROUTES = {
   PUBLIC: {
     LOGIN: "/login",
-    REGISTER: "/register",
     HOME: "/",
   },
   AUTH: {
@@ -60,6 +59,7 @@ export const ROUTES = {
     WHITELIST: "/whitelist",
     LOGS: "/logs",
     SETTINGS: "/settings",
+    USERS_CREATE: "/users/create",
   },
 } as const;
 
@@ -71,11 +71,13 @@ export const MESSAGES = {
     REGISTER_EYEBROW: "Comece sua jornada",
     REGISTER_TITLE: "Crie sua conta",
     REGISTER_SUBTITLE:
-      "Preencha seus dados para gerenciar o acesso de veículos no Mantis.",
-    FOOTER_NO_ACCOUNT: "Não tem conta?",
-    FOOTER_HAS_ACCOUNT: "Já tem conta?",
-    LINK_CREATE_ACCOUNT: "Criar conta",
-    LINK_SIGN_IN: "Entrar",
+      "Preencha os dados para criar uma conta de acesso ao Mantis.",
+    CREATE_USER_TITLE: "Criar usuário",
+    CREATE_USER_SUBTITLE:
+      "Cadastre uma nova conta de acesso. Apenas superadministradores do Siscav podem usar esta função.",
+    CREATE_USER_SUCCESS: "Usuário criado com sucesso.",
+    CREATE_USER_FORBIDDEN:
+      "Sem permissão para criar usuários. Apenas superadministradores do Siscav.",
   },
   WHITELIST: {
     ADD_SUCCESS: "Placa adicionada com sucesso!",
