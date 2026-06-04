@@ -166,9 +166,13 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                   </ListItemIcon>
                   <ListItemText
                     primary={item.text}
-                    primaryTypographyProps={{
-                      fontWeight: isSelected ? 600 : 400,
-                      fontSize: "0.9375rem",
+                    slotProps={{
+                      primary: {
+                        sx: {
+                          fontWeight: isSelected ? 600 : 400,
+                          fontSize: "0.9375rem",
+                        },
+                      },
                     }}
                   />
                 </ListItemButton>
@@ -223,9 +227,13 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           </ListItemIcon>
           <ListItemText
             primary="Sair"
-            primaryTypographyProps={{
-              fontWeight: 500,
-              fontSize: "0.9375rem",
+            slotProps={{
+              primary: {
+                sx: {
+                  fontWeight: 500,
+                  fontSize: "0.9375rem",
+                },
+              },
             }}
           />
         </ListItemButton>

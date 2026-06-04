@@ -251,9 +251,11 @@ export default function WhitelistTable({
         onClose={handleClose}
         maxWidth="sm"
         fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 3,
+            },
           },
         }}
       >

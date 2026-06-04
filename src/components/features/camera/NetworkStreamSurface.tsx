@@ -18,7 +18,10 @@ function HlsPreview({
   videoRef: React.RefObject<HTMLVideoElement | null>;
 }) {
   const onFatalRef = useRef(onFatal);
-  onFatalRef.current = onFatal;
+
+  useEffect(() => {
+    onFatalRef.current = onFatal;
+  }, [onFatal]);
 
   useEffect(() => {
     let cancelled = false;

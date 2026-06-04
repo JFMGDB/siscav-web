@@ -262,7 +262,12 @@ export default function BluetoothDeviceManager() {
         </Button>
       </Box>
 
-      <Typography variant="body2" color="textSecondary" paragraph>
+      <Typography
+        variant="body2"
+        color="textSecondary"
+        component="p"
+        sx={{ mb: 2 }}
+      >
         Conecte um smartphone ou câmera via Bluetooth para captura de imagens de
         veículos.
       </Typography>
@@ -309,7 +314,7 @@ export default function BluetoothDeviceManager() {
           sx={{ mb: 3 }}
         >
           <strong>Dispositivo Conectado:</strong> {connectedDevice.name}
-          <Typography variant="caption" display="block">
+          <Typography variant="caption" sx={{ display: "block" }}>
             ID: {connectedDevice.id}
           </Typography>
           {videoStream && (

@@ -130,9 +130,8 @@ export default function UsbCameraPreview() {
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={2}
-        alignItems={{ sm: "center" }}
-        flexWrap="wrap"
         useFlexGap
+        sx={{ alignItems: { sm: "center" }, flexWrap: "wrap" }}
       >
         <Button
           variant="contained"

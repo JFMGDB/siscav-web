@@ -41,7 +41,7 @@ export default function ManualRegistrationForm({
   onSuccess,
   onAccessLogRegistered,
 }: ManualRegistrationFormProps) {
-  const [plate, setPlate] = useState("");
+  const [plate, setPlate] = useState(initialPlate ?? "");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [accessLogBusy, setAccessLogBusy] = useState(false);
@@ -51,12 +51,6 @@ export default function ManualRegistrationForm({
   const { showMessage } = useSnackbar();
   const { captureFrame } = useMonitorFrameCapture();
   const ocrInFlight = useRef(false);
-
-  useEffect(() => {
-    if (initialPlate) {
-      setPlate(initialPlate);
-    }
-  }, [initialPlate]);
 
   const runServerOcr = useCallback(
     async (mode: "manual" | "auto") => {
@@ -239,15 +233,14 @@ export default function ManualRegistrationForm({
           <Typography
             variant="caption"
             color="text.secondary"
-            display="block"
-            sx={{ mt: -1 }}
+            sx={{ display: "block", mt: -1 }}
           >
             Com o vídeo ao vivo, envia periodicamente um frame para o OCR. Uma
             placa única preenche o campo quando está vazio ou confirma a mesma
             leitura.
           </Typography>
 
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
             <Button
               type="button"
               variant="outlined"
@@ -261,7 +254,11 @@ export default function ManualRegistrationForm({
               {ocrBusy ? "A processar OCR…" : "Ler placa agora (OCR)"}
             </Button>
           </Stack>
-          <Typography variant="caption" color="text.secondary" display="block">
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block" }}
+          >
             <code style={{ fontSize: "0.75rem" }}>
               POST /api/v1/ml/recognize-plate
             </code>{" "}
@@ -274,7 +271,11 @@ export default function ManualRegistrationForm({
               <Typography variant="subtitle2" gutterBottom>
                 Candidatos (toque para usar)
               </Typography>
-              <Stack direction="row" flexWrap="wrap" gap={1} useFlexGap>
+              <Stack
+                direction="row"
+                useFlexGap
+                sx={{ flexWrap: "wrap", gap: 1 }}
+              >
                 {candidates.map((c, i) => (
                   <Chip
                     key={`${c.normalized_plate}-${i}`}
@@ -300,12 +301,14 @@ export default function ManualRegistrationForm({
             required
             fullWidth
             placeholder="ABC-1234"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <CarIcon sx={{ color: "text.secondary" }} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <CarIcon sx={{ color: "text.secondary" }} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -324,15 +327,17 @@ export default function ManualRegistrationForm({
             placeholder="Ex: Visitante Apto 101, Funcionário, etc."
             multiline
             rows={3}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment
-                  position="start"
-                  sx={{ alignSelf: "flex-start", mt: 1 }}
-                >
-                  <DescriptionIcon sx={{ color: "text.secondary" }} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment
+                    position="start"
+                    sx={{ alignSelf: "flex-start", mt: 1 }}
+                  >
+                    <DescriptionIcon sx={{ color: "text.secondary" }} />
+                  </InputAdornment>
+                ),
+              },
             }}
           />
 
@@ -351,7 +356,11 @@ export default function ManualRegistrationForm({
               ? "Registrando tentativa…"
               : "Registrar tentativa de acesso"}
           </Button>
-          <Typography variant="caption" color="text.secondary" display="block">
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block" }}
+          >
             Simula o dispositivo IoT:{" "}
             <code style={{ fontSize: "0.75rem" }}>
               POST /api/v1/access_logs/

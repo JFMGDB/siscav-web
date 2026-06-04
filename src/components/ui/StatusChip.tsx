@@ -7,7 +7,7 @@
 
 import React from "react";
 import { Chip, ChipProps } from "@mui/material";
-import { CheckCircle, Cancel, HelpOutline } from "@mui/icons-material";
+import { CheckCircle, Cancel, HelpOutlined } from "@mui/icons-material";
 import {
   getAccessStatusConfig,
   type AccessStatusConfig,
@@ -18,7 +18,7 @@ import type { AccessStatus } from "@/types";
 const ICON_MAP: Record<StatusIconKey, React.ReactElement> = {
   CheckCircle: <CheckCircle />,
   Cancel: <Cancel />,
-  HelpOutline: <HelpOutline />,
+  HelpOutline: <HelpOutlined />,
 };
 
 function getIconElement(config: AccessStatusConfig): React.ReactElement {

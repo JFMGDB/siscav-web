@@ -33,7 +33,12 @@ export default function SettingsPage() {
         <Typography variant="h6" gutterBottom>
           Câmara no monitor
         </Typography>
-        <Typography variant="body2" color="text.secondary" paragraph>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          component="p"
+          sx={{ mb: 2 }}
+        >
           O feed ao vivo em <strong>Monitoramento</strong> usa a configuração
           guardada em <strong>Pré-visualização</strong> (USB ou URL na rede),
           armazenada neste browser.

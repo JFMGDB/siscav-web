@@ -67,12 +67,7 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
   const { logs, loading, refetch } = useLogs(filters, initialData);
 
   useEffect(() => {
-    if (!selectedImageKey) {
-      setSelectedImageUrl(null);
-      setImageError(null);
-      setImageLoading(false);
-      return;
-    }
+    if (!selectedImageKey) return;
 
     let cancelled = false;
 
@@ -231,12 +226,14 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
               placeholder="Buscar por placa ou ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "text.secondary" }} />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: "text.secondary" }} />
+                    </InputAdornment>
+                  ),
+                },
               }}
               sx={{ flex: 1, minWidth: 250 }}
               size="small"
@@ -281,9 +278,11 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
         onClose={closeImageDialog}
         maxWidth="md"
         fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 3,
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 3,
+            },
           },
         }}
       >

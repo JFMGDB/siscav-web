@@ -69,7 +69,7 @@ export default function NetworkCameraPreview() {
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={2}
-        alignItems={{ sm: "flex-start" }}
+        sx={{ alignItems: { sm: "flex-start" } }}
       >
         <TextField
           label="URL do stream"
@@ -79,7 +79,7 @@ export default function NetworkCameraPreview() {
           fullWidth
           size="small"
         />
-        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
           <Button variant="contained" onClick={handleConnect}>
             Ligar
           </Button>

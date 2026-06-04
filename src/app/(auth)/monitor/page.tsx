@@ -59,6 +59,7 @@ export default function MonitorPage() {
 
               <Box sx={{ flex: 1 }}>
                 <ManualRegistrationForm
+                  key={unknownPlate}
                   initialPlate={unknownPlate}
                   onSuccess={handleRegistrationSuccess}
                   onAccessLogRegistered={handleAccessLogRegistered}
