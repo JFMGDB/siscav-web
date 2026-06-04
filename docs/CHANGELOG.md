@@ -54,9 +54,6 @@
 
 ### Added
 
-- Bluetooth device manager UI
-- Device API methods (scan, connect, status, disconnect)
-
 ### Removed
 
 - Legacy camera config API (`CameraConfig`)

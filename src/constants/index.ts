@@ -16,13 +16,6 @@ export const API_CONFIG = {
     },
     WHITELIST: "/api/v1/whitelist",
     LOGS: "/api/v1/access_logs",
-    DEVICES: {
-      SCAN: "/api/v1/devices/scan",
-      CONNECT: "/api/v1/devices/connect",
-      STATUS: "/api/v1/devices/status",
-      DISCONNECT: "/api/v1/devices/disconnect",
-      VIDEO_FRAME: "/api/v1/devices/video-frame",
-    },
     GATE: {
       TRIGGER: "/api/v1/gate_control/trigger",
     },
@@ -95,12 +88,5 @@ export const MESSAGES = {
   GATE: {
     OPEN_SUCCESS: "Portão aberto com sucesso!",
     OPEN_ERROR: "Erro ao abrir portão.",
-  },
-  DEVICE: {
-    CONNECT_SUCCESS: "Dispositivo conectado com sucesso!",
-    CONNECT_ERROR: "Erro ao conectar dispositivo.",
-    DISCONNECT_SUCCESS: "Dispositivo desconectado com sucesso!",
-    DISCONNECT_ERROR: "Erro ao desconectar dispositivo.",
-    SCAN_ERROR: "Erro ao escanear dispositivos.",
   },
 } as const;

@@ -10,7 +10,6 @@ import {
   Paper,
   Stack,
 } from "@mui/material";
-import BluetoothDeviceManager from "@/components/features/settings/BluetoothDeviceManager";
 import { useCameraConfig } from "@/hooks/use-camera-config";
 import { ROUTES } from "@/constants";
 import { redactUrlForDisplay } from "@/lib/camera/validate-camera-url";
@@ -25,7 +24,7 @@ export default function SettingsPage() {
           Configurações do Sistema
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          Gerencie dispositivos Bluetooth conectados e configurações globais.
+          Configure a câmara usada no monitoramento (USB ou URL na rede).
         </Typography>
       </Box>
 
@@ -66,8 +65,6 @@ export default function SettingsPage() {
           Editar em Pré-visualização
         </Button>
       </Paper>
-
-      <BluetoothDeviceManager />
     </Container>
   );
 }

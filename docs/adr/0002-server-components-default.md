@@ -11,7 +11,7 @@ Next.js App Router supports Server Components by default. Using Client Component
 ## Decision
 
 - **Default: Server Components.** All components in `app/` and `components/` are treated as Server Components unless they require client-only behavior.
-- **Client boundary at the lowest level:** Only components that need interactivity (forms, action buttons, polling, browser APIs such as Web Bluetooth, or React state for user input) use `"use client"` at the top of the file. The directive is applied at the leaf of the tree so that parent layout and siblings remain server-rendered.
+- **Client boundary at the lowest level:** Only components that need interactivity (forms, action buttons, polling, browser APIs such as `getUserMedia` for USB cameras, or React state for user input) use `"use client"` at the top of the file. The directive is applied at the leaf of the tree so that parent layout and siblings remain server-rendered.
 - **Providers as the main client boundary:** The root layout wraps the app with a single client boundary (e.g. `providers.tsx`) that provides theme, auth context, TanStack Query, and Snackbar. Pages and feature components stay server-rendered until they need client hooks or event handlers.
 
 ## Consequences
