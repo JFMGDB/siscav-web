@@ -3,7 +3,7 @@
  * No sessionStorage/localStorage; cookie-based auth per ADR 0003.
  */
 
-import { API_CONFIG, AUTH_CONFIG } from "@/constants";
+import { API_CONFIG, AUTH_CONFIG, getApiBaseUrl } from "@/constants";
 import { formatApiErrorDetail } from "./errors";
 
 const COOKIE_MAX_AGE_ACCESS = 60 * 60; // 1 hour
@@ -310,7 +310,7 @@ let clientSingleton: ApiClient | null = null;
 function getClientSingleton(): ApiClient {
   if (!clientSingleton) {
     clientSingleton = new ApiClient({
-      baseUrl: API_CONFIG.BASE_URL,
+      baseUrl: getApiBaseUrl(),
       getToken: () => readBrowserAccessToken(),
       setTokens: (access, refresh) => {
         if (access)
@@ -347,7 +347,7 @@ export async function getServerApiClient(): Promise<ApiClient> {
   const { cookies } = await import("next/headers");
   const store = await cookies();
   return new ApiClient({
-    baseUrl: API_CONFIG.BASE_URL,
+    baseUrl: getApiBaseUrl(),
     getToken: () =>
       Promise.resolve(store.get(AUTH_CONFIG.ACCESS_TOKEN_KEY)?.value ?? null),
   });

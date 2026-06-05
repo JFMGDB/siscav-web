@@ -1,0 +1,5 @@
+{
+  "env": {
+    "NEXT_PUBLIC_MANTIS_API_URL": "https://siscav-api.onrender.com"
+  }
+}

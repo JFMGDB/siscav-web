@@ -3,7 +3,7 @@
  * Single place for base URL and path construction; components receive keys and call these helpers.
  */
 
-import { API_CONFIG } from "@/constants";
+import { API_CONFIG, getApiBaseUrl } from "@/constants";
 
 /** API stores keys like `uploads/uuid.jpg`; the image route expects the file name only. */
 export function getAccessLogImageFileName(key: string): string {
@@ -20,7 +20,7 @@ export function getAccessLogImageFileName(key: string): string {
 export function getAccessLogImageUrl(key: string): string {
   const fileName = getAccessLogImageFileName(key);
   if (!fileName) return "";
-  const base = API_CONFIG.BASE_URL.replace(/\/$/, "");
+  const base = getApiBaseUrl();
   const path = `${API_CONFIG.ENDPOINTS.IMAGES.BASE}/${encodeURIComponent(fileName)}`;
   return `${base}${path.startsWith("/") ? "" : "/"}${path}`;
 }

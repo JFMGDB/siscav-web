@@ -1,9 +1,39 @@
-export const API_CONFIG = {
-  BASE_URL:
+const LOCAL_DEV_API_URL = "http://localhost:8000";
+export const PRODUCTION_API_URL = "https://siscav-api.onrender.com";
+
+function trimApiUrl(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  return trimmed.replace(/\/$/, "");
+}
+
+/** Resolves API base URL at runtime when NEXT_PUBLIC_* is missing from the Vercel build. */
+export function getApiBaseUrl(): string {
+  const fromEnv = trimApiUrl(
     process.env.NEXT_PUBLIC_MANTIS_API_URL ||
-    process.env.NEXT_PUBLIC_SISCAV_API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    "http://localhost:8000",
+      process.env.NEXT_PUBLIC_SISCAV_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL,
+  );
+  if (fromEnv) return fromEnv;
+
+  if (typeof window !== "undefined") {
+    const { hostname } = window.location;
+    if (hostname.endsWith(".vercel.app")) {
+      return PRODUCTION_API_URL;
+    }
+  }
+
+  if (process.env.VERCEL === "1") {
+    return PRODUCTION_API_URL;
+  }
+
+  return LOCAL_DEV_API_URL;
+}
+
+export const API_CONFIG = {
+  get BASE_URL() {
+    return getApiBaseUrl();
+  },
   ENDPOINTS: {
     AUTH: {
       REGISTER: "/api/v1/register",
