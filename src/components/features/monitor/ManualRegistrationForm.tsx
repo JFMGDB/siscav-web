@@ -32,12 +32,14 @@ const AUTO_OCR_INTERVAL_MS = 4500;
 
 interface ManualRegistrationFormProps {
   initialPlate?: string;
+  deniedLogId?: string;
   onSuccess?: () => void;
   onAccessLogRegistered?: () => void;
 }
 
 export default function ManualRegistrationForm({
   initialPlate,
+  deniedLogId,
   onSuccess,
   onAccessLogRegistered,
 }: ManualRegistrationFormProps) {
@@ -102,7 +104,7 @@ export default function ManualRegistrationForm({
           lower.includes("unavailable")
         ) {
           showMessage(
-            "OCR indisponível no servidor. Instale as dependências ML (requirements-ml.txt) na API.",
+            "OCR indisponível no servidor. Verifique se a API foi reiniciada com as dependências ML.",
             "error",
           );
         } else if (lower.includes("413")) {
@@ -191,8 +193,17 @@ export default function ManualRegistrationForm({
 
     setLoading(true);
     try {
-      await whitelistApi.addPlate(getClientApiClient(), plate, description);
-      showMessage("Veículo cadastrado e autorizado com sucesso!", "success");
+      const client = getClientApiClient();
+      if (deniedLogId) {
+        await logsApi.whitelistFromDeniedLog(client, deniedLogId, description);
+        showMessage(
+          "Placa adicionada à whitelist. O registro negado permanece no histórico.",
+          "success",
+        );
+      } else {
+        await whitelistApi.addPlate(client, plate, description);
+        showMessage("Veículo cadastrado e autorizado com sucesso!", "success");
+      }
       setPlate("");
       setDescription("");
       setCandidates([]);

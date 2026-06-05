@@ -16,6 +16,7 @@ export const API_CONFIG = {
     },
     WHITELIST: "/api/v1/whitelist",
     LOGS: "/api/v1/access_logs",
+    METRICS: "/api/v1/dashboard/metrics",
     GATE: {
       TRIGGER: "/api/v1/gate_control/trigger",
     },

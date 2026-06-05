@@ -1,5 +1,6 @@
 import { Typography, Grid, Box } from "@mui/material";
 import GateControl from "@/components/features/gate/GateControl";
+import DashboardMetrics from "@/components/features/dashboard/DashboardMetrics";
 
 export default function DashboardPage() {
   return (
@@ -11,6 +12,10 @@ export default function DashboardPage() {
         <Typography variant="body1" color="text.secondary">
           Controle de acesso veicular
         </Typography>
+      </Box>
+
+      <Box sx={{ mb: 4 }}>
+        <DashboardMetrics />
       </Box>
 
       <Grid container spacing={3}>

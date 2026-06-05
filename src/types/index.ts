@@ -4,3 +4,4 @@ export * from "./logs";
 export * from "./monitor";
 export * from "./common";
 export * from "./ml";
+export * from "./metrics";

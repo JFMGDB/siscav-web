@@ -1,5 +1,10 @@
 import type { ApiClient } from "./client";
-import type { AccessLog, AccessLogFilters, PaginatedResponse } from "@/types";
+import type {
+  AccessLog,
+  AccessLogFilters,
+  AuthorizedPlate,
+  PaginatedResponse,
+} from "@/types";
 import { API_CONFIG } from "@/constants";
 import { getAccessLogImageFileName } from "@/lib/image-url";
 
@@ -80,4 +85,19 @@ export async function getLogs(
     },
   );
   return normalizePaginated(res, filters);
+}
+
+export async function whitelistFromDeniedLog(
+  client: ApiClient,
+  logId: string,
+  description?: string,
+): Promise<AuthorizedPlate> {
+  return client.request<AuthorizedPlate>(
+    `${API_CONFIG.ENDPOINTS.LOGS}/${logId}/whitelist`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description: description ?? null }),
+    },
+  );
 }

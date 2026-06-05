@@ -10,14 +10,17 @@ import { MonitorFrameCaptureProvider } from "@/contexts/monitor-frame-capture-co
 
 export default function MonitorPage() {
   const [unknownPlate, setUnknownPlate] = useState<string>("");
+  const [deniedLogId, setDeniedLogId] = useState<string | undefined>();
   const queryClient = useQueryClient();
 
-  const handleUnknownPlate = (plate: string) => {
+  const handleUnknownPlate = (plate: string, logId: string) => {
     setUnknownPlate(plate);
+    setDeniedLogId(logId);
   };
 
   const handleRegistrationSuccess = () => {
     setUnknownPlate("");
+    setDeniedLogId(undefined);
   };
 
   const handleAccessLogRegistered = () => {
@@ -59,8 +62,9 @@ export default function MonitorPage() {
 
               <Box sx={{ flex: 1 }}>
                 <ManualRegistrationForm
-                  key={unknownPlate}
+                  key={`${unknownPlate}-${deniedLogId ?? "none"}`}
                   initialPlate={unknownPlate}
+                  deniedLogId={deniedLogId}
                   onSuccess={handleRegistrationSuccess}
                   onAccessLogRegistered={handleAccessLogRegistered}
                 />

@@ -11,6 +11,8 @@ export interface AccessLog {
   status: AccessStatus;
   image_storage_key: string;
   authorized_plate_id?: string;
+  is_automatic?: boolean;
+  ocr_success?: boolean;
 }
 
 export interface AccessLogFilters {
