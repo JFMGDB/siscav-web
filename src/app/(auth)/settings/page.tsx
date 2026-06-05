@@ -11,6 +11,7 @@ import {
   Stack,
 } from "@mui/material";
 import { useAuth } from "@/hooks/use-auth";
+import { isPlatformSuperadmin } from "@/lib/auth/roles";
 import { useCameraConfig } from "@/hooks/use-camera-config";
 import { ROUTES } from "@/constants";
 import { redactUrlForDisplay } from "@/lib/camera/validate-camera-url";
@@ -23,14 +24,18 @@ export default function SettingsPage() {
     <Container maxWidth="lg">
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom>
-          Configurações do Sistema
+          {user && isPlatformSuperadmin(user)
+            ? "Gestão de contas"
+            : "Configurações do Sistema"}
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          Configure a câmara usada no monitoramento (USB ou URL na rede).
+          {user && isPlatformSuperadmin(user)
+            ? "Crie e administre contas de acesso ao sistema."
+            : "Configure a câmara usada no monitoramento (USB ou URL na rede)."}
         </Typography>
       </Box>
 
-      {user?.is_superadmin && (
+      {isPlatformSuperadmin(user) && (
         <Paper sx={{ p: 3, mb: 4 }}>
           <Typography variant="h6" gutterBottom>
             Usuários
@@ -48,6 +53,7 @@ export default function SettingsPage() {
         </Paper>
       )}
 
+      {!isPlatformSuperadmin(user) && (
       <Paper sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom>
           Câmara no monitor
@@ -85,6 +91,7 @@ export default function SettingsPage() {
           Editar em Pré-visualização
         </Button>
       </Paper>
+      )}
     </Container>
   );
 }

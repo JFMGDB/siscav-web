@@ -74,7 +74,7 @@ export const MESSAGES = {
       "Preencha os dados para criar uma conta de acesso ao Mantis.",
     CREATE_USER_TITLE: "Criar usuário",
     CREATE_USER_SUBTITLE:
-      "Cadastre uma nova conta de acesso. Apenas superadministradores do Siscav podem usar esta função.",
+      "Cadastre um administrador do cliente (opera o estacionamento no Mantis). Apenas superadministradores do Siscav podem usar esta função.",
     CREATE_USER_SUCCESS: "Usuário criado com sucesso.",
     CREATE_USER_FORBIDDEN:
       "Sem permissão para criar usuários. Apenas superadministradores do Siscav.",

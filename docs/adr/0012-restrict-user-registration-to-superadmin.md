@@ -33,3 +33,5 @@ Client guards are UX only; the API enforces authorization.
 ## Related
 
 - API ADR 007: `is_superadmin`, protected `POST /api/v1/register`.
+- Web ADR 0013: superadmin UI limited to account management (no client operational shell).
+- API ADR 008: registered users are always client administrators (`is_admin=true`).

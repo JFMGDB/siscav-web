@@ -13,6 +13,7 @@ import AuthCredentialsForm, {
   type AuthSubmitValues,
 } from "@/components/features/auth/AuthCredentialsForm";
 import { useAuth } from "@/hooks/use-auth";
+import { isPlatformSuperadmin } from "@/lib/auth/roles";
 import { resolveAuthError } from "@/lib/auth-form";
 import { MESSAGES, ROUTES } from "@/constants";
 
@@ -24,7 +25,7 @@ export default function CreateUserPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && user && !user.is_superadmin) {
+    if (!isLoading && user && !isPlatformSuperadmin(user)) {
       router.push(ROUTES.AUTH.DASHBOARD);
     }
   }, [user, isLoading, router]);
@@ -44,7 +45,7 @@ export default function CreateUserPage() {
     );
   }
 
-  if (!user?.is_superadmin) {
+  if (!isPlatformSuperadmin(user)) {
     return null;
   }
 

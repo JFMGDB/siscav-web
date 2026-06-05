@@ -15,6 +15,7 @@ import {
 import * as authApi from "@/lib/api/auth";
 import type { User, AuthContextType } from "@/types";
 import { useRouter } from "next/navigation";
+import { isPlatformSuperadmin } from "@/lib/auth/roles";
 import { AUTH_CONFIG, ROUTES } from "@/constants";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -96,7 +97,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await authApi.login(getApi(), email, password);
       localStorage.setItem(AUTH_CONFIG.USER_KEY, JSON.stringify(response.user));
       setUser(response.user);
-      router.push(ROUTES.AUTH.DASHBOARD);
+      router.push(
+        isPlatformSuperadmin(response.user)
+          ? ROUTES.AUTH.SETTINGS
+          : ROUTES.AUTH.DASHBOARD,
+      );
     } catch (error) {
       console.error("Login failed", error);
       throw error;

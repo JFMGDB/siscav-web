@@ -31,9 +31,47 @@ import {
 } from "@mui/icons-material";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { isPlatformSuperadmin } from "@/lib/auth/roles";
 import { ROUTES, UI_CONFIG } from "@/constants";
 
 const drawerWidth = UI_CONFIG.DRAWER.WIDTH;
+
+const CLIENT_MENU_ITEMS = [
+  { text: "Painel", icon: <DashboardIcon />, path: ROUTES.AUTH.DASHBOARD },
+  {
+    text: "Monitoramento",
+    icon: <VideocamIcon />,
+    path: ROUTES.AUTH.MONITOR,
+  },
+  {
+    text: "Pré-visualização",
+    icon: <CameraAltIcon />,
+    path: ROUTES.AUTH.CAMERA,
+  },
+  {
+    text: "Veículos Autorizados",
+    icon: <CarIcon />,
+    path: ROUTES.AUTH.WHITELIST,
+  },
+  {
+    text: "Histórico de Acesso",
+    icon: <HistoryIcon />,
+    path: ROUTES.AUTH.LOGS,
+  },
+  {
+    text: "Configurações",
+    icon: <SettingsIcon />,
+    path: ROUTES.AUTH.SETTINGS,
+  },
+] as const;
+
+const PLATFORM_MENU_ITEMS = [
+  {
+    text: "Gestão de contas",
+    icon: <SettingsIcon />,
+    path: ROUTES.AUTH.SETTINGS,
+  },
+] as const;
 
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const { logout, user } = useAuth();
@@ -45,34 +83,9 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     setMobileOpen(!mobileOpen);
   };
 
-  const menuItems = [
-    { text: "Painel", icon: <DashboardIcon />, path: ROUTES.AUTH.DASHBOARD },
-    {
-      text: "Monitoramento",
-      icon: <VideocamIcon />,
-      path: ROUTES.AUTH.MONITOR,
-    },
-    {
-      text: "Pré-visualização",
-      icon: <CameraAltIcon />,
-      path: ROUTES.AUTH.CAMERA,
-    },
-    {
-      text: "Veículos Autorizados",
-      icon: <CarIcon />,
-      path: ROUTES.AUTH.WHITELIST,
-    },
-    {
-      text: "Histórico de Acesso",
-      icon: <HistoryIcon />,
-      path: ROUTES.AUTH.LOGS,
-    },
-    {
-      text: "Configurações",
-      icon: <SettingsIcon />,
-      path: ROUTES.AUTH.SETTINGS,
-    },
-  ];
+  const menuItems = isPlatformSuperadmin(user)
+    ? PLATFORM_MENU_ITEMS
+    : CLIENT_MENU_ITEMS;
 
   const drawer = (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
