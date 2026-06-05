@@ -3,6 +3,7 @@
  */
 
 import { AccessStatus } from "./common";
+import type { GateTriggerResponse } from "./gate";
 
 export interface AccessLog {
   id: string;
@@ -13,6 +14,7 @@ export interface AccessLog {
   authorized_plate_id?: string;
   is_automatic?: boolean;
   ocr_success?: boolean;
+  gate_trigger?: GateTriggerResponse | null;
 }
 
 export interface AccessLogFilters {

@@ -27,6 +27,7 @@ import { useSnackbar } from "@/hooks/use-snackbar";
 import { Card } from "@/components/ui/Card";
 import { useMonitorFrameCapture } from "@/contexts/monitor-frame-capture-context";
 import type { PlateCandidate } from "@/types";
+import { getAccessLogToast } from "@/lib/gate-trigger-toast";
 
 const AUTO_OCR_INTERVAL_MS = 4500;
 
@@ -170,11 +171,12 @@ export default function ManualRegistrationForm({
         "monitor-access.jpg",
       );
 
-      const statusLabel = log.status === "Authorized" ? "autorizado" : "negado";
-      showMessage(
-        `Tentativa registrada: ${log.plate_string_detected} (${statusLabel}).`,
-        log.status === "Authorized" ? "success" : "warning",
+      const toast = getAccessLogToast(
+        log.plate_string_detected,
+        log.status,
+        log.gate_trigger,
       );
+      showMessage(toast.message, toast.severity);
       onAccessLogRegistered?.();
     } catch (e) {
       const msg =

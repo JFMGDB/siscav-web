@@ -92,6 +92,11 @@ export const MESSAGES = {
   GATE: {
     OPEN_SUCCESS: "Portão aberto com sucesso!",
     OPEN_ERROR: "Erro ao abrir portão.",
+    AUTO_OPEN_SUCCESS: "Acesso autorizado e cancela acionada.",
+    AUTO_OPEN_SIMULATED:
+      "Acesso autorizado. Atuador não configurado (modo simulado).",
+    AUTO_OPEN_HARDWARE_ERROR:
+      "Acesso autorizado, mas a cancela não respondeu ({reason}).",
   },
   ACCOUNTS: {
     HUB_TITLE: "Gestão de contas",
