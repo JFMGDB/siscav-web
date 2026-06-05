@@ -133,6 +133,25 @@ export class ApiClient {
     return this.refreshPromise;
   }
 
+  /** Parses JSON when present; empty 204/205 and blank bodies must not throw. */
+  private async readResponseBody<T>(response: Response): Promise<T> {
+    if (response.status === 204 || response.status === 205) {
+      return undefined as T;
+    }
+
+    const text = await response.text();
+    if (!text.trim()) {
+      return undefined as T;
+    }
+
+    const contentType = response.headers.get("content-type") ?? "";
+    if (contentType.includes("application/json")) {
+      return JSON.parse(text) as T;
+    }
+
+    return text as unknown as T;
+  }
+
   async request<T>(
     endpoint: string,
     options: RequestInit = {},
@@ -158,32 +177,29 @@ export class ApiClient {
       headers,
     });
 
-    if ((response.status === 401 || response.status === 403) && retry) {
+    if (response.status === 401 && retry) {
       try {
         await this.refreshTokens();
-        token = await this.resolveToken();
-        const retryRes = await fetch(`${this.baseUrl}${endpoint}`, {
-          ...options,
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            ...options.headers,
-          },
-        });
-        if (!retryRes.ok) throw new Error(await parseApiError(retryRes));
-        const ct = retryRes.headers.get("content-type");
-        if (ct?.includes("application/json")) return retryRes.json();
-        return {} as T;
       } catch (e) {
         this.clearTokensCallback();
         throw e;
       }
+
+      token = await this.resolveToken();
+      const retryRes = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...options,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...options.headers,
+        },
+      });
+      if (!retryRes.ok) throw new Error(await parseApiError(retryRes));
+      return this.readResponseBody<T>(retryRes);
     }
 
     if (!response.ok) throw new Error(await parseApiError(response));
 
-    const ct = response.headers.get("content-type");
-    if (ct?.includes("application/json")) return response.json();
-    return {} as T;
+    return this.readResponseBody<T>(response);
   }
 
   /**

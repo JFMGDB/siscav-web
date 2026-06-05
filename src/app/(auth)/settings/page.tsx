@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { isPlatformSuperadmin } from "@/lib/auth/roles";
 import { useCameraConfig } from "@/hooks/use-camera-config";
+import SuperadminAccountsHub from "@/components/features/accounts/SuperadminAccountsHub";
 import { ROUTES } from "@/constants";
 import { redactUrlForDisplay } from "@/lib/camera/validate-camera-url";
 
@@ -20,40 +21,25 @@ export default function SettingsPage() {
   const { user } = useAuth();
   const { config } = useCameraConfig();
 
+  if (isPlatformSuperadmin(user)) {
+    return (
+      <Container maxWidth="lg">
+        <SuperadminAccountsHub />
+      </Container>
+    );
+  }
+
   return (
     <Container maxWidth="lg">
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom>
-          {user && isPlatformSuperadmin(user)
-            ? "Gestão de contas"
-            : "Configurações do Sistema"}
+          Configurações do Sistema
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          {user && isPlatformSuperadmin(user)
-            ? "Crie e administre contas de acesso ao sistema."
-            : "Configure a câmara usada no monitoramento (USB ou URL na rede)."}
+          Configure a câmara usada no monitoramento (USB ou URL na rede).
         </Typography>
       </Box>
 
-      {isPlatformSuperadmin(user) && (
-        <Paper sx={{ p: 3, mb: 4 }}>
-          <Typography variant="h6" gutterBottom>
-            Usuários
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Crie contas de acesso para operadores do sistema.
-          </Typography>
-          <Button
-            component={Link}
-            href={ROUTES.AUTH.USERS_CREATE}
-            variant="contained"
-          >
-            Criar usuário
-          </Button>
-        </Paper>
-      )}
-
-      {!isPlatformSuperadmin(user) && (
       <Paper sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom>
           Câmara no monitor
@@ -91,7 +77,6 @@ export default function SettingsPage() {
           Editar em Pré-visualização
         </Button>
       </Paper>
-      )}
     </Container>
   );
 }

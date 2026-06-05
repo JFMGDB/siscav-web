@@ -12,7 +12,7 @@ export function Card({
   title,
   subtitle,
   children,
-  hover = true,
+  hover = false,
   sx,
   ...props
 }: CardProps) {
@@ -23,7 +23,8 @@ export function Card({
         p: 3,
         ...(hover && {
           "&:hover": {
-            transform: "translateY(-2px)",
+            boxShadow:
+              "0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04)",
           },
         }),
         ...sx,

@@ -73,6 +73,10 @@ const PLATFORM_MENU_ITEMS = [
   },
 ] as const;
 
+const PAGE_TITLES: Record<string, string> = {
+  [ROUTES.AUTH.USERS_CREATE]: "Criar usuário",
+};
+
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const { logout, user } = useAuth();
   const router = useRouter();
@@ -87,12 +91,22 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
     ? PLATFORM_MENU_ITEMS
     : CLIENT_MENU_ITEMS;
 
+  const pageTitle =
+    PAGE_TITLES[pathname] ??
+    menuItems.find((item) => item.path === pathname)?.text ??
+    "Painel";
+
+  const isSuperadmin = isPlatformSuperadmin(user);
+
   const drawer = (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       {/* Logo Section */}
       <Toolbar
         sx={{
           minHeight: "80px !important",
+          width: "100%",
+          px: 2,
+          overflow: "hidden",
           borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
           background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
         }}
@@ -144,7 +158,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       </Toolbar>
 
       {/* Navigation */}
-      <Box sx={{ flex: 1, overflow: "auto", py: 2 }}>
+      <Box sx={{ overflow: "auto", py: isSuperadmin ? 1 : 2 }}>
         <List sx={{ px: 1 }}>
           {menuItems.map((item) => {
             const isSelected = pathname === item.path;
@@ -156,7 +170,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                   sx={{
                     borderRadius: 2,
                     py: 1.5,
-                    transition: "all 0.2s ease-in-out",
+                    transition: "background-color 0.2s ease, color 0.2s ease",
                     "&.Mui-selected": {
                       backgroundColor: "rgba(13, 148, 136, 0.1)",
                       color: "primary.main",
@@ -196,7 +210,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       </Box>
 
       {/* User Section */}
-      <Box sx={{ borderTop: "1px solid rgba(0, 0, 0, 0.05)", p: 2 }}>
+      <Box sx={{ borderTop: "1px solid rgba(0, 0, 0, 0.05)", p: 2, mt: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
           <Avatar
             sx={{
@@ -223,6 +237,14 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             >
               {user?.email || "admin@mantis.local"}
             </Typography>
+            {isSuperadmin && (
+              <Chip
+                label="Superadmin"
+                size="small"
+                color="primary"
+                sx={{ mt: 0.5, height: 20, fontSize: "0.65rem" }}
+              />
+            )}
           </Box>
         </Box>
         <ListItemButton
@@ -286,19 +308,21 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             component="div"
             sx={{ flexGrow: 1, fontWeight: 600 }}
           >
-            {menuItems.find((item) => item.path === pathname)?.text || "Painel"}
+            {pageTitle}
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <IconButton size="small" sx={{ color: "text.secondary" }}>
-              <Badge badgeContent={0} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            {!isSuperadmin && (
+              <IconButton size="small" sx={{ color: "text.secondary" }}>
+                <Badge badgeContent={0} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            )}
             <Chip
               label="Online"
               color="success"
               size="small"
-              sx={{ fontWeight: 500 }}
+              sx={{ fontWeight: 500, display: { xs: "none", sm: "flex" } }}
             />
           </Box>
         </Toolbar>

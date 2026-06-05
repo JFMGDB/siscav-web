@@ -36,6 +36,7 @@ export function StatCard({
 
   return (
     <Card
+      hover={false}
       sx={{
         background: `linear-gradient(135deg, ${colorValue}15 0%, ${colorValue}05 100%)`,
         border: `1px solid ${colorValue}20`,
@@ -60,6 +61,7 @@ export function StatCard({
               fontWeight: 700,
               color: colorValue,
               mt: 1,
+              fontSize: { xs: "2rem", sm: "3rem" },
             }}
           >
             {value}

@@ -12,7 +12,7 @@
 import type { ApiClient } from "./client";
 import { readBrowserAccessToken } from "./client";
 import type { AuthResponse, User } from "@/types";
-import { API_CONFIG } from "@/constants";
+import { API_CONFIG, MESSAGES } from "@/constants";
 import { ApiHttpError, parseApiResponse } from "./errors";
 
 const REGISTER_INVALID_DATA_MSG = "Dados inválidos. Verifique e-mail e senha.";
@@ -68,7 +68,7 @@ export async function register(
       case 403:
         throw new ApiHttpError(
           403,
-          "Sem permissão para criar usuários. Apenas superadministradores do Siscav.",
+          MESSAGES.AUTH.CREATE_USER_FORBIDDEN,
         );
       case 409:
         throw new ApiHttpError(

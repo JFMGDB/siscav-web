@@ -14,6 +14,7 @@ export const API_CONFIG = {
     ML: {
       RECOGNIZE_PLATE: "/api/v1/ml/recognize-plate",
     },
+    USERS: "/api/v1/users",
     WHITELIST: "/api/v1/whitelist",
     LOGS: "/api/v1/access_logs",
     METRICS: "/api/v1/dashboard/metrics",
@@ -75,10 +76,10 @@ export const MESSAGES = {
       "Preencha os dados para criar uma conta de acesso ao Mantis.",
     CREATE_USER_TITLE: "Criar usuário",
     CREATE_USER_SUBTITLE:
-      "Cadastre um administrador do cliente (opera o estacionamento no Mantis). Apenas superadministradores do Siscav podem usar esta função.",
+      "Cadastre um administrador do cliente (opera o estacionamento no Mantis). Apenas superadministradores Mantis podem usar esta função.",
     CREATE_USER_SUCCESS: "Usuário criado com sucesso.",
     CREATE_USER_FORBIDDEN:
-      "Sem permissão para criar usuários. Apenas superadministradores do Siscav.",
+      "Sem permissão para criar usuários. Apenas superadministradores Mantis.",
   },
   WHITELIST: {
     ADD_SUCCESS: "Placa adicionada com sucesso!",
@@ -91,5 +92,36 @@ export const MESSAGES = {
   GATE: {
     OPEN_SUCCESS: "Portão aberto com sucesso!",
     OPEN_ERROR: "Erro ao abrir portão.",
+  },
+  ACCOUNTS: {
+    HUB_TITLE: "Gestão de contas",
+    HUB_SUBTITLE: "Crie e administre contas de acesso ao sistema.",
+    ROLE_SUPERADMIN: "Superadministrador Mantis",
+    ROLE_CLIENT_ADMIN: "Admin cliente",
+    ROLE_SUPERADMIN_SHORT: "Superadmin",
+    CREATE_PRIMARY: "Criar conta de acesso",
+    CREATE_BUTTON: "Criar administrador",
+    BACK_TO_HUB: "Voltar para gestão de contas",
+    INFO_SEPARATION:
+      "Superadministradores gerenciam contas. Administradores do cliente operam o estacionamento (painel, monitor, whitelist e histórico).",
+    CLIENT_ADMIN_BULLETS: [
+      "Painel de controle e métricas operacionais",
+      "Monitoramento ao vivo e pré-visualização de câmara",
+      "Veículos autorizados e histórico de acesso",
+    ],
+    TABLE_TITLE: "Contas cadastradas",
+    EMPTY: "Nenhuma conta cadastrada. Crie o primeiro administrador do cliente.",
+    UPDATE_SUCCESS: "Conta atualizada com sucesso.",
+    UPDATE_ERROR: "Erro ao atualizar conta.",
+    DELETE_SUCCESS: "Conta removida com sucesso.",
+    DELETE_ERROR: "Erro ao remover conta.",
+    DELETE_CONFIRM: "Tem certeza que deseja remover esta conta?",
+    EDIT_EMAIL: "Editar e-mail",
+    STATS_TOTAL: "Total de contas",
+    STATS_CLIENT_ADMINS: "Administradores do cliente",
+    STATS_SUPERADMINS: "Superadministradores",
+    STATS_LOAD_ERROR: "Falha ao carregar estatísticas.",
+    LIST_LOAD_ERROR: "Falha ao carregar contas.",
+    RETRY: "Tentar novamente",
   },
 } as const;

@@ -130,8 +130,7 @@ const theme = createTheme({
           fontSize: "0.9375rem",
           boxShadow: "none",
           "&:hover": {
-            boxShadow:
-              "0 2px 4px -1px rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.04)",
+            boxShadow: "none",
           },
         },
       },
@@ -172,13 +171,41 @@ const theme = createTheme({
         root: {
           "& .MuiOutlinedInput-root": {
             borderRadius: 8,
+            "& fieldset": {
+              borderWidth: 1,
+            },
             "&:hover fieldset": {
               borderColor: primaryMain,
+              borderWidth: 1,
             },
             "&.Mui-focused fieldset": {
               borderColor: primaryMain,
-              borderWidth: 2,
+              borderWidth: 1,
             },
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& fieldset": {
+            borderWidth: 1,
+          },
+          "&:hover fieldset": {
+            borderWidth: 1,
+          },
+          "&.Mui-focused fieldset": {
+            borderWidth: 1,
+          },
+        },
+      },
+    },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root fieldset": {
+            borderWidth: "1px !important",
           },
         },
       },
@@ -205,9 +232,20 @@ const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
+          borderRadius: 0,
           borderRight: "1px solid rgba(0, 0, 0, 0.06)",
           boxShadow: "none",
         },
+      },
+    },
+    MuiModal: {
+      defaultProps: {
+        disableScrollLock: true,
+      },
+    },
+    MuiDialog: {
+      defaultProps: {
+        disableScrollLock: true,
       },
     },
     MuiListItemButton: {

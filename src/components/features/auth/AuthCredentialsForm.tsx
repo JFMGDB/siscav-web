@@ -37,6 +37,7 @@ export interface AuthCredentialsFormProps {
   mode: AuthFormMode;
   loading: boolean;
   onSubmit: (values: AuthSubmitValues) => void | Promise<void>;
+  submitLabel?: string;
 }
 
 type FormValues = LoginFormValues & { confirmPassword?: string };
@@ -51,6 +52,7 @@ export default function AuthCredentialsForm({
   mode,
   loading,
   onSubmit,
+  submitLabel,
 }: AuthCredentialsFormProps) {
   const isRegister = mode === "register";
   const [showPassword, setShowPassword] = useState(false);
@@ -193,14 +195,12 @@ export default function AuthCredentialsForm({
         fullWidth
         size="large"
         disabled={loading}
-        sx={{ mt: 3, py: 1.25 }}
+        sx={{ mt: 2, py: 1.25 }}
       >
         {loading ? (
           <CircularProgress size={24} color="inherit" />
-        ) : isRegister ? (
-          "Criar conta"
         ) : (
-          "Entrar"
+          submitLabel ?? (isRegister ? "Criar conta" : "Entrar")
         )}
       </Button>
     </Box>
