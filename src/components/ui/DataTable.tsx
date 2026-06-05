@@ -31,14 +31,17 @@ function columnDisplaySx(hideBelow?: HideBelow) {
 }
 
 /** Data bound to a key of row type T. */
-export type FieldColumn<T extends { id: string | number }> = {
+export type FieldColumn<
+  T extends { id: string | number },
+  FieldKey extends keyof T = keyof T,
+> = {
   columnType: "field";
-  id: keyof T;
+  id: FieldKey;
   label: string;
   minWidth?: number;
   align?: "right" | "left" | "center";
   hideBelow?: HideBelow;
-  format?: (value: T[keyof T], row: T) => React.ReactNode;
+  format?: (value: T[FieldKey], row: T) => React.ReactNode;
 };
 
 /** Synthetic column (e.g. action buttons) — not a property of T. */
@@ -53,7 +56,7 @@ export type ActionsColumn<T extends { id: string | number }> = {
 };
 
 export type Column<T extends { id: string | number }> =
-  | FieldColumn<T>
+  | { [FieldKey in keyof T]: FieldColumn<T, FieldKey> }[keyof T]
   | ActionsColumn<T>;
 
 export interface DataTableProps<T extends { id: string | number }> {
