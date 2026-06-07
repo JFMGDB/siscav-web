@@ -74,7 +74,11 @@ export default function SuperadminAccountsHub() {
           severity="error"
           sx={{ mb: 3 }}
           action={
-            <Button color="inherit" size="small" onClick={() => void refetchStats()}>
+            <Button
+              color="inherit"
+              size="small"
+              onClick={() => void refetchStats()}
+            >
               {MESSAGES.ACCOUNTS.RETRY}
             </Button>
           }
@@ -132,7 +136,11 @@ export default function SuperadminAccountsHub() {
             }}
           >
             <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mb: 1.5 }}
+              >
                 Contas criadas aqui são{" "}
                 <strong>administradores do cliente</strong>, operam o Mantis no
                 dia a dia e tem acesso a:
@@ -176,7 +184,11 @@ export default function SuperadminAccountsHub() {
         <Alert
           severity="error"
           action={
-            <Button color="inherit" size="small" onClick={() => void refetchList()}>
+            <Button
+              color="inherit"
+              size="small"
+              onClick={() => void refetchList()}
+            >
               {MESSAGES.ACCOUNTS.RETRY}
             </Button>
           }

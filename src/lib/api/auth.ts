@@ -66,10 +66,7 @@ export async function register(
   if (!res.ok) {
     switch (res.status) {
       case 403:
-        throw new ApiHttpError(
-          403,
-          MESSAGES.AUTH.CREATE_USER_FORBIDDEN,
-        );
+        throw new ApiHttpError(403, MESSAGES.AUTH.CREATE_USER_FORBIDDEN);
       case 409:
         throw new ApiHttpError(
           409,

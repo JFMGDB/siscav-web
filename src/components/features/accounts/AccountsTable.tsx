@@ -30,9 +30,7 @@ function roleLabel(user: AccountUser): string {
   return "Usuário";
 }
 
-function roleColor(
-  user: AccountUser,
-): "primary" | "secondary" | "default" {
+function roleColor(user: AccountUser): "primary" | "secondary" | "default" {
   if (user.is_superadmin) return "secondary";
   if (user.is_admin) return "primary";
   return "default";
@@ -229,7 +227,12 @@ export default function AccountsTable() {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={deleteOpen} onClose={handleCloseDelete} maxWidth="xs" fullWidth>
+      <Dialog
+        open={deleteOpen}
+        onClose={handleCloseDelete}
+        maxWidth="xs"
+        fullWidth
+      >
         <DialogTitle sx={{ fontWeight: 600 }}>Excluir conta</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary">

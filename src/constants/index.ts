@@ -43,6 +43,7 @@ export const API_CONFIG = {
     },
     ML: {
       RECOGNIZE_PLATE: "/api/v1/ml/recognize-plate",
+      CLASSIFY_VEHICLE: "/api/v1/ml/classify-vehicle",
     },
     USERS: "/api/v1/users",
     WHITELIST: "/api/v1/whitelist",
@@ -90,6 +91,7 @@ export const ROUTES = {
     CAMERA: "/camera",
     WHITELIST: "/whitelist",
     LOGS: "/logs",
+    ML_PLAYGROUND: "/ml-playground",
     SETTINGS: "/settings",
     USERS_CREATE: "/users/create",
   },
@@ -127,6 +129,8 @@ export const MESSAGES = {
       "Acesso autorizado. Atuador não configurado (modo simulado).",
     AUTO_OPEN_HARDWARE_ERROR:
       "Acesso autorizado, mas a cancela não respondeu ({reason}).",
+    AMBULANCE_AUTO_AUTHORIZED:
+      "Ambulância detectada — acesso autorizado automaticamente.",
   },
   ACCOUNTS: {
     HUB_TITLE: "Gestão de contas",
@@ -145,7 +149,8 @@ export const MESSAGES = {
       "Veículos autorizados e histórico de acesso",
     ],
     TABLE_TITLE: "Contas cadastradas",
-    EMPTY: "Nenhuma conta cadastrada. Crie o primeiro administrador do cliente.",
+    EMPTY:
+      "Nenhuma conta cadastrada. Crie o primeiro administrador do cliente.",
     UPDATE_SUCCESS: "Conta atualizada com sucesso.",
     UPDATE_ERROR: "Erro ao atualizar conta.",
     DELETE_SUCCESS: "Conta removida com sucesso.",

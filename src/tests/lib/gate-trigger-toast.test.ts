@@ -40,4 +40,15 @@ describe("getAccessLogToast", () => {
     expect(result.severity).toBe("info");
     expect(result.message).toContain("simulado");
   });
+
+  it("returns success toast for ambulance auto-authorize without gate_trigger", () => {
+    const result = getAccessLogToast("AMB-0001", "Authorized", null, {
+      predicted_category: "ambulance",
+      confidence: 0.92,
+      model_version: "test",
+      classifier_backend: "onnx",
+    });
+    expect(result.severity).toBe("success");
+    expect(result.message).toContain("Ambulância");
+  });
 });

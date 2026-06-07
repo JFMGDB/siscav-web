@@ -27,6 +27,7 @@ import {
   Videocam as VideocamIcon,
   CameraAlt as CameraAltIcon,
   Settings as SettingsIcon,
+  Psychology as MlIcon,
   Notifications as NotificationsIcon,
 } from "@mui/icons-material";
 import { useRouter, usePathname } from "next/navigation";
@@ -57,6 +58,11 @@ const CLIENT_MENU_ITEMS = [
     text: "Histórico de Acesso",
     icon: <HistoryIcon />,
     path: ROUTES.AUTH.LOGS,
+  },
+  {
+    text: "Playground ML",
+    icon: <MlIcon />,
+    path: ROUTES.AUTH.ML_PLAYGROUND,
   },
   {
     text: "Configurações",

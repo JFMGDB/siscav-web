@@ -4,6 +4,7 @@
 
 import { AccessStatus } from "./common";
 import type { GateTriggerResponse } from "./gate";
+import type { VehicleClassificationResult } from "./ml";
 
 export interface AccessLog {
   id: string;
@@ -15,6 +16,7 @@ export interface AccessLog {
   is_automatic?: boolean;
   ocr_success?: boolean;
   gate_trigger?: GateTriggerResponse | null;
+  vehicle_classification?: VehicleClassificationResult | null;
 }
 
 export interface AccessLogFilters {

@@ -25,32 +25,34 @@ interface PlateRecognitionDisplayProps {
   onUnknownPlate: (plate: string, logId: string) => void;
 }
 
-const STATUS_SURFACE: Record<string, { border: string; bg: string; gradient: string }> =
-  {
-    success: {
-      border: "success.main",
-      bg: "rgba(16, 185, 129, 0.12)",
-      gradient:
-        "linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, transparent 100%)",
-    },
-    error: {
-      border: "error.main",
-      bg: "rgba(239, 68, 68, 0.12)",
-      gradient:
-        "linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, transparent 100%)",
-    },
-    warning: {
-      border: "warning.main",
-      bg: "rgba(245, 158, 11, 0.12)",
-      gradient:
-        "linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, transparent 100%)",
-    },
-    default: {
-      border: "grey.400",
-      bg: "grey.50",
-      gradient: "linear-gradient(135deg, rgba(0,0,0,0.04) 0%, transparent 100%)",
-    },
-  };
+const STATUS_SURFACE: Record<
+  string,
+  { border: string; bg: string; gradient: string }
+> = {
+  success: {
+    border: "success.main",
+    bg: "rgba(16, 185, 129, 0.12)",
+    gradient:
+      "linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, transparent 100%)",
+  },
+  error: {
+    border: "error.main",
+    bg: "rgba(239, 68, 68, 0.12)",
+    gradient:
+      "linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, transparent 100%)",
+  },
+  warning: {
+    border: "warning.main",
+    bg: "rgba(245, 158, 11, 0.12)",
+    gradient:
+      "linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, transparent 100%)",
+  },
+  default: {
+    border: "grey.400",
+    bg: "grey.50",
+    gradient: "linear-gradient(135deg, rgba(0,0,0,0.04) 0%, transparent 100%)",
+  },
+};
 
 export default function PlateRecognitionDisplay({
   onUnknownPlate,
@@ -79,10 +81,7 @@ export default function PlateRecognitionDisplay({
     if (!capture || capture.status !== "Denied") return;
     setWhitelistBusy(true);
     try {
-      await logsApi.whitelistFromDeniedLog(
-        getClientApiClient(),
-        capture.id,
-      );
+      await logsApi.whitelistFromDeniedLog(getClientApiClient(), capture.id);
       showMessage(
         `Placa ${capture.plate} adicionada à whitelist. O registro negado permanece no histórico.`,
         "success",

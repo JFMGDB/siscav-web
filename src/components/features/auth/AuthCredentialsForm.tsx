@@ -200,7 +200,7 @@ export default function AuthCredentialsForm({
         {loading ? (
           <CircularProgress size={24} color="inherit" />
         ) : (
-          submitLabel ?? (isRegister ? "Criar conta" : "Entrar")
+          (submitLabel ?? (isRegister ? "Criar conta" : "Entrar"))
         )}
       </Button>
     </Box>

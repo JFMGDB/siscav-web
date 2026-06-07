@@ -35,10 +35,7 @@ export default function AuthLayout({
       router.replace(ROUTES.AUTH.SETTINGS);
       return;
     }
-    if (
-      !isPlatformSuperadmin(user) &&
-      pathname === ROUTES.AUTH.USERS_CREATE
-    ) {
+    if (!isPlatformSuperadmin(user) && pathname === ROUTES.AUTH.USERS_CREATE) {
       router.replace(ROUTES.AUTH.DASHBOARD);
     }
   }, [user, isLoading, pathname, router]);

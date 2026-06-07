@@ -26,8 +26,9 @@ import * as whitelistApi from "@/lib/api/whitelist";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { Card } from "@/components/ui/Card";
 import { useMonitorFrameCapture } from "@/contexts/monitor-frame-capture-context";
-import type { PlateCandidate } from "@/types";
+import type { PlateCandidate, VehicleClassificationResult } from "@/types";
 import { getAccessLogToast } from "@/lib/gate-trigger-toast";
+import { getVehicleCategoryLabel } from "@/lib/vehicle-category";
 
 const AUTO_OCR_INTERVAL_MS = 4500;
 
@@ -51,6 +52,8 @@ export default function ManualRegistrationForm({
   const [ocrBusy, setOcrBusy] = useState(false);
   const [autoOcrEnabled, setAutoOcrEnabled] = useState(true);
   const [candidates, setCandidates] = useState<PlateCandidate[]>([]);
+  const [lastClassification, setLastClassification] =
+    useState<VehicleClassificationResult | null>(null);
   const { showMessage } = useSnackbar();
   const { captureFrame } = useMonitorFrameCapture();
   const ocrInFlight = useRef(false);
@@ -171,10 +174,13 @@ export default function ManualRegistrationForm({
         "monitor-access.jpg",
       );
 
+      setLastClassification(log.vehicle_classification ?? null);
+
       const toast = getAccessLogToast(
         log.plate_string_detected,
         log.status,
         log.gate_trigger,
+        log.vehicle_classification,
       );
       showMessage(toast.message, toast.severity);
       onAccessLogRegistered?.();
@@ -253,7 +259,12 @@ export default function ManualRegistrationForm({
             leitura.
           </Typography>
 
-          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            useFlexGap
+            sx={{ flexWrap: "wrap" }}
+          >
             <Button
               type="button"
               variant="outlined"
@@ -299,6 +310,22 @@ export default function ManualRegistrationForm({
                   />
                 ))}
               </Stack>
+            </Box>
+          )}
+
+          {lastClassification && (
+            <Box>
+              <Typography variant="subtitle2" gutterBottom>
+                Classificação (última tentativa)
+              </Typography>
+              <Chip
+                color={
+                  lastClassification.predicted_category === "ambulance"
+                    ? "error"
+                    : "default"
+                }
+                label={`${getVehicleCategoryLabel(lastClassification.predicted_category)} · ${(lastClassification.confidence * 100).toFixed(1)}%`}
+              />
             </Box>
           )}
 
