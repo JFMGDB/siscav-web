@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getClientApiClient } from "@/lib/api/client";
 import * as usersApi from "@/lib/api/users";
 import type { AccountUserUpdate } from "@/types/accounts";
+import { resolveApiError } from "@/lib/api/errors";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { MESSAGES } from "@/constants";
 
@@ -31,7 +32,8 @@ export function useUsers() {
       queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY });
       showMessage(MESSAGES.ACCOUNTS.UPDATE_SUCCESS, "success");
     },
-    onError: () => showMessage(MESSAGES.ACCOUNTS.UPDATE_ERROR, "error"),
+    onError: (e) =>
+      showMessage(resolveApiError(e, MESSAGES.ACCOUNTS.UPDATE_ERROR), "error"),
   });
 
   const deleteMutation = useMutation({
@@ -40,7 +42,8 @@ export function useUsers() {
       queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY });
       showMessage(MESSAGES.ACCOUNTS.DELETE_SUCCESS, "success");
     },
-    onError: () => showMessage(MESSAGES.ACCOUNTS.DELETE_ERROR, "error"),
+    onError: (e) =>
+      showMessage(resolveApiError(e, MESSAGES.ACCOUNTS.DELETE_ERROR), "error"),
   });
 
   return {

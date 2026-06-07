@@ -17,6 +17,7 @@ import {
 } from "@mui/icons-material";
 import { Card } from "@/components/ui/Card";
 import { getClientApiClient } from "@/lib/api/client";
+import { resolveApiError } from "@/lib/api/errors";
 import * as mlApi from "@/lib/api/ml";
 import { getVehicleCategoryLabel } from "@/lib/vehicle-category";
 import type { VehicleClassificationResult } from "@/types";
@@ -83,9 +84,7 @@ export default function MLPlayground() {
       );
       setResult(classification);
     } catch (e) {
-      setError(
-        e instanceof Error ? e.message : "Falha ao classificar a imagem.",
-      );
+      setError(resolveApiError(e, "Falha ao classificar a imagem."));
     } finally {
       setBusy(false);
     }

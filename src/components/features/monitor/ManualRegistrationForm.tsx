@@ -20,6 +20,7 @@ import {
   Sensors as SensorsIcon,
 } from "@mui/icons-material";
 import { getClientApiClient } from "@/lib/api/client";
+import { ApiHttpError, resolveApiError } from "@/lib/api/errors";
 import * as mlApi from "@/lib/api/ml";
 import * as logsApi from "@/lib/api/logs";
 import * as whitelistApi from "@/lib/api/whitelist";
@@ -99,24 +100,18 @@ export default function ManualRegistrationForm({
         }
       } catch (e) {
         if (mode === "auto") return;
-        const msg =
-          e instanceof Error ? e.message : "Erro ao chamar o OCR no servidor.";
-        const lower = msg.toLowerCase();
-        if (
-          lower.includes("503") ||
-          lower.includes("ml") ||
-          lower.includes("unavailable")
-        ) {
+        if (e instanceof ApiHttpError && e.status === 503) {
           showMessage(
             "OCR indisponível no servidor. Verifique se a API foi reiniciada com as dependências ML.",
             "error",
           );
-        } else if (lower.includes("413")) {
+        } else if (e instanceof ApiHttpError && e.status === 413) {
           showMessage("Imagem demasiado grande para o servidor.", "error");
-        } else if (lower.includes("vazia")) {
-          showMessage(msg, "warning");
         } else {
-          showMessage(msg, "error");
+          showMessage(
+            resolveApiError(e, "Erro ao chamar o OCR no servidor."),
+            "error",
+          );
         }
       } finally {
         ocrInFlight.current = false;
@@ -185,11 +180,10 @@ export default function ManualRegistrationForm({
       showMessage(toast.message, toast.severity);
       onAccessLogRegistered?.();
     } catch (e) {
-      const msg =
-        e instanceof Error
-          ? e.message
-          : "Erro ao registrar tentativa de acesso.";
-      showMessage(msg, "error");
+      showMessage(
+        resolveApiError(e, "Erro ao registrar tentativa de acesso."),
+        "error",
+      );
     } finally {
       setAccessLogBusy(false);
     }

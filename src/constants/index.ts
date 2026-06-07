@@ -56,6 +56,7 @@ export const API_CONFIG = {
       BASE: "/api/v1/access_logs/images",
     },
   },
+  REQUEST_TIMEOUT_MS: 30_000,
 } as const;
 
 export const AUTH_CONFIG = {
@@ -98,6 +99,22 @@ export const ROUTES = {
 } as const;
 
 export const MESSAGES = {
+  COMMON: {
+    NETWORK_ERROR: "Não foi possível conectar ao servidor. Verifique sua conexão.",
+    SESSION_EXPIRED: "Sessão expirada. Faça login novamente.",
+    UNAUTHORIZED: "Não foi possível validar as credenciais.",
+    FORBIDDEN: "Você não tem permissão para esta ação.",
+    NOT_FOUND: "Recurso não encontrado.",
+    CONFLICT: "Conflito com dados existentes.",
+    VALIDATION_ERROR: "Dados inválidos. Verifique os campos informados.",
+    RATE_LIMIT: "Muitas tentativas. Aguarde 1 minuto antes de tentar novamente.",
+    PAYLOAD_TOO_LARGE: "Arquivo ou dados muito grandes.",
+    SERVICE_UNAVAILABLE: "Serviço temporariamente indisponível.",
+    UNEXPECTED_ERROR: "Erro inesperado. Tente novamente.",
+    LOAD_ERROR: "Falha ao carregar dados.",
+    REQUEST_TIMEOUT: "A requisição demorou demais. Tente novamente.",
+    RETRY: "Tentar novamente",
+  },
   AUTH: {
     LOGIN_EYEBROW: "",
     LOGIN_TITLE: "Bem-vindo de volta",

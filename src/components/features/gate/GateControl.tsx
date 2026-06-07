@@ -5,9 +5,10 @@ import { Typography, Button, Box, CircularProgress } from "@mui/material";
 import { LockOpen as LockOpenIcon } from "@mui/icons-material";
 import { getClientApiClient } from "@/lib/api/client";
 import * as gateApi from "@/lib/api/gate";
+import { resolveApiError } from "@/lib/api/errors";
 import { useSnackbar } from "@/hooks/use-snackbar";
-import { Card } from "@/components/ui/Card";
 import { MESSAGES } from "@/constants";
+import { Card } from "@/components/ui/Card";
 
 export default function GateControl() {
   const [loading, setLoading] = useState(false);
@@ -18,8 +19,8 @@ export default function GateControl() {
     try {
       await gateApi.openGate(getClientApiClient());
       showMessage(MESSAGES.GATE.OPEN_SUCCESS, "success");
-    } catch {
-      showMessage(MESSAGES.GATE.OPEN_ERROR, "error");
+    } catch (e) {
+      showMessage(resolveApiError(e, MESSAGES.GATE.OPEN_ERROR), "error");
     } finally {
       setLoading(false);
     }

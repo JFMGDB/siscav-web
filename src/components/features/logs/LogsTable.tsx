@@ -1,9 +1,5 @@
 "use client";
 
-/**
- * Logs Table - uses useLogs (TanStack Query) with filters.
- */
-
 import React, { useState, useMemo, useEffect } from "react";
 import {
   Chip,
@@ -33,9 +29,11 @@ import type { AccessLog, AccessLogFilters, PaginatedResponse } from "@/types";
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { Card } from "@/components/ui/Card";
 import { StatusChip } from "@/components/ui/StatusChip";
+import { resolveApiError } from "@/lib/api/errors";
 import { getClientApiClient } from "@/lib/api/client";
 import * as logsApi from "@/lib/api/logs";
 import { useLogs } from "@/hooks/use-logs";
+import { MESSAGES } from "@/constants";
 
 interface LogsTableProps {
   initialData?: PaginatedResponse<AccessLog>;
@@ -64,7 +62,7 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
     return f;
   }, [statusFilter, searchTerm]);
 
-  const { logs, loading, refetch } = useLogs(filters, initialData);
+  const { logs, loading, error, refetch } = useLogs(filters, initialData);
 
   useEffect(() => {
     if (!selectedImageKey) return;
@@ -88,9 +86,7 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
       } catch (e) {
         if (cancelled) return;
         setImageError(
-          e instanceof Error
-            ? e.message
-            : "Não foi possível carregar a imagem.",
+          resolveApiError(e, "Não foi possível carregar a imagem."),
         );
       } finally {
         if (!cancelled) setImageLoading(false);
@@ -218,6 +214,31 @@ export default function LogsTable({ initialData }: LogsTableProps = {}) {
             Atualizar
           </Button>
         </Box>
+
+        {error ? (
+          <Alert
+            severity="error"
+            sx={{ mb: 3 }}
+            action={
+              <Typography
+                component="button"
+                type="button"
+                onClick={() => void refetch()}
+                sx={{
+                  border: 0,
+                  background: "none",
+                  cursor: "pointer",
+                  color: "inherit",
+                  fontWeight: 600,
+                }}
+              >
+                {MESSAGES.COMMON.RETRY}
+              </Typography>
+            }
+          >
+            {resolveApiError(error, MESSAGES.COMMON.LOAD_ERROR)}
+          </Alert>
+        ) : null}
 
         {/* Filters */}
         <Card sx={{ mb: 3, p: 2 }}>

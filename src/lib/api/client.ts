@@ -3,8 +3,12 @@
  * No sessionStorage/localStorage; cookie-based auth per ADR 0003.
  */
 
-import { API_CONFIG, AUTH_CONFIG, getApiBaseUrl } from "@/constants";
-import { formatApiErrorDetail } from "./errors";
+import { API_CONFIG, AUTH_CONFIG, MESSAGES, getApiBaseUrl } from "@/constants";
+import {
+  ApiHttpError,
+  mapNetworkError,
+  parseApiResponse,
+} from "./errors";
 
 const COOKIE_MAX_AGE_ACCESS = 60 * 60; // 1 hour
 const COOKIE_MAX_AGE_REFRESH = 60 * 60 * 24 * 7; // 7 days
@@ -37,31 +41,46 @@ function deleteCookie(name: string): void {
   document.cookie = `${encodeURIComponent(name)}=; path=/; max-age=0`;
 }
 
-export async function parseApiError(response: Response): Promise<string> {
-  const text = await response.text();
-  let message = response.statusText || "API Error";
-  try {
-    const json = JSON.parse(text);
-    const raw = json.detail ?? json.message;
-    message = raw !== undefined ? formatApiErrorDetail(raw) : message;
-  } catch {
-    if (text) message = text;
-  }
-  return message;
-}
+export { parseApiResponse } from "./errors";
 
 export type GetToken = () => Promise<string | null> | string | null;
 
 export interface ApiClientOptions {
   baseUrl: string;
-  /** Server: () => (await cookies()).get(ACCESS_TOKEN_KEY)?.value ?? null. Client: () => getCookie(ACCESS_TOKEN_KEY). */
   getToken: GetToken;
-  /** Client-only: called after login/refresh to persist tokens in cookies. Server client ignores. */
   setTokens?: (access: string | null, refresh: string | null) => void;
-  /** Client-only: clear tokens from cookies. */
   clearTokens?: () => void;
-  /** Client-only: return refresh token for refresh flow. */
   getRefreshToken?: () => string | null;
+}
+
+function buildHeaders(
+  token: string | null,
+  options: RequestInit,
+): HeadersInit {
+  const base: Record<string, string> = { Accept: "application/json" };
+  if (token) base.Authorization = `Bearer ${token}`;
+
+  const incoming = new Headers(options.headers);
+  incoming.forEach((value, key) => {
+    base[key] = value;
+  });
+
+  const method = (options.method ?? "GET").toUpperCase();
+  const hasBody = options.body != null && options.body !== "";
+  const isFormData =
+    typeof FormData !== "undefined" && options.body instanceof FormData;
+  if (
+    hasBody &&
+    !isFormData &&
+    !base["Content-Type"] &&
+    !base["content-type"] &&
+    method !== "GET" &&
+    method !== "HEAD"
+  ) {
+    base["Content-Type"] = "application/json";
+  }
+
+  return base;
 }
 
 export class ApiClient {
@@ -101,15 +120,47 @@ export class ApiClient {
     return t instanceof Promise ? t : Promise.resolve(t);
   }
 
+  private async safeFetch(
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ): Promise<Response> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      API_CONFIG.REQUEST_TIMEOUT_MS,
+    );
+    const callerSignal = init?.signal;
+    if (callerSignal?.aborted) {
+      controller.abort();
+    } else if (callerSignal) {
+      callerSignal.addEventListener("abort", () => controller.abort(), {
+        once: true,
+      });
+    }
+
+    try {
+      return await fetch(input, { ...init, signal: controller.signal });
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        throw new ApiHttpError(0, MESSAGES.COMMON.REQUEST_TIMEOUT, "network");
+      }
+      throw mapNetworkError(err);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   async refreshTokens(): Promise<void> {
     if (this.isRefreshing && this.refreshPromise) return this.refreshPromise;
     this.isRefreshing = true;
     this.refreshPromise = (async () => {
       try {
         const refresh = this.getRefreshToken();
-        if (!refresh) throw new Error("Refresh token not found");
+        if (!refresh) {
+          throw new ApiHttpError(401, MESSAGES.COMMON.SESSION_EXPIRED);
+        }
         const form = new URLSearchParams({ refresh_token: refresh });
-        const res = await fetch(
+        const res = await this.safeFetch(
           `${this.baseUrl}${API_CONFIG.ENDPOINTS.AUTH.REFRESH}`,
           {
             method: "POST",
@@ -119,9 +170,10 @@ export class ApiClient {
         );
         if (!res.ok) {
           this.clearTokensCallback();
-          if (res.status === 403 || res.status === 404)
-            throw new Error("Session expired. Please log in again.");
-          throw new Error(await parseApiError(res));
+          if (res.status === 403 || res.status === 404) {
+            throw new ApiHttpError(401, MESSAGES.COMMON.SESSION_EXPIRED);
+          }
+          throw await parseApiResponse(res);
         }
         const data = await res.json();
         this.setTokensImpl(data.access_token, data.refresh_token ?? null);
@@ -133,7 +185,6 @@ export class ApiClient {
     return this.refreshPromise;
   }
 
-  /** Parses JSON when present; empty 204/205 and blank bodies must not throw. */
   private async readResponseBody<T>(response: Response): Promise<T> {
     if (response.status === 204 || response.status === 205) {
       return undefined as T;
@@ -167,12 +218,8 @@ export class ApiClient {
       }
     }
 
-    const headers: HeadersInit = {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    };
-
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    const headers = buildHeaders(token, options);
+    let response = await this.safeFetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers,
     });
@@ -186,26 +233,19 @@ export class ApiClient {
       }
 
       token = await this.resolveToken();
-      const retryRes = await fetch(`${this.baseUrl}${endpoint}`, {
+      response = await this.safeFetch(`${this.baseUrl}${endpoint}`, {
         ...options,
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          ...options.headers,
-        },
+        headers: buildHeaders(token, options),
       });
-      if (!retryRes.ok) throw new Error(await parseApiError(retryRes));
-      return this.readResponseBody<T>(retryRes);
+      if (!response.ok) throw await parseApiResponse(response);
+      return this.readResponseBody<T>(response);
     }
 
-    if (!response.ok) throw new Error(await parseApiError(response));
+    if (!response.ok) throw await parseApiResponse(response);
 
     return this.readResponseBody<T>(response);
   }
 
-  /**
-   * POST multipart/form-data expecting JSON. Rebuilds the body on every attempt — `FormData` is
-   * one-shot in the Fetch API, so reusing the same instance after 401/refresh would send an empty body.
-   */
   async requestMultipartJson<T>(
     endpoint: string,
     buildFormData: () => FormData,
@@ -224,19 +264,19 @@ export class ApiClient {
     const doFetch = async (): Promise<Response> => {
       const form = buildFormData();
       const t = await this.resolveToken();
-      const headers: HeadersInit = {
-        ...(t ? { Authorization: `Bearer ${t}` } : {}),
-      };
-      return fetch(`${this.baseUrl}${endpoint}`, {
+      return this.safeFetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
-        headers,
+        headers: {
+          Accept: "application/json",
+          ...(t ? { Authorization: `Bearer ${t}` } : {}),
+        },
         body: form,
       });
     };
 
     let response = await doFetch();
 
-    if ((response.status === 401 || response.status === 403) && retry) {
+    if (response.status === 401 && retry) {
       try {
         await this.refreshTokens();
         response = await doFetch();
@@ -246,29 +286,25 @@ export class ApiClient {
       }
     }
 
-    if (!response.ok) throw new Error(await parseApiError(response));
+    if (!response.ok) throw await parseApiResponse(response);
 
     const ct = response.headers.get("content-type");
     if (ct?.includes("application/json")) return response.json();
     return {} as T;
   }
 
-  /** Client-only: set tokens after login (cookies). */
   setTokens(access: string | null, refresh: string | null): void {
     this.setTokensImpl(access, refresh);
   }
 
-  /** Client-only: clear tokens (logout). */
   clearTokens(): void {
     this.clearTokensCallback();
   }
 
-  /** Normalized base URL (no trailing slash), same string used by `request()`. */
   getBaseUrl(): string {
     return this.baseUrl;
   }
 
-  /** GET binary response (e.g. access log images) with Bearer auth and refresh retry. */
   async requestBlob(endpoint: string, retry = true): Promise<Blob> {
     let token = await this.resolveToken();
     if (token && this.isTokenExpired(token)) {
@@ -281,14 +317,16 @@ export class ApiClient {
     }
 
     const fetchOnce = async (authToken: string | null) =>
-      fetch(`${this.baseUrl}${endpoint}`, {
+      this.safeFetch(`${this.baseUrl}${endpoint}`, {
         method: "GET",
-        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+        headers: authToken
+          ? { Authorization: `Bearer ${authToken}` }
+          : {},
       });
 
     let response = await fetchOnce(token);
 
-    if ((response.status === 401 || response.status === 403) && retry) {
+    if (response.status === 401 && retry) {
       try {
         await this.refreshTokens();
         token = await this.resolveToken();
@@ -299,12 +337,11 @@ export class ApiClient {
       }
     }
 
-    if (!response.ok) throw new Error(await parseApiError(response));
+    if (!response.ok) throw await parseApiResponse(response);
     return response.blob();
   }
 }
 
-/** Singleton for client-side. Reads/writes cookies. */
 let clientSingleton: ApiClient | null = null;
 
 function getClientSingleton(): ApiClient {
@@ -342,7 +379,6 @@ export function getClientApiClient(): ApiClient {
   return getClientSingleton();
 }
 
-/** Use only in Server Components or Server Actions. Reads token from next/headers cookies(). */
 export async function getServerApiClient(): Promise<ApiClient> {
   const { cookies } = await import("next/headers");
   const store = await cookies();

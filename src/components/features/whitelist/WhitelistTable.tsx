@@ -16,6 +16,7 @@ import {
   Typography,
   Box,
   Chip,
+  Alert,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -27,6 +28,8 @@ import type { AuthorizedPlate, PaginatedResponse } from "@/types";
 import { DataTable, Column } from "@/components/ui/DataTable";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { useWhitelist } from "@/hooks/use-whitelist";
+import { resolveApiError } from "@/lib/api/errors";
+import { MESSAGES } from "@/constants";
 
 interface WhitelistTableProps {
   initialData?: PaginatedResponse<AuthorizedPlate>;
@@ -43,6 +46,8 @@ export default function WhitelistTable({
   const {
     plates,
     loading,
+    error,
+    refetch,
     addPlate,
     updatePlate,
     removePlate,
@@ -237,12 +242,36 @@ export default function WhitelistTable({
         </Box>
 
         {/* Table */}
-        <DataTable
-          columns={columns}
-          rows={plates}
-          loading={loading}
-          emptyMessage="Nenhum veículo autorizado encontrado. Adicione o primeiro veículo usando o botão acima."
-        />
+        {error ? (
+          <Alert
+            severity="error"
+            action={
+              <Typography
+                component="button"
+                type="button"
+                onClick={() => void refetch()}
+                sx={{
+                  border: 0,
+                  background: "none",
+                  cursor: "pointer",
+                  color: "inherit",
+                  fontWeight: 600,
+                }}
+              >
+                {MESSAGES.COMMON.RETRY}
+              </Typography>
+            }
+          >
+            {resolveApiError(error, MESSAGES.COMMON.LOAD_ERROR)}
+          </Alert>
+        ) : (
+          <DataTable
+            columns={columns}
+            rows={plates}
+            loading={loading}
+            emptyMessage="Nenhum veículo autorizado encontrado. Adicione o primeiro veículo usando o botão acima."
+          />
+        )}
       </Box>
 
       {/* Dialog */}

@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getClientApiClient } from "@/lib/api/client";
 import * as whitelistApi from "@/lib/api/whitelist";
 import type { AuthorizedPlate, PaginatedResponse } from "@/types";
+import { resolveApiError } from "@/lib/api/errors";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { MESSAGES } from "@/constants";
 
@@ -32,7 +33,8 @@ export function useWhitelist(initialData?: PaginatedResponse<AuthorizedPlate>) {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
       showMessage(MESSAGES.WHITELIST.ADD_SUCCESS, "success");
     },
-    onError: () => showMessage(MESSAGES.WHITELIST.ADD_ERROR, "error"),
+    onError: (e) =>
+      showMessage(resolveApiError(e, MESSAGES.WHITELIST.ADD_ERROR), "error"),
   });
 
   const updateMutation = useMutation({
@@ -49,7 +51,8 @@ export function useWhitelist(initialData?: PaginatedResponse<AuthorizedPlate>) {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
       showMessage(MESSAGES.WHITELIST.UPDATE_SUCCESS, "success");
     },
-    onError: () => showMessage(MESSAGES.WHITELIST.UPDATE_ERROR, "error"),
+    onError: (e) =>
+      showMessage(resolveApiError(e, MESSAGES.WHITELIST.UPDATE_ERROR), "error"),
   });
 
   const removeMutation = useMutation({
@@ -58,7 +61,8 @@ export function useWhitelist(initialData?: PaginatedResponse<AuthorizedPlate>) {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
       showMessage(MESSAGES.WHITELIST.REMOVE_SUCCESS, "success");
     },
-    onError: () => showMessage(MESSAGES.WHITELIST.REMOVE_ERROR, "error"),
+    onError: (e) =>
+      showMessage(resolveApiError(e, MESSAGES.WHITELIST.REMOVE_ERROR), "error"),
   });
 
   const items = query.data?.items ?? [];
