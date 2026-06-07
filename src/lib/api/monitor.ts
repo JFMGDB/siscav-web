@@ -18,5 +18,6 @@ export async function getLastCapture(
     status: log.status,
     timestamp: log.timestamp,
     imageUrl,
+    ocrSuccess: log.ocr_success,
   };
 }

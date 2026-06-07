@@ -167,7 +167,7 @@ export default function PlateRecognitionDisplay({
 
   const statusColor = getAccessStatusColor(capture.status);
   const surface = STATUS_SURFACE[statusColor] ?? STATUS_SURFACE.default;
-  const confidence = capture.confidence;
+  const ocrSuccess = capture.ocrSuccess;
   const isDenied = capture.status === "Denied";
 
   return (
@@ -251,8 +251,7 @@ export default function PlateRecognitionDisplay({
           sx={{
             width: "100%",
             display: "flex",
-            justifyContent:
-              typeof confidence === "number" ? "space-between" : "flex-end",
+            justifyContent: "space-between",
             alignItems: "center",
             mt: 2,
             pt: 2,
@@ -260,17 +259,17 @@ export default function PlateRecognitionDisplay({
             borderColor: "divider",
           }}
         >
-          {typeof confidence === "number" ? (
+          {typeof ocrSuccess === "boolean" ? (
             <Box>
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ display: "block", fontWeight: 400 }}
               >
-                Confiança
+                Formato da placa
               </Typography>
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {(confidence * 100).toFixed(1)}%
+                {ocrSuccess ? "Válido (BR)" : "Inválido"}
               </Typography>
             </Box>
           ) : null}

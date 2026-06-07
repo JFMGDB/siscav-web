@@ -57,6 +57,8 @@ export const API_CONFIG = {
     },
   },
   REQUEST_TIMEOUT_MS: 30_000,
+  /** EasyOCR cold start + CPU inference can exceed the default 30s. */
+  OCR_REQUEST_TIMEOUT_MS: 180_000,
 } as const;
 
 export const AUTH_CONFIG = {

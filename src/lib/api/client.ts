@@ -123,11 +123,12 @@ export class ApiClient {
   private async safeFetch(
     input: RequestInfo | URL,
     init?: RequestInit,
+    timeoutMs: number = API_CONFIG.REQUEST_TIMEOUT_MS,
   ): Promise<Response> {
     const controller = new AbortController();
     const timeoutId = setTimeout(
       () => controller.abort(),
-      API_CONFIG.REQUEST_TIMEOUT_MS,
+      timeoutMs,
     );
     const callerSignal = init?.signal;
     if (callerSignal?.aborted) {
@@ -250,6 +251,7 @@ export class ApiClient {
     endpoint: string,
     buildFormData: () => FormData,
     retry = true,
+    timeoutMs: number = API_CONFIG.REQUEST_TIMEOUT_MS,
   ): Promise<T> {
     let token = await this.resolveToken();
     if (token && this.isTokenExpired(token)) {
@@ -271,7 +273,7 @@ export class ApiClient {
           ...(t ? { Authorization: `Bearer ${t}` } : {}),
         },
         body: form,
-      });
+      }, timeoutMs);
     };
 
     let response = await doFetch();

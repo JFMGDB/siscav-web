@@ -8,7 +8,7 @@ export interface Capture {
   id: string;
   plate: string;
   status: AccessStatus;
-  confidence?: number;
+  ocrSuccess?: boolean;
   timestamp: string;
   imageUrl: string;
 }

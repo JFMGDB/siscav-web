@@ -28,7 +28,7 @@ export async function createAccessLog(
       form.append("plate", plate);
       return form;
     },
-    false,
+    true,
   );
 }
 

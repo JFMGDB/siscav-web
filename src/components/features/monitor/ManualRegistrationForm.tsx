@@ -38,6 +38,8 @@ interface ManualRegistrationFormProps {
   deniedLogId?: string;
   onSuccess?: () => void;
   onAccessLogRegistered?: () => void;
+  /** When true, auto-OCR runs in monitor orchestration hook instead. */
+  disableAutoOcr?: boolean;
 }
 
 export default function ManualRegistrationForm({
@@ -45,23 +47,30 @@ export default function ManualRegistrationForm({
   deniedLogId,
   onSuccess,
   onAccessLogRegistered,
+  disableAutoOcr = false,
 }: ManualRegistrationFormProps) {
   const [plate, setPlate] = useState(initialPlate ?? "");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [accessLogBusy, setAccessLogBusy] = useState(false);
   const [ocrBusy, setOcrBusy] = useState(false);
-  const [autoOcrEnabled, setAutoOcrEnabled] = useState(true);
+  const [autoOcrEnabled, setAutoOcrEnabled] = useState(!disableAutoOcr);
   const [candidates, setCandidates] = useState<PlateCandidate[]>([]);
   const [lastClassification, setLastClassification] =
     useState<VehicleClassificationResult | null>(null);
   const { showMessage } = useSnackbar();
-  const { captureFrame } = useMonitorFrameCapture();
+  const { captureFrame, tryBeginOcr, endOcr } = useMonitorFrameCapture();
   const ocrInFlight = useRef(false);
 
   const runServerOcr = useCallback(
     async (mode: "manual" | "auto") => {
       if (ocrInFlight.current || loading) return;
+      if (!tryBeginOcr()) {
+        if (mode === "manual") {
+          showMessage("OCR já em andamento. Aguarde a leitura atual.", "info");
+        }
+        return;
+      }
       ocrInFlight.current = true;
       if (mode === "manual") setOcrBusy(true);
       try {
@@ -115,14 +124,15 @@ export default function ManualRegistrationForm({
         }
       } finally {
         ocrInFlight.current = false;
+        endOcr();
         if (mode === "manual") setOcrBusy(false);
       }
     },
-    [captureFrame, loading, showMessage],
+    [captureFrame, endOcr, loading, showMessage, tryBeginOcr],
   );
 
   useEffect(() => {
-    if (!autoOcrEnabled) return;
+    if (!autoOcrEnabled || disableAutoOcr) return;
     const kickoff = window.setTimeout(() => void runServerOcr("auto"), 1500);
     const id = window.setInterval(
       () => void runServerOcr("auto"),
@@ -132,34 +142,20 @@ export default function ManualRegistrationForm({
       clearTimeout(kickoff);
       clearInterval(id);
     };
-  }, [autoOcrEnabled, runServerOcr]);
+  }, [autoOcrEnabled, disableAutoOcr, runServerOcr]);
 
   const handleRegisterAccessAttempt = async () => {
     if (!plate) return;
 
     setAccessLogBusy(true);
     try {
-      let blob = await captureFrame();
+      const blob = await captureFrame();
       if (!blob || blob.size === 0) {
-        const canvas = document.createElement("canvas");
-        canvas.width = 640;
-        canvas.height = 360;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.fillStyle = "#1e293b";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = "#94a3b8";
-          ctx.font = "24px sans-serif";
-          ctx.fillText("Simulação IoT — sem frame de câmara", 80, 180);
-        }
-        blob = await new Promise<Blob>((resolve, reject) => {
-          canvas.toBlob(
-            (b) =>
-              b ? resolve(b) : reject(new Error("Falha ao gerar imagem.")),
-            "image/jpeg",
-            0.92,
-          );
-        });
+        showMessage(
+          "Captura vazia: aponte a câmera USB para a placa antes de registrar.",
+          "warning",
+        );
+        return;
       }
 
       const log = await logsApi.createAccessLog(
@@ -239,6 +235,7 @@ export default function ManualRegistrationForm({
                 checked={autoOcrEnabled}
                 onChange={(_, c) => setAutoOcrEnabled(c)}
                 color="primary"
+                disabled={disableAutoOcr}
               />
             }
             label="OCR automático (servidor)"
@@ -248,9 +245,9 @@ export default function ManualRegistrationForm({
             color="text.secondary"
             sx={{ display: "block", mt: -1 }}
           >
-            Com o vídeo ao vivo, envia periodicamente um frame para o OCR. Uma
-            placa única preenche o campo quando está vazio ou confirma a mesma
-            leitura.
+            {disableAutoOcr
+              ? "O monitor envia frames automaticamente para OCR, whitelist e portão."
+              : "Com o vídeo ao vivo, envia periodicamente um frame para o OCR. Uma placa única preenche o campo quando está vazio ou confirma a mesma leitura."}
           </Typography>
 
           <Stack

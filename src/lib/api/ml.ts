@@ -23,6 +23,8 @@ export async function recognizePlate(
       form.append("file", imageBlob, fileName);
       return form;
     },
+    true,
+    API_CONFIG.OCR_REQUEST_TIMEOUT_MS,
   );
 }
 
