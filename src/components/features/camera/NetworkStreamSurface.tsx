@@ -161,13 +161,19 @@ export default function NetworkStreamSurface({
         const v = hlsVideoRef.current;
         if (!v?.videoWidth || v.readyState < HTMLMediaElement.HAVE_CURRENT_DATA)
           return 0;
-        const { score, snapshot } = sampleVideoMotion(v, motionSnapshotRef.current);
+        const { score, snapshot } = sampleVideoMotion(
+          v,
+          motionSnapshotRef.current,
+        );
         motionSnapshotRef.current = snapshot;
         return score;
       }
       const img = imgRef.current;
       if (!img?.naturalWidth) return 0;
-      const { score, snapshot } = sampleImageMotion(img, motionSnapshotRef.current);
+      const { score, snapshot } = sampleImageMotion(
+        img,
+        motionSnapshotRef.current,
+      );
       motionSnapshotRef.current = snapshot;
       return score;
     };
@@ -219,14 +225,14 @@ export default function NetworkStreamSurface({
                 zIndex: 1,
               }}
             >
-              A carregar…
+              Carregando…
             </Typography>
           )}
           {/* eslint-disable-next-line @next/next/no-img-element -- MJPEG streams require native img */}
           <img
             ref={imgRef}
             src={href}
-            alt="Stream da câmara na rede"
+            alt="Stream da câmera na rede"
             style={{
               width: "100%",
               maxHeight: maxVideoHeight,

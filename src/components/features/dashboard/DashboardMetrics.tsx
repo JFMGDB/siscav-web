@@ -50,8 +50,7 @@ export default function DashboardMetrics() {
       {
         title: "Aprovação sem intervenção",
         value: formatPercent(data.auto_approval_rate_percent),
-        subtitle:
-          "Autorizados automaticamente (whitelist, ambulância ou IoT)",
+        subtitle: "Autorizados automaticamente (whitelist, ambulância ou IoT)",
         icon: <AutoIcon sx={{ fontSize: 40 }} />,
         color: "success" as const,
       },

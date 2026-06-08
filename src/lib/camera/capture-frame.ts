@@ -62,7 +62,10 @@ export function sampleVideoMotion(
   video: HTMLVideoElement,
   previousSnapshot: Uint8ClampedArray | null,
 ): { score: number; snapshot: Uint8ClampedArray | null } {
-  if (!video.videoWidth || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+  if (
+    !video.videoWidth ||
+    video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA
+  ) {
     return { score: 0, snapshot: previousSnapshot };
   }
   const canvas = document.createElement("canvas");
@@ -70,7 +73,12 @@ export function sampleVideoMotion(
   if (!ctx || !drawVideoSample(video, ctx, canvas)) {
     return { score: 0, snapshot: previousSnapshot };
   }
-  const imageData = ctx.getImageData(0, 0, MOTION_SAMPLE_WIDTH, MOTION_SAMPLE_HEIGHT);
+  const imageData = ctx.getImageData(
+    0,
+    0,
+    MOTION_SAMPLE_WIDTH,
+    MOTION_SAMPLE_HEIGHT,
+  );
   const score = computeGrayscaleMotionScore(previousSnapshot, imageData.data);
   return { score, snapshot: imageData.data };
 }
@@ -85,7 +93,8 @@ export async function videoToJpegBlob(
     return null;
   }
   const longest = Math.max(w, h);
-  const scale = longest > OCR_CAPTURE_MAX_DIM ? OCR_CAPTURE_MAX_DIM / longest : 1;
+  const scale =
+    longest > OCR_CAPTURE_MAX_DIM ? OCR_CAPTURE_MAX_DIM / longest : 1;
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(w * scale);
   canvas.height = Math.round(h * scale);
@@ -146,7 +155,12 @@ export function sampleImageMotion(
   } catch {
     return { score: 0, snapshot: previousSnapshot };
   }
-  const imageData = ctx.getImageData(0, 0, MOTION_SAMPLE_WIDTH, MOTION_SAMPLE_HEIGHT);
+  const imageData = ctx.getImageData(
+    0,
+    0,
+    MOTION_SAMPLE_WIDTH,
+    MOTION_SAMPLE_HEIGHT,
+  );
   const score = computeGrayscaleMotionScore(previousSnapshot, imageData.data);
   return { score, snapshot: imageData.data };
 }

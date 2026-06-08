@@ -39,7 +39,7 @@ export default function UsbMonitorLive({
     cameraUnsupported ? "error" : "starting",
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(() =>
-    cameraUnsupported ? "Este browser não suporta acesso à câmara." : null,
+    cameraUnsupported ? "Este navegador não suporta acesso à câmera." : null,
   );
 
   const stopStream = useCallback(() => {
@@ -102,10 +102,10 @@ export default function UsbMonitorLive({
         setStatus("error");
         if (e instanceof DOMException && e.name === "NotAllowedError") {
           setErrorMessage(
-            "Permissão negada para a câmara. Abra Pré-visualização e permita o acesso.",
+            "Permissão negada para a câmera. Abra Pré-visualização e permita o acesso.",
           );
         } else {
-          setErrorMessage("Não foi possível iniciar a câmara USB no monitor.");
+          setErrorMessage("Não foi possível iniciar a câmera USB no monitor.");
         }
       }
     };
@@ -136,7 +136,10 @@ export default function UsbMonitorLive({
       const v = videoRef.current;
       if (!v?.videoWidth || v.readyState < HTMLMediaElement.HAVE_CURRENT_DATA)
         return 0;
-      const { score, snapshot } = sampleVideoMotion(v, motionSnapshotRef.current);
+      const { score, snapshot } = sampleVideoMotion(
+        v,
+        motionSnapshotRef.current,
+      );
       motionSnapshotRef.current = snapshot;
       return score;
     };
@@ -174,7 +177,7 @@ export default function UsbMonitorLive({
           variant="body2"
           sx={{ position: "absolute", color: "rgba(255,255,255,0.7)" }}
         >
-          A iniciar câmara…
+          Iniciando câmera…
         </Typography>
       )}
       {status === "error" && errorMessage && (

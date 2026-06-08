@@ -49,7 +49,7 @@ export default function UsbCameraPreview() {
   const handleStart = async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
       setErrorMessage(
-        "Este browser não suporta acesso à câmara (getUserMedia).",
+        "Este navegador não suporta acesso à câmera (getUserMedia).",
       );
       setStatus("error");
       return;
@@ -73,10 +73,10 @@ export default function UsbCameraPreview() {
       setStatus("error");
       if (e instanceof DOMException && e.name === "NotAllowedError") {
         setErrorMessage(
-          "Permissão negada. Permita o acesso à câmara nas definições do browser.",
+          "Permissão negada. Permita o acesso à câmera nas configurações do navegador.",
         );
       } else {
-        setErrorMessage("Não foi possível iniciar a câmara USB.");
+        setErrorMessage("Não foi possível iniciar a câmera USB.");
       }
     }
   };
@@ -93,7 +93,7 @@ export default function UsbCameraPreview() {
   const handleSaveConfig = () => {
     setSaveHint(null);
     if (status !== "live" || !deviceId) {
-      setErrorMessage("Ligue primeiro a câmara para guardar o dispositivo.");
+      setErrorMessage("Conecte a câmera primeiro para salvar o dispositivo.");
       return;
     }
     setErrorMessage(null);
@@ -103,7 +103,7 @@ export default function UsbCameraPreview() {
       networkUrl: config.networkUrl,
       usbDeviceId: deviceId,
     });
-    setSaveHint("Configuração guardada. O monitor usará esta câmara USB.");
+    setSaveHint("Configuração salva. O monitor usará esta câmera USB.");
   };
 
   const handleDeviceChange = async (newId: string) => {
@@ -119,7 +119,7 @@ export default function UsbCameraPreview() {
       await attachStream(stream);
     } catch {
       setStatus("error");
-      setErrorMessage("Não foi possível mudar para a câmara selecionada.");
+      setErrorMessage("Não foi possível mudar para a câmera selecionada.");
     }
   };
 
@@ -138,7 +138,7 @@ export default function UsbCameraPreview() {
           onClick={isLive ? handleStop : handleStart}
           disabled={status === "starting"}
         >
-          {isLive ? "Parar" : "Ligar câmara"}
+          {isLive ? "Parar" : "Conectar câmera"}
         </Button>
         <Button
           variant="contained"
@@ -146,23 +146,23 @@ export default function UsbCameraPreview() {
           onClick={handleSaveConfig}
           disabled={status !== "live" || !deviceId}
         >
-          Guardar configuração
+          Salvar configuração
         </Button>
         <FormControl
           sx={{ minWidth: 220 }}
           size="small"
           disabled={!devices.length}
         >
-          <InputLabel id="usb-camera-select-label">Câmara</InputLabel>
+          <InputLabel id="usb-camera-select-label">Câmera</InputLabel>
           <Select
             labelId="usb-camera-select-label"
-            label="Câmara"
+            label="Câmera"
             value={deviceId || ""}
             onChange={(e) => handleDeviceChange(e.target.value)}
           >
             {devices.map((d) => (
               <MenuItem key={d.deviceId} value={d.deviceId}>
-                {d.label || `Câmara ${d.deviceId.slice(0, 8)}…`}
+                {d.label || `Câmera ${d.deviceId.slice(0, 8)}…`}
               </MenuItem>
             ))}
           </Select>
@@ -171,16 +171,16 @@ export default function UsbCameraPreview() {
 
       {status === "idle" && (
         <Typography variant="body2" color="text.secondary">
-          Prima &quot;Ligar câmara&quot; para pedir permissão e ver o vídeo do
-          dispositivo USB (requer HTTPS ou localhost). Depois use{" "}
-          <strong>Guardar configuração</strong> para o monitor mostrar o mesmo
+          Clique em &quot;Conectar câmera&quot; para pedir permissão e ver o
+          vídeo do dispositivo USB (requer HTTPS ou localhost). Depois use{" "}
+          <strong>Salvar configuração</strong> para o monitor mostrar o mesmo
           feed.
         </Typography>
       )}
 
       {status === "starting" && (
         <Typography variant="body2" color="text.secondary">
-          A iniciar…
+          Iniciando…
         </Typography>
       )}
 

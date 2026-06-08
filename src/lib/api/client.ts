@@ -4,11 +4,7 @@
  */
 
 import { API_CONFIG, AUTH_CONFIG, MESSAGES, getApiBaseUrl } from "@/constants";
-import {
-  ApiHttpError,
-  mapNetworkError,
-  parseApiResponse,
-} from "./errors";
+import { ApiHttpError, mapNetworkError, parseApiResponse } from "./errors";
 
 const COOKIE_MAX_AGE_ACCESS = 60 * 60; // 1 hour
 const COOKIE_MAX_AGE_REFRESH = 60 * 60 * 24 * 7; // 7 days
@@ -53,10 +49,7 @@ export interface ApiClientOptions {
   getRefreshToken?: () => string | null;
 }
 
-function buildHeaders(
-  token: string | null,
-  options: RequestInit,
-): HeadersInit {
+function buildHeaders(token: string | null, options: RequestInit): HeadersInit {
   const base: Record<string, string> = { Accept: "application/json" };
   if (token) base.Authorization = `Bearer ${token}`;
 
@@ -126,10 +119,7 @@ export class ApiClient {
     timeoutMs: number = API_CONFIG.REQUEST_TIMEOUT_MS,
   ): Promise<Response> {
     const controller = new AbortController();
-    const timeoutId = setTimeout(
-      () => controller.abort(),
-      timeoutMs,
-    );
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
     const callerSignal = init?.signal;
     if (callerSignal?.aborted) {
       controller.abort();
@@ -267,15 +257,19 @@ export class ApiClient {
     const doFetch = async (): Promise<Response> => {
       const form = buildFormData();
       const t = await this.resolveToken();
-      return this.safeFetch(`${this.baseUrl}${endpoint}`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          ...(t ? { Authorization: `Bearer ${t}` } : {}),
+      return this.safeFetch(
+        `${this.baseUrl}${endpoint}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            ...(t ? { Authorization: `Bearer ${t}` } : {}),
+          },
+          body: form,
+          signal,
         },
-        body: form,
-        signal,
-      }, timeoutMs);
+        timeoutMs,
+      );
     };
 
     let response = await doFetch();
@@ -323,9 +317,7 @@ export class ApiClient {
     const fetchOnce = async (authToken: string | null) =>
       this.safeFetch(`${this.baseUrl}${endpoint}`, {
         method: "GET",
-        headers: authToken
-          ? { Authorization: `Bearer ${authToken}` }
-          : {},
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
       });
 
     let response = await fetchOnce(token);

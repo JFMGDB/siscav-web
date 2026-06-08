@@ -13,7 +13,8 @@ import { useMonitorFrameCapture } from "@/contexts/monitor-frame-capture-context
 
 export default function CameraFeed() {
   const { config } = useCameraConfig();
-  const { registerFrameCapture, registerMotionSample } = useMonitorFrameCapture();
+  const { registerFrameCapture, registerMotionSample } =
+    useMonitorFrameCapture();
 
   const sourceLabel =
     config.source === "usb"

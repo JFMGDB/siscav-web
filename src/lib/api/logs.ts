@@ -22,7 +22,7 @@ export async function createAccessLog(
 ): Promise<AccessLog> {
   if (!imageBlob || imageBlob.size === 0) {
     throw new Error(
-      "Imagem vazia: capture um frame da câmara ou use a webcam em /camera.",
+      "Imagem vazia: capture um frame da câmera ou use a webcam em /camera.",
     );
   }
 

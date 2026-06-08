@@ -45,7 +45,7 @@ export default function NetworkCameraPreview() {
     setSaveHint(null);
     const trimmed = urlInput.trim();
     if (!trimmed) {
-      setValidationError("Indique uma URL para guardar o modo rede.");
+      setValidationError("Informe uma URL para salvar o modo rede.");
       return;
     }
     const result = validateCameraPreviewUrl(trimmed, { pageIsHttps });
@@ -60,7 +60,7 @@ export default function NetworkCameraPreview() {
       networkUrl: trimmed,
       usbDeviceId: config.usbDeviceId,
     });
-    setSaveHint("Configuração guardada. O monitor usará esta URL.");
+    setSaveHint("Configuração salva. O monitor usará esta URL.");
     setActive({ href: result.href, isHls: result.isHls });
   };
 
@@ -95,7 +95,7 @@ export default function NetworkCameraPreview() {
             color="secondary"
             onClick={handleSaveConfig}
           >
-            Guardar configuração
+            Salvar configuração
           </Button>
         </Stack>
       </Stack>
@@ -103,7 +103,7 @@ export default function NetworkCameraPreview() {
       <Typography variant="body2" color="text.secondary">
         MJPEG ou imagem contínua: use uma URL que funcione em &lt;img&gt;. HLS:
         URL com .m3u8 (Chrome/Firefox via hls.js; Safari pode usar reprodução
-        nativa). Prima <strong>Guardar configuração</strong> para o monitor
+        nativa). Clique em <strong>Salvar configuração</strong> para o monitor
         mostrar o mesmo stream.
       </Typography>
 
@@ -115,7 +115,7 @@ export default function NetworkCameraPreview() {
         isHls={active?.isHls ?? false}
         minHeight={360}
         maxVideoHeight={520}
-        emptyLabel="Indique a URL e prima Ligar ou Guardar configuração"
+        emptyLabel="Informe a URL e clique em Ligar ou Salvar configuração"
       />
     </Stack>
   );

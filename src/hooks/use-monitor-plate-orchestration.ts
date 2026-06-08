@@ -66,7 +66,9 @@ type UseMonitorPlateOrchestrationOptions = {
   onAccessLogRegistered?: () => void;
 };
 
-function isAmbulanceClassification(result: VehicleClassificationResult): boolean {
+function isAmbulanceClassification(
+  result: VehicleClassificationResult,
+): boolean {
   return (
     result.predicted_category === "ambulance" &&
     result.confidence >= AMBULANCE_CONFIDENCE_THRESHOLD
@@ -94,7 +96,9 @@ export function useMonitorPlateOrchestration({
   const motionStreakRef = useRef(0);
   const motionArmedRef = useRef(true);
   const warmupTicksRef = useRef(0);
-  const stableRecheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stableRecheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const ocrRetryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const runPipelineRef = useRef<() => Promise<void>>(async () => {});
 
@@ -132,7 +136,9 @@ export function useMonitorPlateOrchestration({
 
   const whitelistSet = useCallback((): Set<string> => {
     const items = whitelistQuery.data?.items ?? [];
-    return new Set(items.map((p) => p.normalized_plate ?? normalizePlate(p.plate)));
+    return new Set(
+      items.map((p) => p.normalized_plate ?? normalizePlate(p.plate)),
+    );
   }, [whitelistQuery.data]);
 
   const shouldSkipPlate = useCallback((normalized: string) => {
@@ -270,7 +276,7 @@ export function useMonitorPlateOrchestration({
       if (!blob || blob.size === 0) {
         emptyCaptureStreak.current += 1;
         const msg =
-          "Sem frame da câmara. Verifique a pré-visualização ou autorize a webcam.";
+          "Sem frame da câmera. Verifique a pré-visualização ou autorize a webcam.";
         setOcrStatus((prev) => ({
           ...prev,
           phase: "error",
@@ -501,7 +507,10 @@ export function useMonitorPlateOrchestration({
     if (!pending) return;
     const blob = pendingBlobRef.current;
     if (!blob || blob.size === 0) {
-      showMessage("Frame indisponível. Aponte a câmera e tente novamente.", "warning");
+      showMessage(
+        "Frame indisponível. Aponte a câmera e tente novamente.",
+        "warning",
+      );
       return;
     }
 

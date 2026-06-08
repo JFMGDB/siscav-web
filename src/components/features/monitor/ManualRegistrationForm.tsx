@@ -80,10 +80,7 @@ export default function ManualRegistrationForm({
       showMessage(toast.message, toast.severity);
       onAccessLogRegistered?.();
     } catch (e) {
-      showMessage(
-        resolveApiError(e, "Erro ao registrar passagem."),
-        "error",
-      );
+      showMessage(resolveApiError(e, "Erro ao registrar passagem."), "error");
     } finally {
       setAccessLogBusy(false);
     }
@@ -206,9 +203,7 @@ export default function ManualRegistrationForm({
             fullWidth
             sx={{ py: 1.5, fontWeight: 600 }}
           >
-            {accessLogBusy
-              ? "Registrando passagem…"
-              : "Registrar passagem"}
+            {accessLogBusy ? "Registrando passagem…" : "Registrar passagem"}
           </Button>
           <Typography
             variant="caption"

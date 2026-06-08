@@ -47,7 +47,11 @@ export default function PlateAccessConfirmDialogs({
             Placa lida:{" "}
             <Typography
               component="span"
-              sx={{ fontFamily: "monospace", fontWeight: 700, letterSpacing: 2 }}
+              sx={{
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: 2,
+              }}
             >
               {plateLabel}
             </Typography>
@@ -61,7 +65,7 @@ export default function PlateAccessConfirmDialogs({
             Não
           </Button>
           <Button variant="contained" onClick={onAuthorize} disabled={busy}>
-            {busy ? "A processar…" : "Autorizar acesso"}
+            {busy ? "Processando…" : "Autorizar acesso"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -84,8 +88,12 @@ export default function PlateAccessConfirmDialogs({
           <Button onClick={onSkipWhitelist} disabled={busy}>
             Agora não
           </Button>
-          <Button variant="contained" onClick={onAddToWhitelist} disabled={busy}>
-            {busy ? "A cadastrar…" : "Cadastrar na whitelist"}
+          <Button
+            variant="contained"
+            onClick={onAddToWhitelist}
+            disabled={busy}
+          >
+            {busy ? "Cadastrando…" : "Cadastrar na whitelist"}
           </Button>
         </DialogActions>
       </Dialog>

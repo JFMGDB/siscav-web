@@ -27,7 +27,7 @@ export function validateCameraPreviewUrl(
 ): ValidateCameraUrlResult {
   const trimmed = raw.trim();
   if (!trimmed) {
-    return { ok: false, reason: "empty", message: "Indique uma URL." };
+    return { ok: false, reason: "empty", message: "Informe uma URL." };
   }
 
   let url: URL;
@@ -57,7 +57,7 @@ export function validateCameraPreviewUrl(
       ok: false,
       reason: "mixed_content",
       message:
-        "Conteúdo misto: em HTTPS não é possível carregar um stream HTTP. Use uma URL https:// ou aceda ao painel em http em desenvolvimento.",
+        "Conteúdo misto: em HTTPS não é possível carregar um stream HTTP. Use uma URL https:// ou acesse o painel em http em desenvolvimento.",
     };
   }
 

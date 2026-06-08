@@ -29,7 +29,7 @@ function getPresentation(status: OcrLoopStatus): PhasePresentation {
   switch (status.phase) {
     case "capturing":
       return {
-        label: "Capturando frame da câmara…",
+        label: "Capturando frame da câmera…",
         icon: <CaptureIcon fontSize="small" color="info" />,
       };
     case "recognizing":
@@ -55,7 +55,7 @@ function getPresentation(status: OcrLoopStatus): PhasePresentation {
     case "idle":
     default:
       return {
-        label: "A aguardar primeira leitura…",
+        label: "Aguardando primeira leitura…",
         icon: <IdleIcon fontSize="small" />,
       };
   }

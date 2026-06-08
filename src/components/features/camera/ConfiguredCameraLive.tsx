@@ -68,11 +68,11 @@ export default function ConfiguredCameraLive({
         }}
       >
         <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.85)" }}>
-          Ainda não há câmara configurada para o monitor.
+          Ainda não há câmera configurada para o monitor.
         </Typography>
         <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)" }}>
-          Em Pré-visualização, ligue a câmara ou a URL e prima{" "}
-          <strong>Guardar configuração</strong>.
+          Em Pré-visualização, conecte a câmera ou a URL e clique em{" "}
+          <strong>Salvar configuração</strong>.
         </Typography>
         <Button
           component={Link}
@@ -81,7 +81,7 @@ export default function ConfiguredCameraLive({
           color="primary"
           sx={{ mt: 1 }}
         >
-          Configurar câmara
+          Configurar câmera
         </Button>
       </Box>
     );

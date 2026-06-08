@@ -23,16 +23,16 @@ The web client had two error paths: `auth.ts` threw `ApiHttpError`, while `ApiCl
 
 Derived from HTTP status (no extra JSON field from API):
 
-| Kind | Status |
-|------|--------|
-| `authentication` | 401 |
-| `authorization` | 403 |
-| `not_found` | 404 |
-| `conflict` | 409 |
-| `validation` | 422 |
-| `business` | 400, 413 |
-| `network` | fetch failure |
-| `unexpected` | 5xx |
+| Kind             | Status        |
+| ---------------- | ------------- |
+| `authentication` | 401           |
+| `authorization`  | 403           |
+| `not_found`      | 404           |
+| `conflict`       | 409           |
+| `validation`     | 422           |
+| `business`       | 400, 413      |
+| `network`        | fetch failure |
+| `unexpected`     | 5xx           |
 
 ## Consequences
 

@@ -36,13 +36,13 @@ export default function SettingsPage() {
           Configurações do Sistema
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          Configure a câmara usada no monitoramento (USB ou URL na rede).
+          Configure a câmera usada no monitoramento (USB ou URL na rede).
         </Typography>
       </Box>
 
       <Paper sx={{ p: 3, mb: 4 }}>
         <Typography variant="h6" gutterBottom>
-          Câmara no monitor
+          Câmera no monitor
         </Typography>
         <Typography
           variant="body2"
@@ -51,7 +51,7 @@ export default function SettingsPage() {
           sx={{ mb: 2 }}
         >
           O feed ao vivo em <strong>Monitoramento</strong> usa a configuração
-          guardada em <strong>Pré-visualização</strong> (USB ou URL na rede),
+          salva em <strong>Pré-visualização</strong> (USB ou URL na rede),
           armazenada neste browser.
         </Typography>
         <Stack spacing={1} sx={{ mb: 2 }}>
@@ -59,7 +59,7 @@ export default function SettingsPage() {
             <strong>Fonte:</strong>{" "}
             {config.source === "usb"
               ? "USB / este dispositivo"
-              : "Câmara na rede (URL)"}
+              : "Câmera na rede (URL)"}
           </Typography>
           {config.source === "network" && config.networkUrl.trim() && (
             <Typography variant="body2" sx={{ wordBreak: "break-all" }}>
@@ -68,7 +68,7 @@ export default function SettingsPage() {
           )}
           {config.source === "usb" && config.usbDeviceId && (
             <Typography variant="body2" color="text.secondary">
-              Dispositivo USB selecionado (identificador guardado para este
+              Dispositivo USB selecionado (identificador salvo para este
               browser).
             </Typography>
           )}

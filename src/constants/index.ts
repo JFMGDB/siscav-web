@@ -93,7 +93,7 @@ export const UI_CONFIG = {
     OCR_RETRY_MS: 1_500,
     STABLE_RECHECK_MS: 1_500,
     MIN_OCR_CONFIDENCE: 0.52,
-    AMBULANCE_CONFIDENCE_THRESHOLD: 0.60,
+    AMBULANCE_CONFIDENCE_THRESHOLD: 0.6,
     AMBULANCE_PLATE_SENTINEL: "AMBULANCIA",
   },
 } as const;
@@ -109,7 +109,6 @@ export const ROUTES = {
     CAMERA: "/camera",
     WHITELIST: "/whitelist",
     LOGS: "/logs",
-    ML_PLAYGROUND: "/ml-playground",
     SETTINGS: "/settings",
     USERS_CREATE: "/users/create",
   },
@@ -117,14 +116,16 @@ export const ROUTES = {
 
 export const MESSAGES = {
   COMMON: {
-    NETWORK_ERROR: "Não foi possível conectar ao servidor. Verifique sua conexão.",
+    NETWORK_ERROR:
+      "Não foi possível conectar ao servidor. Verifique sua conexão.",
     SESSION_EXPIRED: "Sessão expirada. Faça login novamente.",
     UNAUTHORIZED: "Não foi possível validar as credenciais.",
     FORBIDDEN: "Você não tem permissão para esta ação.",
     NOT_FOUND: "Recurso não encontrado.",
     CONFLICT: "Conflito com dados existentes.",
     VALIDATION_ERROR: "Dados inválidos. Verifique os campos informados.",
-    RATE_LIMIT: "Muitas tentativas. Aguarde 1 minuto antes de tentar novamente.",
+    RATE_LIMIT:
+      "Muitas tentativas. Aguarde 1 minuto antes de tentar novamente.",
     PAYLOAD_TOO_LARGE: "Arquivo ou dados muito grandes.",
     SERVICE_UNAVAILABLE: "Serviço temporariamente indisponível.",
     UNEXPECTED_ERROR: "Erro inesperado. Tente novamente.",
@@ -181,7 +182,7 @@ export const MESSAGES = {
       "Superadministradores gerenciam contas. Administradores do cliente operam o estacionamento (painel, monitor, whitelist e histórico).",
     CLIENT_ADMIN_BULLETS: [
       "Painel de controle e métricas operacionais",
-      "Monitoramento ao vivo e pré-visualização de câmara",
+      "Monitoramento ao vivo e pré-visualização de câmera",
       "Veículos autorizados e histórico de acesso",
     ],
     TABLE_TITLE: "Contas cadastradas",

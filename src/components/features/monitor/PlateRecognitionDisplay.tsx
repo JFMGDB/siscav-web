@@ -111,8 +111,8 @@ export default function PlateRecognitionDisplay({
             Falha ao carregar a última leitura
           </Typography>
           <Typography variant="body2" sx={{ fontWeight: 400, mb: 2 }}>
-            Não foi possível obter os dados. Verifique a ligação à API ou tente
-            novamente.
+            Não foi possível obter os dados. Verifique a conexão com a API ou
+            tente novamente.
           </Typography>
           <Button
             variant="outlined"
@@ -135,14 +135,14 @@ export default function PlateRecognitionDisplay({
           sx={{ mx: "auto", mb: 2, color: "primary.main" }}
         />
         <Typography variant="h6" color="text.primary" sx={{ fontWeight: 600 }}>
-          A carregar última leitura…
+          Carregando última leitura…
         </Typography>
         <Typography
           variant="body2"
           color="text.secondary"
           sx={{ mt: 1, fontWeight: 400 }}
         >
-          A obter dados do servidor…
+          Obtendo dados do servidor…
         </Typography>
       </Card>
     );
@@ -159,7 +159,7 @@ export default function PlateRecognitionDisplay({
           color="text.secondary"
           sx={{ mt: 1, fontWeight: 400 }}
         >
-          Ainda não há registos de acesso para mostrar.
+          Ainda não há registros de acesso para mostrar.
         </Typography>
       </Card>
     );
@@ -243,7 +243,7 @@ export default function PlateRecognitionDisplay({
             onClick={() => void handleWhitelistFromDenied()}
             sx={{ mb: 2, fontWeight: 600 }}
           >
-            {whitelistBusy ? "A adicionar…" : "Adicionar à whitelist"}
+            {whitelistBusy ? "Adicionando…" : "Adicionar à whitelist"}
           </Button>
         ) : null}
 
