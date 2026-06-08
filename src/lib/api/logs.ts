@@ -75,8 +75,8 @@ export async function getLogs(
   if (filters.end_date) params.append("end_date", filters.end_date);
   const qs = params.toString();
   const endpoint = qs
-    ? `${API_CONFIG.ENDPOINTS.LOGS}?${qs}`
-    : API_CONFIG.ENDPOINTS.LOGS;
+    ? `${API_CONFIG.ENDPOINTS.LOGS}/?${qs}`
+    : `${API_CONFIG.ENDPOINTS.LOGS}/`;
   const res = await client.request<PaginatedResponse<AccessLog> | AccessLog[]>(
     endpoint,
     {

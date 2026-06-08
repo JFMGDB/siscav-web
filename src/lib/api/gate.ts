@@ -12,3 +12,15 @@ export async function openGate(
     },
   );
 }
+
+export async function closeGate(
+  client: ApiClient,
+): Promise<{ status: string; message?: string }> {
+  return client.request<{ status: string; message?: string }>(
+    API_CONFIG.ENDPOINTS.GATE.CLOSE,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+}

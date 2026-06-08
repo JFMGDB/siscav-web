@@ -2,8 +2,11 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { videoToJpegBlob } from "@/lib/camera/capture-frame";
-import type { MonitorFrameCaptureFn } from "@/contexts/monitor-frame-capture-context";
+import { sampleVideoMotion, videoToJpegBlob } from "@/lib/camera/capture-frame";
+import type {
+  MonitorFrameCaptureFn,
+  MonitorMotionSampleFn,
+} from "@/contexts/monitor-frame-capture-context";
 
 type Status = "starting" | "live" | "error";
 
@@ -13,6 +16,7 @@ export type UsbMonitorLiveProps = {
   maxVideoHeight?: number;
   borderRadius?: number;
   registerFrameCapture?: (fn: MonitorFrameCaptureFn | null) => void;
+  registerMotionSample?: (fn: MonitorMotionSampleFn | null) => void;
 };
 
 /**
@@ -24,9 +28,11 @@ export default function UsbMonitorLive({
   maxVideoHeight = 520,
   borderRadius = 2,
   registerFrameCapture,
+  registerMotionSample,
 }: UsbMonitorLiveProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const motionSnapshotRef = useRef<Uint8ClampedArray | null>(null);
   const cameraUnsupported =
     typeof navigator !== "undefined" && !navigator.mediaDevices?.getUserMedia;
   const [status, setStatus] = useState<Status>(() =>
@@ -123,6 +129,20 @@ export default function UsbMonitorLive({
     registerFrameCapture(fn);
     return () => registerFrameCapture(null);
   }, [registerFrameCapture, status]);
+
+  useEffect(() => {
+    if (!registerMotionSample) return;
+    const fn: MonitorMotionSampleFn = () => {
+      const v = videoRef.current;
+      if (!v?.videoWidth || v.readyState < HTMLMediaElement.HAVE_CURRENT_DATA)
+        return 0;
+      const { score, snapshot } = sampleVideoMotion(v, motionSnapshotRef.current);
+      motionSnapshotRef.current = snapshot;
+      return score;
+    };
+    registerMotionSample(fn);
+    return () => registerMotionSample(null);
+  }, [registerMotionSample, status]);
 
   return (
     <Box

@@ -3,10 +3,13 @@
 import React, { createContext, useCallback, useContext, useRef } from "react";
 
 export type MonitorFrameCaptureFn = () => Promise<Blob | null>;
+export type MonitorMotionSampleFn = () => number;
 
 type MonitorFrameCaptureContextValue = {
   registerFrameCapture: (fn: MonitorFrameCaptureFn | null) => void;
+  registerMotionSample: (fn: MonitorMotionSampleFn | null) => void;
   captureFrame: () => Promise<Blob | null>;
+  sampleMotion: () => number;
   tryBeginOcr: () => boolean;
   endOcr: () => void;
 };
@@ -20,6 +23,7 @@ export function MonitorFrameCaptureProvider({
   children: React.ReactNode;
 }) {
   const handlerRef = useRef<MonitorFrameCaptureFn | null>(null);
+  const motionRef = useRef<MonitorMotionSampleFn | null>(null);
   const ocrInFlightRef = useRef(false);
 
   const registerFrameCapture = useCallback(
@@ -29,9 +33,21 @@ export function MonitorFrameCaptureProvider({
     [],
   );
 
+  const registerMotionSample = useCallback(
+    (fn: MonitorMotionSampleFn | null) => {
+      motionRef.current = fn;
+    },
+    [],
+  );
+
   const captureFrame = useCallback(async () => {
     if (!handlerRef.current) return null;
     return handlerRef.current();
+  }, []);
+
+  const sampleMotion = useCallback(() => {
+    if (!motionRef.current) return 0;
+    return motionRef.current();
   }, []);
 
   const tryBeginOcr = useCallback(() => {
@@ -45,8 +61,22 @@ export function MonitorFrameCaptureProvider({
   }, []);
 
   const value = React.useMemo(
-    () => ({ registerFrameCapture, captureFrame, tryBeginOcr, endOcr }),
-    [registerFrameCapture, captureFrame, tryBeginOcr, endOcr],
+    () => ({
+      registerFrameCapture,
+      registerMotionSample,
+      captureFrame,
+      sampleMotion,
+      tryBeginOcr,
+      endOcr,
+    }),
+    [
+      registerFrameCapture,
+      registerMotionSample,
+      captureFrame,
+      sampleMotion,
+      tryBeginOcr,
+      endOcr,
+    ],
   );
 
   return (

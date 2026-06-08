@@ -32,6 +32,7 @@ export type PlateCandidate = {
   plate_raw: string;
   normalized_plate: string;
   plate_color_hint: string;
+  confidence?: number;
 };
 
 export type RecognizePlateResponse = {

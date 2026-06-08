@@ -35,7 +35,7 @@ export function useMonitorCapture() {
     queryKey: QUERY_KEY,
     queryFn: () => monitorApi.getLastCapture(client),
     refetchInterval: isVisible ? UI_CONFIG.POLLING.CAPTURE_INTERVAL : false,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 
   const refetchRef = useRef(query.refetch);

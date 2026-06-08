@@ -4,9 +4,14 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import {
   imageElementToJpegBlob,
+  sampleImageMotion,
+  sampleVideoMotion,
   videoToJpegBlob,
 } from "@/lib/camera/capture-frame";
-import type { MonitorFrameCaptureFn } from "@/contexts/monitor-frame-capture-context";
+import type {
+  MonitorFrameCaptureFn,
+  MonitorMotionSampleFn,
+} from "@/contexts/monitor-frame-capture-context";
 
 function HlsPreview({
   src,
@@ -93,6 +98,7 @@ export type NetworkStreamSurfaceProps = {
   emptyLabel?: string;
   /** Registo de captura de frame para OCR no monitor (MJPEG → img, HLS → video). */
   registerFrameCapture?: (fn: MonitorFrameCaptureFn | null) => void;
+  registerMotionSample?: (fn: MonitorMotionSampleFn | null) => void;
 };
 
 /**
@@ -106,6 +112,7 @@ export default function NetworkStreamSurface({
   borderRadius = 2,
   emptyLabel = "Sem stream",
   registerFrameCapture,
+  registerMotionSample,
 }: NetworkStreamSurfaceProps) {
   const streamIdentity = `${href}|${isHls}`;
   const [mediaError, setMediaError] = useState<string | null>(null);
@@ -113,6 +120,7 @@ export default function NetworkStreamSurface({
   const [prevStreamIdentity, setPrevStreamIdentity] = useState(streamIdentity);
   const hlsVideoRef = useRef<HTMLVideoElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const motionSnapshotRef = useRef<Uint8ClampedArray | null>(null);
 
   if (streamIdentity !== prevStreamIdentity) {
     setPrevStreamIdentity(streamIdentity);
@@ -143,6 +151,30 @@ export default function NetworkStreamSurface({
     registerFrameCapture(fn);
     return () => registerFrameCapture(null);
   }, [registerFrameCapture, href, isHls, mediaError]);
+
+  useEffect(() => {
+    if (!registerMotionSample) return;
+
+    const fn: MonitorMotionSampleFn = () => {
+      if (!href) return 0;
+      if (isHls) {
+        const v = hlsVideoRef.current;
+        if (!v?.videoWidth || v.readyState < HTMLMediaElement.HAVE_CURRENT_DATA)
+          return 0;
+        const { score, snapshot } = sampleVideoMotion(v, motionSnapshotRef.current);
+        motionSnapshotRef.current = snapshot;
+        return score;
+      }
+      const img = imgRef.current;
+      if (!img?.naturalWidth) return 0;
+      const { score, snapshot } = sampleImageMotion(img, motionSnapshotRef.current);
+      motionSnapshotRef.current = snapshot;
+      return score;
+    };
+
+    registerMotionSample(fn);
+    return () => registerMotionSample(null);
+  }, [registerMotionSample, href, isHls, mediaError]);
 
   return (
     <Box

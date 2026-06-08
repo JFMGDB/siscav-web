@@ -12,15 +12,24 @@ import { useMonitorFrameCapture } from "@/contexts/monitor-frame-capture-context
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { normalizePlate } from "@/lib/plate";
 import { getAccessLogToast } from "@/lib/gate-trigger-toast";
+import { UI_CONFIG } from "@/constants";
 import type { PendingUnknownPlate } from "@/components/features/monitor/PlateAccessConfirmDialogs";
+import type { VehicleClassificationResult } from "@/types";
 
-const AUTO_OCR_INTERVAL_MS = 6000;
 const DEDUPE_MS = 45_000;
 export const STABLE_READS_REQUIRED = 2;
 const EMPTY_CAPTURE_WARN_EVERY = 6;
 const EMPTY_OCR_WARN_EVERY = 4;
 
 const WHITELIST_QUERY_KEY = ["whitelist", "monitor"] as const;
+const {
+  PRESENCE_SAMPLE_MS,
+  MOTION_THRESHOLD,
+  MAX_IDLE_RECHECK_MS,
+  MIN_OCR_CONFIDENCE,
+  AMBULANCE_CONFIDENCE_THRESHOLD,
+  AMBULANCE_PLATE_SENTINEL,
+} = UI_CONFIG.MONITOR;
 
 export type OcrLoopPhase =
   | "idle"
@@ -51,16 +60,23 @@ type UseMonitorPlateOrchestrationOptions = {
   onAccessLogRegistered?: () => void;
 };
 
+function isAmbulanceClassification(result: VehicleClassificationResult): boolean {
+  return (
+    result.predicted_category === "ambulance" &&
+    result.confidence >= AMBULANCE_CONFIDENCE_THRESHOLD
+  );
+}
+
 export function useMonitorPlateOrchestration({
   enabled = true,
   onAccessLogRegistered,
 }: UseMonitorPlateOrchestrationOptions = {}) {
-  const { captureFrame, tryBeginOcr, endOcr } = useMonitorFrameCapture();
+  const { captureFrame, sampleMotion, tryBeginOcr, endOcr } =
+    useMonitorFrameCapture();
   const { showMessage } = useSnackbar();
   const queryClient = useQueryClient();
   const client = getClientApiClient();
 
-  const ocrInFlight = useRef(false);
   const lastHandledPlate = useRef<string | null>(null);
   const lastHandledAt = useRef(0);
   const consecutivePlate = useRef<string | null>(null);
@@ -68,6 +84,8 @@ export function useMonitorPlateOrchestration({
   const emptyCaptureStreak = useRef(0);
   const emptyOcrStreak = useRef(0);
   const pendingBlobRef = useRef<Blob | null>(null);
+  const lastPipelineAt = useRef(0);
+  const lastMotionScore = useRef(0);
 
   const [authorizeOpen, setAuthorizeOpen] = useState(false);
   const [whitelistOpen, setWhitelistOpen] = useState(false);
@@ -146,6 +164,40 @@ export function useMonitorPlateOrchestration({
     ],
   );
 
+  const processAmbulanceAccess = useCallback(
+    async (blob: Blob) => {
+      const sentinel = AMBULANCE_PLATE_SENTINEL;
+      if (shouldSkipPlate(sentinel)) return;
+
+      setBusy(true);
+      try {
+        const log = await logsApi.createAccessLog(
+          client,
+          sentinel,
+          blob,
+          "monitor-ambulance.jpg",
+        );
+        markHandled(sentinel);
+        const toast = getAccessLogToast(
+          log.plate_string_detected,
+          log.status,
+          log.gate_trigger,
+          log.vehicle_classification,
+        );
+        showMessage(toast.message, toast.severity);
+        onAccessLogRegistered?.();
+      } catch (e) {
+        showMessage(
+          resolveApiError(e, "Erro ao registrar acesso de ambulância."),
+          "error",
+        );
+      } finally {
+        setBusy(false);
+      }
+    },
+    [client, markHandled, onAccessLogRegistered, shouldSkipPlate, showMessage],
+  );
+
   const openUnknownDialog = useCallback(
     (plate: string, blob: Blob) => {
       const normalized = normalizePlate(plate);
@@ -171,19 +223,17 @@ export function useMonitorPlateOrchestration({
     [openUnknownDialog, processAuthorized, shouldSkipPlate, whitelistSet],
   );
 
-  const runAutoCycle = useCallback(async () => {
-    if (!enabled || busy || authorizeOpen || whitelistOpen) {
-      return;
-    }
-    if (!tryBeginOcr()) {
-      return;
-    }
-    ocrInFlight.current = true;
+  const runPipeline = useCallback(async () => {
+    if (!enabled || busy || authorizeOpen || whitelistOpen) return;
+    if (!tryBeginOcr()) return;
+
+    lastPipelineAt.current = Date.now();
     setOcrStatus((prev) => ({
       ...prev,
       phase: "capturing",
       errorMessage: null,
     }));
+
     try {
       const blob = await captureFrame();
       if (!blob || blob.size === 0) {
@@ -208,18 +258,59 @@ export function useMonitorPlateOrchestration({
       emptyCaptureStreak.current = 0;
       setOcrStatus((prev) => ({ ...prev, phase: "recognizing" }));
 
-      const res = await mlApi.recognizePlate(client, blob, "monitor-auto.jpg");
+      const ocrAbort = new AbortController();
+      const classifyPromise = mlApi.classifyVehicle(
+        client,
+        blob,
+        "monitor-auto.jpg",
+      );
+      const ocrPromise = mlApi.recognizePlate(
+        client,
+        blob,
+        "monitor-auto.jpg",
+        ocrAbort.signal,
+      );
+
+      let classification: VehicleClassificationResult | null = null;
+      try {
+        classification = await classifyPromise;
+        if (isAmbulanceClassification(classification)) {
+          ocrAbort.abort();
+          await processAmbulanceAccess(blob);
+          setOcrStatus({
+            phase: "matched",
+            lastPlate: AMBULANCE_PLATE_SENTINEL,
+            lastAt: Date.now(),
+            stableCount: STABLE_READS_REQUIRED,
+            errorMessage: null,
+          });
+          return;
+        }
+      } catch (e) {
+        if (!(e instanceof ApiHttpError && e.status === 0)) {
+          showMessage(
+            resolveApiError(e, "Falha na classificação veicular."),
+            "warning",
+          );
+        }
+      }
+
+      let res;
+      try {
+        res = await ocrPromise;
+      } catch (e) {
+        if (ocrAbort.signal.aborted) return;
+        throw e;
+      }
+
       if (res.candidates.length === 0) {
-        consecutivePlate.current = null;
-        consecutiveCount.current = 0;
         emptyOcrStreak.current += 1;
-        setOcrStatus({
+        setOcrStatus((prev) => ({
+          ...prev,
           phase: "no_match",
-          lastPlate: null,
           lastAt: Date.now(),
-          stableCount: 0,
           errorMessage: null,
-        });
+        }));
         if (emptyOcrStreak.current === EMPTY_OCR_WARN_EVERY) {
           showMessage(
             "OCR ativo, mas nenhuma placa válida neste frame. Aproxime a placa e melhore a iluminação.",
@@ -229,14 +320,28 @@ export function useMonitorPlateOrchestration({
         }
         return;
       }
+
+      const confidentCandidates = res.candidates.filter(
+        (candidate) => (candidate.confidence ?? 0) >= MIN_OCR_CONFIDENCE,
+      );
+      if (confidentCandidates.length === 0) {
+        setOcrStatus((prev) => ({
+          ...prev,
+          phase: "no_match",
+          lastAt: Date.now(),
+          errorMessage: null,
+        }));
+        return;
+      }
+
       emptyOcrStreak.current = 0;
 
       const top = (() => {
         const set = whitelistSet();
-        const whitelisted = res.candidates.find((c) =>
+        const whitelisted = confidentCandidates.find((c) =>
           set.has(normalizePlate(c.normalized_plate || c.plate_raw)),
         );
-        return whitelisted ?? res.candidates[0];
+        return whitelisted ?? confidentCandidates[0];
       })();
       const plate = top.normalized_plate || top.plate_raw;
       const normalized = normalizePlate(plate);
@@ -248,13 +353,13 @@ export function useMonitorPlateOrchestration({
         consecutiveCount.current = 1;
       }
 
-      setOcrStatus({
+      setOcrStatus((prev) => ({
         phase: "matched",
         lastPlate: normalized,
         lastAt: Date.now(),
         stableCount: consecutiveCount.current,
         errorMessage: null,
-      });
+      }));
 
       if (consecutiveCount.current >= STABLE_READS_REQUIRED) {
         await handleStablePlate(plate, blob);
@@ -262,11 +367,11 @@ export function useMonitorPlateOrchestration({
     } catch (e) {
       let errorMessage = "Falha ao executar OCR.";
       if (e instanceof ApiHttpError && e.status === 503) {
-        errorMessage = "OCR indisponível no servidor (503).";
-        showMessage(
-          "OCR indisponível no servidor. Verifique dependências ML na API.",
-          "error",
-        );
+        errorMessage =
+          typeof e.message === "string" && e.message.length > 0
+            ? e.message
+            : "OCR indisponível no servidor (503).";
+        showMessage(errorMessage, "error");
       } else if (e instanceof ApiHttpError && e.status === 0) {
         errorMessage = "OCR demorou demais (timeout).";
         showMessage(
@@ -281,7 +386,6 @@ export function useMonitorPlateOrchestration({
         lastAt: Date.now(),
       }));
     } finally {
-      ocrInFlight.current = false;
       endOcr();
     }
   }, [
@@ -292,6 +396,7 @@ export function useMonitorPlateOrchestration({
     enabled,
     endOcr,
     handleStablePlate,
+    processAmbulanceAccess,
     showMessage,
     tryBeginOcr,
     whitelistOpen,
@@ -300,13 +405,26 @@ export function useMonitorPlateOrchestration({
 
   useEffect(() => {
     if (!enabled) return;
-    const kickoff = window.setTimeout(() => void runAutoCycle(), 1500);
-    const id = window.setInterval(() => void runAutoCycle(), AUTO_OCR_INTERVAL_MS);
-    return () => {
-      clearTimeout(kickoff);
-      clearInterval(id);
+
+    const tick = () => {
+      const motionScore = sampleMotion();
+      const now = Date.now();
+      const sinceLast = now - lastPipelineAt.current;
+      const motionDetected = motionScore >= MOTION_THRESHOLD;
+      const idleRecheckDue = sinceLast >= MAX_IDLE_RECHECK_MS;
+
+      if (motionDetected) {
+        lastMotionScore.current = motionScore;
+      }
+
+      if (motionDetected || (idleRecheckDue && lastMotionScore.current > 0)) {
+        void runPipeline();
+      }
     };
-  }, [enabled, runAutoCycle]);
+
+    const id = window.setInterval(tick, PRESENCE_SAMPLE_MS);
+    return () => clearInterval(id);
+  }, [enabled, runPipeline, sampleMotion]);
 
   const handleDeny = useCallback(() => {
     if (pending) {

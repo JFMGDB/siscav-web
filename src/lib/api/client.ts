@@ -252,6 +252,7 @@ export class ApiClient {
     buildFormData: () => FormData,
     retry = true,
     timeoutMs: number = API_CONFIG.REQUEST_TIMEOUT_MS,
+    signal?: AbortSignal,
   ): Promise<T> {
     let token = await this.resolveToken();
     if (token && this.isTokenExpired(token)) {
@@ -273,6 +274,7 @@ export class ApiClient {
           ...(t ? { Authorization: `Bearer ${t}` } : {}),
         },
         body: form,
+        signal,
       }, timeoutMs);
     };
 

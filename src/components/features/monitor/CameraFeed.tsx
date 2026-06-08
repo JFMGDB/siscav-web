@@ -13,7 +13,7 @@ import { useMonitorFrameCapture } from "@/contexts/monitor-frame-capture-context
 
 export default function CameraFeed() {
   const { config } = useCameraConfig();
-  const { registerFrameCapture } = useMonitorFrameCapture();
+  const { registerFrameCapture, registerMotionSample } = useMonitorFrameCapture();
 
   const sourceLabel =
     config.source === "usb"
@@ -91,6 +91,7 @@ export default function CameraFeed() {
           minHeight={500}
           maxVideoHeight={480}
           registerFrameCapture={registerFrameCapture}
+          registerMotionSample={registerMotionSample}
         />
 
         <Box

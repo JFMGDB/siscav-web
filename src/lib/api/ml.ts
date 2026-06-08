@@ -9,6 +9,7 @@ export async function recognizePlate(
   client: ApiClient,
   imageBlob: Blob,
   fileName = "frame.jpg",
+  signal?: AbortSignal,
 ): Promise<RecognizePlateResponse> {
   if (!imageBlob || imageBlob.size === 0) {
     throw new Error(
@@ -25,6 +26,7 @@ export async function recognizePlate(
     },
     true,
     API_CONFIG.OCR_REQUEST_TIMEOUT_MS,
+    signal,
   );
 }
 

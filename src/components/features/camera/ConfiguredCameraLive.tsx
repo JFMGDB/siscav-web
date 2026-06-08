@@ -8,7 +8,10 @@ import { resolveNetworkStreamFromConfig } from "@/lib/camera/camera-config";
 import NetworkStreamSurface from "@/components/features/camera/NetworkStreamSurface";
 import UsbMonitorLive from "@/components/features/camera/UsbMonitorLive";
 import { ROUTES } from "@/constants";
-import type { MonitorFrameCaptureFn } from "@/contexts/monitor-frame-capture-context";
+import type {
+  MonitorFrameCaptureFn,
+  MonitorMotionSampleFn,
+} from "@/contexts/monitor-frame-capture-context";
 
 export type ConfiguredCameraLiveProps = {
   /** Altura mínima da área de vídeo (px). */
@@ -16,6 +19,7 @@ export type ConfiguredCameraLiveProps = {
   maxVideoHeight?: number;
   /** Registo de frame para OCR (monitor). */
   registerFrameCapture?: (fn: MonitorFrameCaptureFn | null) => void;
+  registerMotionSample?: (fn: MonitorMotionSampleFn | null) => void;
 };
 
 /**
@@ -25,6 +29,7 @@ export default function ConfiguredCameraLive({
   minHeight = 420,
   maxVideoHeight = 480,
   registerFrameCapture,
+  registerMotionSample,
 }: ConfiguredCameraLiveProps) {
   const { config } = useCameraConfig();
   const pageIsHttps =
@@ -90,6 +95,7 @@ export default function ConfiguredCameraLive({
         maxVideoHeight={maxVideoHeight}
         borderRadius={0}
         registerFrameCapture={registerFrameCapture}
+        registerMotionSample={registerMotionSample}
       />
     );
   }
@@ -135,6 +141,7 @@ export default function ConfiguredCameraLive({
         maxVideoHeight={maxVideoHeight}
         borderRadius={0}
         registerFrameCapture={registerFrameCapture}
+        registerMotionSample={registerMotionSample}
       />
     );
   }

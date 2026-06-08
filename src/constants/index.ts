@@ -51,6 +51,7 @@ export const API_CONFIG = {
     METRICS: "/api/v1/dashboard/metrics",
     GATE: {
       TRIGGER: "/api/v1/gate_control/trigger",
+      CLOSE: "/api/v1/gate_control/close",
     },
     IMAGES: {
       BASE: "/api/v1/access_logs/images",
@@ -79,7 +80,15 @@ export const UI_CONFIG = {
     WIDTH: 240,
   },
   POLLING: {
-    CAPTURE_INTERVAL: 3000,
+    CAPTURE_INTERVAL: 10_000,
+  },
+  MONITOR: {
+    PRESENCE_SAMPLE_MS: 1000,
+    MOTION_THRESHOLD: 14,
+    MAX_IDLE_RECHECK_MS: 30_000,
+    MIN_OCR_CONFIDENCE: 0.52,
+    AMBULANCE_CONFIDENCE_THRESHOLD: 0.85,
+    AMBULANCE_PLATE_SENTINEL: "AMBULANCIA",
   },
 } as const;
 
@@ -143,6 +152,8 @@ export const MESSAGES = {
   GATE: {
     OPEN_SUCCESS: "Portão aberto com sucesso!",
     OPEN_ERROR: "Erro ao abrir portão.",
+    CLOSE_SUCCESS: "Portão fechado com sucesso!",
+    CLOSE_ERROR: "Erro ao fechar portão.",
     AUTO_OPEN_SUCCESS: "Acesso autorizado e cancela acionada.",
     AUTO_OPEN_SIMULATED:
       "Acesso autorizado. Atuador não configurado (modo simulado).",
