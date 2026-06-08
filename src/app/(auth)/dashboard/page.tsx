@@ -1,4 +1,4 @@
-import { Typography, Grid, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import GateControl from "@/components/features/gate/GateControl";
 import DashboardMetrics from "@/components/features/dashboard/DashboardMetrics";
 
@@ -18,11 +18,7 @@ export default function DashboardPage() {
         <DashboardMetrics />
       </Box>
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <GateControl />
-        </Grid>
-      </Grid>
+      <GateControl />
     </Box>
   );
 }

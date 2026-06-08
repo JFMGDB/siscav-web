@@ -25,7 +25,13 @@ const WHITELIST_QUERY_KEY = ["whitelist", "monitor"] as const;
 const {
   PRESENCE_SAMPLE_MS,
   MOTION_THRESHOLD,
-  MAX_IDLE_RECHECK_MS,
+  MOTION_RESET_THRESHOLD,
+  MOTION_WARMUP_TICKS,
+  MOTION_CONSECUTIVE_SAMPLES,
+  INITIAL_PRESENCE_DELAY_MS,
+  PIPELINE_REARM_MS,
+  OCR_RETRY_MS,
+  STABLE_RECHECK_MS,
   MIN_OCR_CONFIDENCE,
   AMBULANCE_CONFIDENCE_THRESHOLD,
   AMBULANCE_PLATE_SENTINEL,
@@ -85,7 +91,32 @@ export function useMonitorPlateOrchestration({
   const emptyOcrStreak = useRef(0);
   const pendingBlobRef = useRef<Blob | null>(null);
   const lastPipelineAt = useRef(0);
-  const lastMotionScore = useRef(0);
+  const motionStreakRef = useRef(0);
+  const motionArmedRef = useRef(true);
+  const warmupTicksRef = useRef(0);
+  const stableRecheckTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ocrRetryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const runPipelineRef = useRef<() => Promise<void>>(async () => {});
+
+  const clearScheduledPipeline = useCallback(() => {
+    if (stableRecheckTimerRef.current) {
+      clearTimeout(stableRecheckTimerRef.current);
+      stableRecheckTimerRef.current = null;
+    }
+    if (ocrRetryTimerRef.current) {
+      clearTimeout(ocrRetryTimerRef.current);
+      ocrRetryTimerRef.current = null;
+    }
+  }, []);
+
+  const schedulePipelineRetry = useCallback((delayMs: number) => {
+    if (ocrRetryTimerRef.current || stableRecheckTimerRef.current) return;
+    ocrRetryTimerRef.current = setTimeout(() => {
+      ocrRetryTimerRef.current = null;
+      motionArmedRef.current = true;
+      void runPipelineRef.current();
+    }, delayMs);
+  }, []);
 
   const [authorizeOpen, setAuthorizeOpen] = useState(false);
   const [whitelistOpen, setWhitelistOpen] = useState(false);
@@ -259,11 +290,7 @@ export function useMonitorPlateOrchestration({
       setOcrStatus((prev) => ({ ...prev, phase: "recognizing" }));
 
       const ocrAbort = new AbortController();
-      const classifyPromise = mlApi.classifyVehicle(
-        client,
-        blob,
-        "monitor-auto.jpg",
-      );
+      const isConfirmationRead = consecutiveCount.current >= 1;
       const ocrPromise = mlApi.recognizePlate(
         client,
         blob,
@@ -271,11 +298,14 @@ export function useMonitorPlateOrchestration({
         ocrAbort.signal,
       );
 
-      let classification: VehicleClassificationResult | null = null;
-      try {
-        classification = await classifyPromise;
-        if (isAmbulanceClassification(classification)) {
+      if (!isConfirmationRead) {
+        const classification = await mlApi
+          .classifyVehicle(client, blob, "monitor-auto.jpg")
+          .catch(() => null);
+
+        if (classification && isAmbulanceClassification(classification)) {
           ocrAbort.abort();
+          void ocrPromise.catch(() => undefined);
           await processAmbulanceAccess(blob);
           setOcrStatus({
             phase: "matched",
@@ -286,22 +316,9 @@ export function useMonitorPlateOrchestration({
           });
           return;
         }
-      } catch (e) {
-        if (!(e instanceof ApiHttpError && e.status === 0)) {
-          showMessage(
-            resolveApiError(e, "Falha na classificação veicular."),
-            "warning",
-          );
-        }
       }
 
-      let res;
-      try {
-        res = await ocrPromise;
-      } catch (e) {
-        if (ocrAbort.signal.aborted) return;
-        throw e;
-      }
+      const res = await ocrPromise;
 
       if (res.candidates.length === 0) {
         emptyOcrStreak.current += 1;
@@ -318,6 +335,7 @@ export function useMonitorPlateOrchestration({
           );
           emptyOcrStreak.current = 0;
         }
+        schedulePipelineRetry(OCR_RETRY_MS);
         return;
       }
 
@@ -331,6 +349,7 @@ export function useMonitorPlateOrchestration({
           lastAt: Date.now(),
           errorMessage: null,
         }));
+        schedulePipelineRetry(OCR_RETRY_MS);
         return;
       }
 
@@ -362,7 +381,15 @@ export function useMonitorPlateOrchestration({
       }));
 
       if (consecutiveCount.current >= STABLE_READS_REQUIRED) {
+        clearScheduledPipeline();
         await handleStablePlate(plate, blob);
+      } else if (consecutiveCount.current === 1) {
+        clearScheduledPipeline();
+        stableRecheckTimerRef.current = setTimeout(() => {
+          stableRecheckTimerRef.current = null;
+          motionArmedRef.current = true;
+          void runPipelineRef.current();
+        }, STABLE_RECHECK_MS);
       }
     } catch (e) {
       let errorMessage = "Falha ao executar OCR.";
@@ -387,44 +414,79 @@ export function useMonitorPlateOrchestration({
       }));
     } finally {
       endOcr();
+      window.setTimeout(() => {
+        motionArmedRef.current = true;
+      }, PIPELINE_REARM_MS);
     }
   }, [
     authorizeOpen,
     busy,
     captureFrame,
+    clearScheduledPipeline,
     client,
     enabled,
     endOcr,
     handleStablePlate,
     processAmbulanceAccess,
+    schedulePipelineRetry,
     showMessage,
     tryBeginOcr,
     whitelistOpen,
     whitelistSet,
   ]);
 
+  runPipelineRef.current = runPipeline;
+
   useEffect(() => {
     if (!enabled) return;
 
-    const tick = () => {
-      const motionScore = sampleMotion();
-      const now = Date.now();
-      const sinceLast = now - lastPipelineAt.current;
-      const motionDetected = motionScore >= MOTION_THRESHOLD;
-      const idleRecheckDue = sinceLast >= MAX_IDLE_RECHECK_MS;
+    warmupTicksRef.current = 0;
+    motionStreakRef.current = 0;
+    motionArmedRef.current = true;
 
-      if (motionDetected) {
-        lastMotionScore.current = motionScore;
+    const tick = () => {
+      if (warmupTicksRef.current < MOTION_WARMUP_TICKS) {
+        warmupTicksRef.current += 1;
+        sampleMotion();
+        return;
       }
 
-      if (motionDetected || (idleRecheckDue && lastMotionScore.current > 0)) {
-        void runPipeline();
+      const motionScore = sampleMotion();
+      const aboveThreshold = motionScore >= MOTION_THRESHOLD;
+
+      if (aboveThreshold) {
+        motionStreakRef.current += 1;
+      } else if (motionScore <= MOTION_RESET_THRESHOLD) {
+        motionStreakRef.current = 0;
+        motionArmedRef.current = true;
+      }
+
+      const motionTrigger =
+        motionArmedRef.current &&
+        motionStreakRef.current >= MOTION_CONSECUTIVE_SAMPLES;
+
+      if (motionTrigger) {
+        motionArmedRef.current = false;
+        motionStreakRef.current = 0;
+        void runPipelineRef.current();
       }
     };
 
+    const bootTimer = window.setTimeout(() => {
+      const motionScore = sampleMotion();
+      if (motionScore >= MOTION_THRESHOLD && motionArmedRef.current) {
+        motionArmedRef.current = false;
+        void runPipelineRef.current();
+      }
+    }, INITIAL_PRESENCE_DELAY_MS);
+
     const id = window.setInterval(tick, PRESENCE_SAMPLE_MS);
-    return () => clearInterval(id);
-  }, [enabled, runPipeline, sampleMotion]);
+    return () => {
+      clearInterval(id);
+      clearTimeout(bootTimer);
+      clearScheduledPipeline();
+    };
+  }, [clearScheduledPipeline, enabled, sampleMotion]);
 
   const handleDeny = useCallback(() => {
     if (pending) {
@@ -450,6 +512,7 @@ export function useMonitorPlateOrchestration({
         pending.plate,
         blob,
         "monitor-override.jpg",
+        { operatorOverride: true },
       );
       markHandled(normalizePlate(pending.plate));
       setAuthorizeOpen(false);

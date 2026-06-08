@@ -53,7 +53,6 @@ function MonitorOrchestration({
           deniedLogId={deniedLogId}
           onSuccess={onRegistrationSuccess}
           onAccessLogRegistered={onAccessLogRegistered}
-          disableAutoOcr
         />
       </Box>
     </>
@@ -81,6 +80,7 @@ export default function MonitorPage() {
     });
     void queryClient.invalidateQueries({ queryKey: ["logs"] });
     void queryClient.invalidateQueries({ queryKey: ["whitelist", "monitor"] });
+    void queryClient.invalidateQueries({ queryKey: ["dashboard", "metrics"] });
   };
 
   return (

@@ -46,132 +46,137 @@ export default function GateControl() {
   const isBusy = loading !== null;
 
   return (
-    <>
-      <Card
-        title="Controle Remoto do Portão"
-        subtitle="Abra ou feche o portão manualmente quando necessário"
+    <Card
+      title="Controle Remoto do Portão"
+      subtitle="Abra ou feche o portão manualmente quando necessário"
+      sx={{
+        background:
+          "linear-gradient(135deg, rgba(13, 148, 136, 0.12) 0%, rgba(13, 148, 136, 0.04) 100%)",
+        border: "1px solid rgba(13, 148, 136, 0.2)",
+      }}
+    >
+      <Box
         sx={{
-          textAlign: "center",
-          background: "linear-gradient(135deg, #f59e0b15 0%, #f59e0b05 100%)",
-          border: "1px solid rgba(245, 158, 11, 0.2)",
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: { xs: "center", md: "stretch" },
+          gap: { xs: 3, md: 4 },
+          py: { xs: 1, md: 2 },
         }}
       >
-        <Box sx={{ py: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row", md: "row" },
+            alignItems: { xs: "center", sm: "flex-start", md: "center" },
+            gap: 2.5,
+            flex: 1,
+            minWidth: 0,
+            textAlign: { xs: "center", sm: "left" },
+          }}
+        >
           <Box
             sx={{
-              width: 80,
-              height: 80,
+              width: 72,
+              height: 72,
+              flexShrink: 0,
               borderRadius: "50%",
-              background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-              display: "inline-flex",
+              background: "linear-gradient(135deg, #0d9488 0%, #0f766e 100%)",
+              display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              mb: 3,
-              boxShadow: "0 10px 25px -5px rgba(245, 158, 11, 0.4)",
+              boxShadow: "0 10px 25px -5px rgba(13, 148, 136, 0.35)",
             }}
           >
-            <LockOpenIcon sx={{ fontSize: 40, color: "white" }} />
+            <LockOpenIcon sx={{ fontSize: 36, color: "white" }} />
           </Box>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Use os botões abaixo para controlar o portão remotamente. Na
-            simulação Wokwi, o portão também fecha sozinho após cerca de 10
-            segundos.
+          <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
+            Use os botões ao lado para controlar o portão remotamente.
           </Typography>
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-            sx={{
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Box sx={{ position: "relative", display: "inline-block" }}>
-              <Button
-                variant="contained"
-                color="warning"
-                size="large"
-                startIcon={loading === "open" ? null : <LockOpenIcon />}
-                onClick={handleOpenGate}
-                disabled={isBusy}
-                sx={{
-                  px: 4,
-                  py: 1.5,
-                  fontSize: "1rem",
-                  fontWeight: 600,
-                  minWidth: 180,
-                  background:
-                    "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-                  boxShadow: "0 4px 15px -3px rgba(245, 158, 11, 0.4)",
-                  "&:hover": {
-                    background:
-                      "linear-gradient(135deg, #d97706 0%, #b45309 100%)",
-                    boxShadow: "0 6px 20px -3px rgba(245, 158, 11, 0.5)",
-                    transform: "translateY(-2px)",
-                  },
-                  "&:active": {
-                    transform: "translateY(0)",
-                  },
-                }}
-              >
-                {loading === "open" ? "Abrindo..." : "Abrir Portão"}
-              </Button>
-              {loading === "open" && (
-                <CircularProgress
-                  size={24}
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    marginTop: "-12px",
-                    marginLeft: "-12px",
-                    color: "white",
-                  }}
-                />
-              )}
-            </Box>
-            <Box sx={{ position: "relative", display: "inline-block" }}>
-              <Button
-                variant="outlined"
-                color="warning"
-                size="large"
-                startIcon={loading === "close" ? null : <LockIcon />}
-                onClick={handleCloseGate}
-                disabled={isBusy}
-                sx={{
-                  px: 4,
-                  py: 1.5,
-                  fontSize: "1rem",
-                  fontWeight: 600,
-                  minWidth: 180,
-                  borderWidth: 2,
-                  "&:hover": {
-                    borderWidth: 2,
-                    transform: "translateY(-2px)",
-                  },
-                  "&:active": {
-                    transform: "translateY(0)",
-                  },
-                }}
-              >
-                {loading === "close" ? "Fechando..." : "Fechar Portão"}
-              </Button>
-              {loading === "close" && (
-                <CircularProgress
-                  size={24}
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    marginTop: "-12px",
-                    marginLeft: "-12px",
-                    color: "warning.main",
-                  }}
-                />
-              )}
-            </Box>
-          </Stack>
         </Box>
-      </Card>
-    </>
+
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          sx={{
+            width: { xs: "100%", md: "auto" },
+            flexShrink: 0,
+            alignItems: "stretch",
+            justifyContent: { xs: "center", md: "flex-end" },
+          }}
+        >
+          <Box sx={{ position: "relative", flex: { xs: 1, md: "0 0 auto" } }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              startIcon={loading === "open" ? null : <LockOpenIcon />}
+              onClick={handleOpenGate}
+              disabled={isBusy}
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontSize: "1rem",
+                fontWeight: 600,
+                minWidth: { sm: 180 },
+              }}
+            >
+              {loading === "open" ? "Abrindo..." : "Abrir Portão"}
+            </Button>
+            {loading === "open" && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                  color: "primary.contrastText",
+                }}
+              />
+            )}
+          </Box>
+          <Box sx={{ position: "relative", flex: { xs: 1, md: "0 0 auto" } }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              fullWidth
+              startIcon={loading === "close" ? null : <LockIcon />}
+              onClick={handleCloseGate}
+              disabled={isBusy}
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontSize: "1rem",
+                fontWeight: 600,
+                minWidth: { sm: 180 },
+                borderWidth: 2,
+                "&:hover": {
+                  borderWidth: 2,
+                },
+              }}
+            >
+              {loading === "close" ? "Fechando..." : "Fechar Portão"}
+            </Button>
+            {loading === "close" && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  marginTop: "-12px",
+                  marginLeft: "-12px",
+                  color: "primary.main",
+                }}
+              />
+            )}
+          </Box>
+        </Stack>
+      </Box>
+    </Card>
   );
 }

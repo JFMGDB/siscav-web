@@ -5,6 +5,7 @@ import { Card } from "./Card";
 export interface StatCardProps {
   title: string;
   value: string | number;
+  subtitle?: string;
   icon?: React.ReactNode;
   color?: "primary" | "secondary" | "success" | "error" | "warning" | "info";
   trend?: {
@@ -27,6 +28,7 @@ const colorMap = {
 export function StatCard({
   title,
   value,
+  subtitle,
   icon,
   color = "primary",
   trend,
@@ -66,6 +68,15 @@ export function StatCard({
           >
             {value}
           </Typography>
+          {subtitle && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ mt: 1, display: "block" }}
+            >
+              {subtitle}
+            </Typography>
+          )}
           {trend && (
             <Typography
               variant="caption"

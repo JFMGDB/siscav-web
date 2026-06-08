@@ -1,45 +1,36 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Button,
   Box,
   InputAdornment,
-  Stack,
   Chip,
   Typography,
-  FormControlLabel,
-  Switch,
 } from "@mui/material";
 import {
   Save as SaveIcon,
   DirectionsCar as CarIcon,
   Description as DescriptionIcon,
-  DocumentScanner as OcrIcon,
   Sensors as SensorsIcon,
 } from "@mui/icons-material";
 import { getClientApiClient } from "@/lib/api/client";
-import { ApiHttpError, resolveApiError } from "@/lib/api/errors";
-import * as mlApi from "@/lib/api/ml";
+import { resolveApiError } from "@/lib/api/errors";
 import * as logsApi from "@/lib/api/logs";
 import * as whitelistApi from "@/lib/api/whitelist";
 import { useSnackbar } from "@/hooks/use-snackbar";
 import { Card } from "@/components/ui/Card";
 import { useMonitorFrameCapture } from "@/contexts/monitor-frame-capture-context";
-import type { PlateCandidate, VehicleClassificationResult } from "@/types";
+import type { VehicleClassificationResult } from "@/types";
 import { getAccessLogToast } from "@/lib/gate-trigger-toast";
 import { getVehicleCategoryLabel } from "@/lib/vehicle-category";
-
-const AUTO_OCR_INTERVAL_MS = 4500;
 
 interface ManualRegistrationFormProps {
   initialPlate?: string;
   deniedLogId?: string;
   onSuccess?: () => void;
   onAccessLogRegistered?: () => void;
-  /** When true, auto-OCR runs in monitor orchestration hook instead. */
-  disableAutoOcr?: boolean;
 }
 
 export default function ManualRegistrationForm({
@@ -47,102 +38,15 @@ export default function ManualRegistrationForm({
   deniedLogId,
   onSuccess,
   onAccessLogRegistered,
-  disableAutoOcr = false,
 }: ManualRegistrationFormProps) {
   const [plate, setPlate] = useState(initialPlate ?? "");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [accessLogBusy, setAccessLogBusy] = useState(false);
-  const [ocrBusy, setOcrBusy] = useState(false);
-  const [autoOcrEnabled, setAutoOcrEnabled] = useState(!disableAutoOcr);
-  const [candidates, setCandidates] = useState<PlateCandidate[]>([]);
   const [lastClassification, setLastClassification] =
     useState<VehicleClassificationResult | null>(null);
   const { showMessage } = useSnackbar();
-  const { captureFrame, tryBeginOcr, endOcr } = useMonitorFrameCapture();
-  const ocrInFlight = useRef(false);
-
-  const runServerOcr = useCallback(
-    async (mode: "manual" | "auto") => {
-      if (ocrInFlight.current || loading) return;
-      if (!tryBeginOcr()) {
-        if (mode === "manual") {
-          showMessage("OCR já em andamento. Aguarde a leitura atual.", "info");
-        }
-        return;
-      }
-      ocrInFlight.current = true;
-      if (mode === "manual") setOcrBusy(true);
-      try {
-        const blob = await captureFrame();
-        if (!blob || blob.size === 0) {
-          if (mode === "manual") {
-            showMessage(
-              "Captura vazia: aguarde o vídeo ao vivo ou use USB. Em streams HTTP noutro domínio sem CORS o browser não permite exportar o frame.",
-              "warning",
-            );
-          }
-          return;
-        }
-
-        const res = await mlApi.recognizePlate(
-          getClientApiClient(),
-          blob,
-          mode === "manual" ? "monitor-frame.jpg" : "monitor-auto.jpg",
-        );
-
-        setCandidates(res.candidates);
-
-        if (res.candidates.length === 1) {
-          const p =
-            res.candidates[0].normalized_plate || res.candidates[0].plate_raw;
-          setPlate((current) => {
-            if (!current || current === p) return p;
-            return current;
-          });
-        }
-
-        if (mode === "manual") {
-          if (res.candidates.length === 0) {
-            showMessage("Nenhuma placa detectada neste frame.", "info");
-          }
-        }
-      } catch (e) {
-        if (mode === "auto") return;
-        if (e instanceof ApiHttpError && e.status === 503) {
-          showMessage(
-            "OCR indisponível no servidor. Verifique se a API foi reiniciada com as dependências ML.",
-            "error",
-          );
-        } else if (e instanceof ApiHttpError && e.status === 413) {
-          showMessage("Imagem demasiado grande para o servidor.", "error");
-        } else {
-          showMessage(
-            resolveApiError(e, "Erro ao chamar o OCR no servidor."),
-            "error",
-          );
-        }
-      } finally {
-        ocrInFlight.current = false;
-        endOcr();
-        if (mode === "manual") setOcrBusy(false);
-      }
-    },
-    [captureFrame, endOcr, loading, showMessage, tryBeginOcr],
-  );
-
-  useEffect(() => {
-    if (!autoOcrEnabled || disableAutoOcr) return;
-    const kickoff = window.setTimeout(() => void runServerOcr("auto"), 1500);
-    const id = window.setInterval(
-      () => void runServerOcr("auto"),
-      AUTO_OCR_INTERVAL_MS,
-    );
-    return () => {
-      clearTimeout(kickoff);
-      clearInterval(id);
-    };
-  }, [autoOcrEnabled, disableAutoOcr, runServerOcr]);
+  const { captureFrame } = useMonitorFrameCapture();
 
   const handleRegisterAccessAttempt = async () => {
     if (!plate) return;
@@ -177,7 +81,7 @@ export default function ManualRegistrationForm({
       onAccessLogRegistered?.();
     } catch (e) {
       showMessage(
-        resolveApiError(e, "Erro ao registrar tentativa de acesso."),
+        resolveApiError(e, "Erro ao registrar passagem."),
         "error",
       );
     } finally {
@@ -200,22 +104,16 @@ export default function ManualRegistrationForm({
         );
       } else {
         await whitelistApi.addPlate(client, plate, description);
-        showMessage("Veículo cadastrado e autorizado com sucesso!", "success");
+        showMessage("Placa cadastrada na whitelist com sucesso!", "success");
       }
       setPlate("");
       setDescription("");
-      setCandidates([]);
       if (onSuccess) onSuccess();
     } catch {
-      showMessage("Erro ao cadastrar veículo.", "error");
+      showMessage("Erro ao cadastrar placa na whitelist.", "error");
     } finally {
       setLoading(false);
     }
-  };
-
-  const applyCandidate = (c: PlateCandidate) => {
-    setPlate(c.normalized_plate || c.plate_raw);
-    showMessage(`Placa "${c.normalized_plate}" selecionada.`, "success");
   };
 
   return (
@@ -229,85 +127,10 @@ export default function ManualRegistrationForm({
           onSubmit={handleSubmit}
           sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
         >
-          <FormControlLabel
-            control={
-              <Switch
-                checked={autoOcrEnabled}
-                onChange={(_, c) => setAutoOcrEnabled(c)}
-                color="primary"
-                disabled={disableAutoOcr}
-              />
-            }
-            label="OCR automático (servidor)"
-          />
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: "block", mt: -1 }}
-          >
-            {disableAutoOcr
-              ? "O monitor envia frames automaticamente para OCR, whitelist e portão."
-              : "Com o vídeo ao vivo, envia periodicamente um frame para o OCR. Uma placa única preenche o campo quando está vazio ou confirma a mesma leitura."}
-          </Typography>
-
-          <Stack
-            direction="row"
-            spacing={1}
-            useFlexGap
-            sx={{ flexWrap: "wrap" }}
-          >
-            <Button
-              type="button"
-              variant="outlined"
-              color="secondary"
-              startIcon={<OcrIcon />}
-              onClick={() => void runServerOcr("manual")}
-              disabled={ocrBusy || loading}
-              fullWidth
-              sx={{ flex: "1 1 100%" }}
-            >
-              {ocrBusy ? "A processar OCR…" : "Ler placa agora (OCR)"}
-            </Button>
-          </Stack>
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: "block" }}
-          >
-            <code style={{ fontSize: "0.75rem" }}>
-              POST /api/v1/ml/recognize-plate
-            </code>{" "}
-            com JWT (multipart campo{" "}
-            <code style={{ fontSize: "0.75rem" }}>file</code>).
-          </Typography>
-
-          {candidates.length > 0 && (
-            <Box>
-              <Typography variant="subtitle2" gutterBottom>
-                Candidatos (toque para usar)
-              </Typography>
-              <Stack
-                direction="row"
-                useFlexGap
-                sx={{ flexWrap: "wrap", gap: 1 }}
-              >
-                {candidates.map((c, i) => (
-                  <Chip
-                    key={`${c.normalized_plate}-${i}`}
-                    label={`${c.normalized_plate} · ${c.plate_color_hint}`}
-                    onClick={() => applyCandidate(c)}
-                    color="primary"
-                    variant="outlined"
-                  />
-                ))}
-              </Stack>
-            </Box>
-          )}
-
           {lastClassification && (
             <Box>
               <Typography variant="subtitle2" gutterBottom>
-                Classificação (última tentativa)
+                Classificação (última passagem)
               </Typography>
               <Chip
                 color={
@@ -374,8 +197,8 @@ export default function ManualRegistrationForm({
 
           <Button
             type="button"
-            variant="contained"
-            color="secondary"
+            variant="outlined"
+            color="primary"
             size="large"
             startIcon={accessLogBusy ? null : <SensorsIcon />}
             onClick={() => void handleRegisterAccessAttempt()}
@@ -384,20 +207,16 @@ export default function ManualRegistrationForm({
             sx={{ py: 1.5, fontWeight: 600 }}
           >
             {accessLogBusy
-              ? "Registrando tentativa…"
-              : "Registrar tentativa de acesso"}
+              ? "Registrando passagem…"
+              : "Registrar passagem"}
           </Button>
           <Typography
             variant="caption"
             color="text.secondary"
-            sx={{ display: "block" }}
+            sx={{ display: "block", mt: -1 }}
           >
-            Simula o dispositivo IoT:{" "}
-            <code style={{ fontSize: "0.75rem" }}>
-              POST /api/v1/access_logs/
-            </code>{" "}
-            (multipart <code style={{ fontSize: "0.75rem" }}>file</code> +{" "}
-            <code style={{ fontSize: "0.75rem" }}>plate</code>).
+            Envia placa e frame ao servidor; a autorização ou negação segue as
+            regras da whitelist e do classificador de ambulância.
           </Typography>
 
           <Button
@@ -413,20 +232,18 @@ export default function ManualRegistrationForm({
               py: 1.5,
               fontSize: "1rem",
               fontWeight: 600,
-              background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
-              boxShadow: "0 4px 15px -3px rgba(37, 99, 235, 0.4)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)",
-                boxShadow: "0 6px 20px -3px rgba(37, 99, 235, 0.5)",
-                transform: "translateY(-1px)",
-              },
-              "&:active": {
-                transform: "translateY(0)",
-              },
             }}
           >
-            {loading ? "Salvando..." : "Autorizar Acesso"}
+            {loading ? "Cadastrando na whitelist…" : "Cadastrar na whitelist"}
           </Button>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: "block", mt: -1 }}
+          >
+            Inclui a placa na lista de veículos autorizados para passagens
+            futuras, sem abrir o portão neste momento.
+          </Typography>
         </Box>
       </Card>
     </>

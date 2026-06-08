@@ -168,7 +168,7 @@ export default function WhitelistTable({
             sx={{
               color: "primary.main",
               "&:hover": {
-                backgroundColor: "rgba(37, 99, 235, 0.1)",
+                backgroundColor: "rgba(13, 148, 136, 0.1)",
               },
             }}
           >
@@ -216,16 +216,9 @@ export default function WhitelistTable({
           </Box>
           <Button
             variant="contained"
+            color="primary"
             startIcon={<AddIcon />}
             onClick={() => handleOpen()}
-            sx={{
-              background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
-              boxShadow: "0 4px 15px -3px rgba(37, 99, 235, 0.4)",
-              "&:hover": {
-                boxShadow: "0 6px 20px -3px rgba(37, 99, 235, 0.5)",
-                transform: "translateY(-1px)",
-              },
-            }}
           >
             Adicionar Veículo
           </Button>
@@ -288,10 +281,8 @@ export default function WhitelistTable({
           },
         }}
       >
-        <DialogTitle sx={{ pb: 1 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {currentPlate.id ? "Editar Veículo" : "Adicionar Veículo"}
-          </Typography>
+        <DialogTitle sx={{ pb: 1, fontWeight: 600 }}>
+          {currentPlate.id ? "Editar Veículo" : "Adicionar Veículo"}
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
@@ -339,15 +330,10 @@ export default function WhitelistTable({
           <Button
             onClick={handleSave}
             variant="contained"
+            color="primary"
             disabled={isAdding || isUpdating}
-            sx={{
-              background: "linear-gradient(135deg, #2563eb 0%, #1e40af 100%)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)",
-              },
-            }}
           >
-            Salvar
+            {isAdding || isUpdating ? "Salvando…" : "Salvar"}
           </Button>
         </DialogActions>
       </Dialog>

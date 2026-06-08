@@ -8,11 +8,17 @@ import type {
 import { API_CONFIG } from "@/constants";
 import { getAccessLogImageFileName } from "@/lib/image-url";
 
+export type CreateAccessLogOptions = {
+  /** True quando o operador autoriza manualmente (não conta em aprovação automática). */
+  operatorOverride?: boolean;
+};
+
 export async function createAccessLog(
   client: ApiClient,
   plate: string,
   imageBlob: Blob,
   fileName = "capture.jpg",
+  options: CreateAccessLogOptions = {},
 ): Promise<AccessLog> {
   if (!imageBlob || imageBlob.size === 0) {
     throw new Error(
@@ -26,6 +32,9 @@ export async function createAccessLog(
       const form = new FormData();
       form.append("file", imageBlob, fileName);
       form.append("plate", plate);
+      if (options.operatorOverride) {
+        form.append("operator_override", "true");
+      }
       return form;
     },
     true,

@@ -16,17 +16,26 @@ export function getAccessLogToast(
 ): { message: string; severity: "success" | "warning" | "info" } {
   const statusLabel = status === "Authorized" ? "autorizado" : "negado";
 
-  const isAmbulance =
-    vehicleClassification?.predicted_category === "ambulance" &&
-    status === "Authorized";
+  const isAmbulanceAuthorized =
+    status === "Authorized" &&
+    vehicleClassification?.predicted_category === "ambulance";
 
-  if (status === "Denied" || !gateTrigger) {
-    if (isAmbulance) {
+  if (isAmbulanceAuthorized) {
+    if (gateTrigger?.status === "error") {
+      const reasonKey = gateTrigger.reason ?? "actuator_network_error";
+      const reasonLabel = REASON_LABELS[reasonKey] ?? reasonKey;
       return {
-        message: `${MESSAGES.GATE.AMBULANCE_AUTO_AUTHORIZED} Placa ${plate}.`,
-        severity: "success",
+        message: `${MESSAGES.GATE.AMBULANCE_AUTO_AUTHORIZED} ${MESSAGES.GATE.AUTO_OPEN_HARDWARE_ERROR.replace("{reason}", reasonLabel)}`,
+        severity: "warning",
       };
     }
+    return {
+      message: MESSAGES.GATE.AMBULANCE_AUTO_AUTHORIZED,
+      severity: "success",
+    };
+  }
+
+  if (status === "Denied" || !gateTrigger) {
     return {
       message: `Tentativa registrada: ${plate} (${statusLabel}).`,
       severity: status === "Authorized" ? "success" : "warning",

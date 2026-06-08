@@ -41,14 +41,19 @@ describe("getAccessLogToast", () => {
     expect(result.message).toContain("simulado");
   });
 
-  it("returns success toast for ambulance auto-authorize without gate_trigger", () => {
-    const result = getAccessLogToast("AMB-0001", "Authorized", null, {
+  it("returns success toast for ambulance auto-authorize", () => {
+    const result = getAccessLogToast("AMBULANCIA", "Authorized", {
+      integration: "simulated",
+      message: "simulated",
+      acknowledged: false,
+      status: "ok",
+    }, {
       predicted_category: "ambulance",
-      confidence: 0.92,
+      confidence: 0.72,
       model_version: "test",
       classifier_backend: "onnx",
     });
     expect(result.severity).toBe("success");
-    expect(result.message).toContain("Ambulância");
+    expect(result.message).toContain("Ambulância detectada, abrindo cancela automaticamente");
   });
 });

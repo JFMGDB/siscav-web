@@ -4,6 +4,8 @@
 
 const MOTION_SAMPLE_WIDTH = 64;
 const MOTION_SAMPLE_HEIGHT = 48;
+const OCR_CAPTURE_MAX_DIM = 960;
+const OCR_JPEG_QUALITY = 0.78;
 
 async function canvasToJpegBlob(
   canvas: HTMLCanvasElement,
@@ -44,7 +46,9 @@ export function computeGrayscaleMotionScore(
   previous: Uint8ClampedArray | null,
   current: Uint8ClampedArray,
 ): number {
-  if (!previous || previous.length !== current.length) return 255;
+  if (!previous || previous.length !== current.length) {
+    return 0;
+  }
   let total = 0;
   for (let i = 0; i < current.length; i += 4) {
     const cur = (current[i] + current[i + 1] + current[i + 2]) / 3;
@@ -73,20 +77,22 @@ export function sampleVideoMotion(
 
 export async function videoToJpegBlob(
   video: HTMLVideoElement,
-  quality = 0.92,
+  quality = OCR_JPEG_QUALITY,
 ): Promise<Blob | null> {
   const w = video.videoWidth;
   const h = video.videoHeight;
   if (!w || !h) {
     return null;
   }
+  const longest = Math.max(w, h);
+  const scale = longest > OCR_CAPTURE_MAX_DIM ? OCR_CAPTURE_MAX_DIM / longest : 1;
   const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
+  canvas.width = Math.round(w * scale);
+  canvas.height = Math.round(h * scale);
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
   try {
-    ctx.drawImage(video, 0, 0, w, h);
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   } catch (e) {
     if (e instanceof DOMException && e.name === "SecurityError") return null;
     return null;

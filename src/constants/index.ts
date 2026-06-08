@@ -83,11 +83,17 @@ export const UI_CONFIG = {
     CAPTURE_INTERVAL: 10_000,
   },
   MONITOR: {
-    PRESENCE_SAMPLE_MS: 1000,
-    MOTION_THRESHOLD: 14,
-    MAX_IDLE_RECHECK_MS: 30_000,
+    PRESENCE_SAMPLE_MS: 200,
+    MOTION_THRESHOLD: 16,
+    MOTION_RESET_THRESHOLD: 8,
+    MOTION_WARMUP_TICKS: 0,
+    MOTION_CONSECUTIVE_SAMPLES: 1,
+    INITIAL_PRESENCE_DELAY_MS: 300,
+    PIPELINE_REARM_MS: 1_200,
+    OCR_RETRY_MS: 1_500,
+    STABLE_RECHECK_MS: 1_500,
     MIN_OCR_CONFIDENCE: 0.52,
-    AMBULANCE_CONFIDENCE_THRESHOLD: 0.85,
+    AMBULANCE_CONFIDENCE_THRESHOLD: 0.60,
     AMBULANCE_PLATE_SENTINEL: "AMBULANCIA",
   },
 } as const;
@@ -160,7 +166,7 @@ export const MESSAGES = {
     AUTO_OPEN_HARDWARE_ERROR:
       "Acesso autorizado, mas a cancela não respondeu ({reason}).",
     AMBULANCE_AUTO_AUTHORIZED:
-      "Ambulância detectada — acesso autorizado automaticamente.",
+      "Ambulância detectada, abrindo cancela automaticamente.",
   },
   ACCOUNTS: {
     HUB_TITLE: "Gestão de contas",

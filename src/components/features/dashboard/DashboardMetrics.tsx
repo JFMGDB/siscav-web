@@ -45,10 +45,13 @@ export default function DashboardMetrics() {
         value: data.traffic_volume,
         icon: <TrafficIcon sx={{ fontSize: 40 }} />,
         color: "primary" as const,
+        subtitle: undefined,
       },
       {
         title: "Aprovação sem intervenção",
         value: formatPercent(data.auto_approval_rate_percent),
+        subtitle:
+          "Autorizados automaticamente (whitelist, ambulância ou IoT)",
         icon: <AutoIcon sx={{ fontSize: 40 }} />,
         color: "success" as const,
       },
@@ -57,6 +60,7 @@ export default function DashboardMetrics() {
         value: formatPercent(data.ocr_success_rate_percent),
         icon: <OcrIcon sx={{ fontSize: 40 }} />,
         color: "info" as const,
+        subtitle: undefined,
       },
     ];
   }, [data]);
@@ -120,6 +124,7 @@ export default function DashboardMetrics() {
               <StatCard
                 title={card.title}
                 value={card.value}
+                subtitle={card.subtitle}
                 icon={card.icon}
                 color={card.color}
               />
